@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature id="org.agileware.natural.jbehave.feature"
+	label="Jbehave Feature "
+	version="1.0.0.qualifier">
+	<plugin
+			id="org.agileware.natural.jbehave"
+			download-size="0"
+			install-size="0"
+			version="0.0.0"
+			unpack="false"/>
+	<plugin
+			id="org.agileware.natural.jbehave.ide"
+			download-size="0"
+			install-size="0"
+			version="0.0.0"
+			unpack="false"/>
+	<plugin
+			id="org.agileware.natural.jbehave.ui"
+			download-size="0"
+			install-size="0"
+			version="0.0.0"
+			unpack="false"/>
+</feature>

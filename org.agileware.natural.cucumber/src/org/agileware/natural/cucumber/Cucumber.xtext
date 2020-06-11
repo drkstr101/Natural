@@ -1,0 +1,250 @@
+grammar org.agileware.natural.cucumber.Cucumber hidden(WS, SL_COMMENT)
+
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
+generate cucumber "http://www.agileware.org/natural/cucumber"
+
+CucumberModel:
+	feature=Feature?
+;
+
+/**
+ * A Section is a generic element with the structure:
+ * 	(meta=Meta EOL)?
+ *	'Keyword:' title=Title? EOL
+ *	narrative=Text?
+ * 
+ * Each section may have trailing line breaks before and after
+ */
+Section: Feature
+	| Background
+	| AbstractScenario
+	| Example
+;
+
+/**
+ * 
+ */
+Feature: {Feature}
+	(meta=Meta EOL)?
+	'Feature:' title=Title? EOL
+	narrative=Text?
+	background=Background?
+	scenarios+=AbstractScenario*
+;
+
+/**
+ * 
+ */
+Background: {Background}
+	(meta=Meta EOL)?
+	'Background:' title=Title? EOL
+	narrative=Text?
+	steps+=Step*
+;
+
+// --------------------------------------
+// Scenarios
+// --------------------------------------
+	
+AbstractScenario: Scenario 
+	| ScenarioOutline
+;
+
+Scenario: {Scenario}
+	(meta=Meta EOL)?
+	'Scenario:' title=Title? EOL
+	narrative=Text?
+	steps+=Step*
+;
+
+ScenarioOutline: {ScenarioOutline}
+	(meta=Meta EOL)?
+	'Scenario' 'Outline:' title=Title? EOL
+	narrative=Text?
+	steps+=Step*
+	examples+=Example+
+;
+
+Example: {Example}
+	(meta=Meta EOL)?
+	'Examples:' title=Title? EOL
+	narrative=Text?
+	table=Table
+;
+
+// --------------------------------------
+// Meta
+// --------------------------------------
+
+Meta: {Meta}
+	tags+=MetaTag
+	(EOL? tags+=MetaTag)*
+;
+
+MetaTag: {MetaTag}
+	'@' key=MetaKey
+	(':' value=MetaValue)?
+;
+
+MetaKey: WORD;
+
+MetaValue: TEXT_LITERAL+;
+
+// --------------------------------------
+// Steps
+// --------------------------------------
+
+Step: {Step}
+	keyword=STEP_KEYWORD
+	(description=StepDescription EOL)
+	(table=Table | code=DocString)?
+;
+
+STEP_KEYWORD: ANY_KEYWORD
+	| GIVEN_KEYWORD
+	| WHEN_KEYWORD
+	| THEN_KEYWORD
+	| AND_KEYWORD
+	| BUT_KEYWORD
+;
+
+terminal ANY_KEYWORD: '*';
+terminal GIVEN_KEYWORD: 'Given';
+terminal WHEN_KEYWORD: 'When';
+terminal THEN_KEYWORD: 'Then';
+terminal AND_KEYWORD: 'And';
+terminal BUT_KEYWORD: 'But';
+
+StepDescription:
+ 	DESCRIPTION_LITERAL+
+;
+
+DESCRIPTION_LITERAL: PLACEHOLDER
+	| NUMBER
+	| STRING
+	| WORD
+	| PUNCTUATION
+	| ANY_OTHER
+;
+
+terminal PLACEHOLDER:
+	('<' WORD '>')
+	| ('[' WORD ']')
+;
+
+// --------------------------------------
+// Table
+// --------------------------------------
+
+Table: {Table}
+	rows+=TableRow+
+;
+
+TableRow: {TableRow}
+	cols+=TableCol+ '|' EOL
+;
+
+TableCol: {TableCol}
+	cell=TABLE_CELL
+;
+
+terminal TABLE_CELL: '|' !('|' | '\n' | '\r')*;
+
+// --------------------------------------
+// DocString
+// --------------------------------------
+
+DocString: {DocString}
+	(('"""' EOL text=Text? '"""')
+		| ("'''" EOL text=Text? "'''"))
+	EOL
+;
+
+
+// ----------------------------------------------------------
+//
+// Text Model
+//
+// ----------------------------------------------------------
+
+Title: {Title}
+	value=TITLE_VALUE
+;
+
+TITLE_VALUE returns ecore::EString:
+	TEXT_LITERAL+
+;
+
+Text: {Text}
+	value=TEXT_VALUE
+;
+
+TEXT_VALUE returns ecore::EString:
+	(TEXT_LITERAL TEXT_LITERAL* EOL)+
+;
+
+TEXT_LITERAL: WORD
+	| NUMBER
+	| STRING
+	| PUNCTUATION
+	| ANY_OTHER
+;
+
+terminal NUMBER returns ecore::EDouble:
+    '-'? ('0'..'9')+ ('.' ('0'..'9')+)?
+;
+ 
+terminal STRING returns ecore::EString:
+    '"' ( '\\'('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\') | !('\\'|'"') )* '"' 
+	    | "'" ( '\\'('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\') | !('\\'|"'") )* "'"
+;
+
+terminal WORD: 
+	(LETTER | DIGIT)
+	(LETTER | DIGIT | '_' | '-' | '.' )*
+;
+
+terminal SL_COMMENT: 
+	'#' !('\n' | '\r')* EOL
+;
+
+terminal PUNCTUATION: ASCII_SYMBOLS 
+	| '...'
+;
+
+terminal EOL: ('\r'? '\n')+ WS*;
+
+terminal WS: (SPACE | '\t');
+
+terminal ANY_OTHER: .;
+
+
+// ----------------------------------------------------------
+//
+// Unicode Ranges
+//
+// ----------------------------------------------------------
+
+terminal fragment SPACE: ASCII_SPACE;
+
+terminal fragment DIGIT: ASCII_DIGIT;
+
+terminal fragment LETTER: LATIN_ALPHABET;
+
+// Basic Latin
+////
+
+terminal fragment ASCII_SPACE: '\u0020';
+
+terminal fragment ASCII_DIGIT: ('\u0030'..'\u0039');
+
+// all ascii chars other than letters, digits, space, or control codes
+terminal fragment ASCII_SYMBOLS: ('\u0021'..'\u002F')
+	| ('\u003A'..'\u0040')
+	| ('\u005B'..'\u0060')
+	| ('\u007B'..'\u007E')
+;
+
+terminal fragment LATIN_ALPHABET: ('\u0041'..'\u005A')
+	| ('\u0061'..'\u007A')
+;
