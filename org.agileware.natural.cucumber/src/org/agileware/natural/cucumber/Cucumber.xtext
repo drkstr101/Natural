@@ -212,7 +212,8 @@ terminal PUNCTUATION: ASCII_SYMBOLS
 	| '...'
 ;
 
-terminal EOL: ('\r'? '\n')+ WS*;
+terminal EOL: NL+ WS*;
+terminal NL: ('\r'? '\n');
 
 terminal WS: (SPACE | '\t');
 
