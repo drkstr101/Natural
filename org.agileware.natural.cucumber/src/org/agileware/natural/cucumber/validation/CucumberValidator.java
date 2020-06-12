@@ -11,7 +11,7 @@ import static org.agileware.natural.cucumber.validation.CucumberIssueCodes.MISSI
 import static org.agileware.natural.cucumber.validation.CucumberIssueCodes.MISSING_STEPS;
 import static org.agileware.natural.cucumber.validation.CucumberIssueCodes.MISSING_TITLE;
 
-import org.agileware.natural.core.stepmatcher.IStepMatcher;
+import org.agileware.natural.common.stepmatcher.IStepMatcher;
 import org.agileware.natural.cucumber.cucumber.AbstractScenario;
 import org.agileware.natural.cucumber.cucumber.Background;
 import org.agileware.natural.cucumber.cucumber.Feature;

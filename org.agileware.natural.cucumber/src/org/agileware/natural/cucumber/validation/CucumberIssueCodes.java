@@ -1,6 +1,6 @@
 package org.agileware.natural.cucumber.validation;
 
-import org.agileware.natural.core.validation.IssueCode;
+import org.agileware.natural.common.validation.IssueCode;
 
 public class CucumberIssueCodes {
 

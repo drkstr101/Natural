@@ -1,4 +1,4 @@
-package org.agileware.natural.core.validation;
+package org.agileware.natural.common.validation;
 
 import java.util.Formatter;
 import java.util.Locale;

@@ -6,7 +6,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package org.agileware.natural.core.formatting2;
+package org.agileware.natural.common.formatting2;
 
 /**
  * Implementation {@link CharSequence} that is tailored to line-per-line processing of text

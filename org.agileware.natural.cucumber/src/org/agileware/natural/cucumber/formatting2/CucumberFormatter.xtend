@@ -4,7 +4,7 @@
 package org.agileware.natural.cucumber.formatting2
 
 import com.google.inject.Inject
-import org.agileware.natural.core.formatting2.NewlineCondenser
+import org.agileware.natural.common.formatting2.NewlineCondenser
 import org.agileware.natural.cucumber.cucumber.Background
 import org.agileware.natural.cucumber.cucumber.DocString
 import org.agileware.natural.cucumber.cucumber.Example

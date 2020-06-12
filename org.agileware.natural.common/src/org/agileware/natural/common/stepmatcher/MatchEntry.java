@@ -1,4 +1,4 @@
-package org.agileware.natural.core.stepmatcher;
+package org.agileware.natural.common.stepmatcher;
 
 public class MatchEntry {
 

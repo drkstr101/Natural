@@ -3,10 +3,10 @@
  */
 package org.agileware.natural.cucumber;
 
-import org.agileware.natural.core.stepmatcher.DefaultAnnotationDescriptor;
-import org.agileware.natural.core.stepmatcher.DefaultStepMatcher;
-import org.agileware.natural.core.stepmatcher.IAnnotationDescriptor;
-import org.agileware.natural.core.stepmatcher.IStepMatcher;
+import org.agileware.natural.common.stepmatcher.DefaultAnnotationDescriptor;
+import org.agileware.natural.common.stepmatcher.DefaultStepMatcher;
+import org.agileware.natural.common.stepmatcher.IAnnotationDescriptor;
+import org.agileware.natural.common.stepmatcher.IStepMatcher;
 
 /**
  * Use this class to register components to be used at runtime / without the Equinox extension registry.

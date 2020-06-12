@@ -21,8 +21,8 @@
 		<additionalTestArguments></additionalTestArguments>
 	</properties>
 	<modules>
-		<module>org.agileware.natural.core</module>
-		<module>org.agileware.natural.core.feature</module>
+		<module>org.agileware.natural.common</module>
+		<module>org.agileware.natural.common.feature</module>
 		<module>org.agileware.natural.cucumber</module>
 		<module>org.agileware.natural.cucumber.ide</module>
 		<module>org.agileware.natural.cucumber.ui</module>

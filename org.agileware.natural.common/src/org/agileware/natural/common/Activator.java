@@ -1,4 +1,4 @@
-package org.agileware.natural.core;
+package org.agileware.natural.common;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

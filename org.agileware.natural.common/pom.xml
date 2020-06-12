@@ -6,10 +6,17 @@
 		<artifactId>Natural</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>org.agileware.natural.core.feature</artifactId>
-	<packaging>eclipse-feature</packaging>
+	<artifactId>org.agileware.natural.common</artifactId>
+	<packaging>eclipse-plugin</packaging>
 
+	<build>
+		<plugins>
 
-	<dependencies>
-	</dependencies>
+			<plugin>
+				<groupId>org.eclipse.xtend</groupId>
+				<artifactId>xtend-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
 </project>
