@@ -36,15 +36,18 @@ public class SemanticHighlightingCalculator implements ISemanticHighlightingCalc
 			return;
 		}
 
+		provideHighlightingForMeta(feature.getMeta(), acceptor);
+		
 		if (feature.getBackground() != null) {
 			provideHighlightingForMeta(feature.getBackground().getMeta(), acceptor);
 			provideHighlightingForSteps(feature.getBackground().getSteps(), acceptor);
 		}
-		for (AbstractScenario child : feature.getScenarios()) {
-			provideHighlightingForMeta(feature.getBackground().getMeta(), acceptor);
-			provideHighlightingForSteps(child.getSteps(), acceptor);
-			if (child instanceof ScenarioOutline) {
-				provideHighlightingForExamples(((ScenarioOutline) child).getExamples(), acceptor);
+		
+		for (AbstractScenario scenario : feature.getScenarios()) {
+			provideHighlightingForMeta(scenario.getMeta(), acceptor);
+			provideHighlightingForSteps(scenario.getSteps(), acceptor);
+			if (scenario instanceof ScenarioOutline) {
+				provideHighlightingForExamples(((ScenarioOutline) scenario).getExamples(), acceptor);
 			}
 		}
 	}
@@ -75,6 +78,7 @@ public class SemanticHighlightingCalculator implements ISemanticHighlightingCalc
 	 */
 	private void provideHighlightingForExamples(EList<Example> examples, IHighlightedPositionAcceptor acceptor) {
 		for (Example example : examples) {
+			provideHighlightingForMeta(example.getMeta(), acceptor);
 			provideHighlightingForTable(example.getTable(), acceptor);
 		}
 	}
