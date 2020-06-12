@@ -8,11 +8,11 @@ import org.eclipse.xtext.ui.editor.utils.TextStyle;
 
 public class HighlightingConfiguration implements IHighlightingConfiguration {
 
-	public static final String STEP_KEYWORD = "stepCondition";
-	public static final String META_TAG = "tag";
-	public static final String TABLE = "table";
-	public static final String PLACEHOLDER = "placeholder";
-	public static final String DOC_STRING = "docstring";
+	public static final String STEP_KEYWORD_ID = "stepKeyword";
+	public static final String META_TAG_ID = "tag";
+	public static final String TABLE_ID = "table";
+	public static final String PLACEHOLDER_ID = "placeholder";
+	public static final String DOC_STRING_ID = "docstring";
 	public static final String KEYWORD_ID = "keyword";
 	public static final String COMMENT_ID = "comment";
 	public static final String STRING_ID = "string";
@@ -28,23 +28,21 @@ public class HighlightingConfiguration implements IHighlightingConfiguration {
 		acceptor.acceptDefaultHighlighting(DEFAULT_ID, "Default", defaultTextStyle());
 		acceptor.acceptDefaultHighlighting(INVALID_TOKEN_ID, "Invalid Symbol", errorTextStyle());
 		// Gherkin
-		acceptor.acceptDefaultHighlighting(STEP_KEYWORD, "Step Condition", stepKeywordTextStyle());
-		acceptor.acceptDefaultHighlighting(META_TAG, "Tag", metaTagTextStyle());
-		acceptor.acceptDefaultHighlighting(TABLE, "Table", numberTextStyle());
-		acceptor.acceptDefaultHighlighting(PLACEHOLDER, "Placeholder", metaTagTextStyle());
-		acceptor.acceptDefaultHighlighting(DOC_STRING, "Doc String", numberTextStyle());
+		acceptor.acceptDefaultHighlighting(STEP_KEYWORD_ID, "Step Condition", stepKeywordTextStyle());
+		acceptor.acceptDefaultHighlighting(META_TAG_ID, "Tag", metaTagTextStyle());
+		acceptor.acceptDefaultHighlighting(TABLE_ID, "Table", numberTextStyle());
+		acceptor.acceptDefaultHighlighting(PLACEHOLDER_ID, "Placeholder", metaTagTextStyle());
+		acceptor.acceptDefaultHighlighting(DOC_STRING_ID, "Doc String", numberTextStyle());
 	}
 
 	public TextStyle defaultTextStyle() {
 		TextStyle textStyle = new TextStyle();
-		// textStyle.setBackgroundColor(new RGB(255, 255, 255));
 		textStyle.setColor(new RGB(0, 0, 0));
 		return textStyle;
 	}
 
 	public TextStyle errorTextStyle() {
 		TextStyle textStyle = defaultTextStyle().copy();
-		// textStyle.setColor(new RGB(255, 0, 0));
 		return textStyle;
 	}
 
