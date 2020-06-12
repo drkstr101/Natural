@@ -96,7 +96,7 @@ public class CucumberLabelProvider extends DefaultEObjectLabelProvider {
 	}
 
 	String text(Meta model) {
-		return "Tags";
+		return "Meta";
 	}
 
 	String text(MetaTag model) {
