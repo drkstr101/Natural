@@ -8,7 +8,11 @@
 	</parent>
 	<artifactId>org.agileware.natural.cucumber.tests</artifactId>
 	<packaging>eclipse-test-plugin</packaging>
+<<<<<<< beta
 	<version>2.0.0-SNAPSHOT</version>
+=======
+	<version>1.4.0-SNAPSHOT</version>
+>>>>>>> a80984d version bump
 
 	<build>
 		<plugins>
