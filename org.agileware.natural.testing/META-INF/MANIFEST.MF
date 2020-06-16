@@ -9,6 +9,7 @@ Export-Package: org.agileware.natural.testing;
   uses:="org.eclipse.xtext.testing.util,
    com.google.inject,
    org.eclipse.xtext.testing.formatter,
+   org.eclipse.xtext.testing.validation,
    org.hamcrest",
  org.hamcrest;
   uses:="org.hamcrest.internal,

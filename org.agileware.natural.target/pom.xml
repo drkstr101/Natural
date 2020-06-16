@@ -9,7 +9,6 @@
 	<artifactId>org.agileware.natural.target</artifactId>
 	<packaging>eclipse-target-definition</packaging>
 
-
 	<dependencies>
 	</dependencies>
 </project>
