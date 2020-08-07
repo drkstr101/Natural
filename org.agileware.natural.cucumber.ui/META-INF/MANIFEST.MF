@@ -8,6 +8,7 @@ Bundle-SymbolicName: org.agileware.natural.cucumber.ui; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.agileware.natural.cucumber,
  org.agileware.natural.cucumber.ide,
+ org.agileware.natural.lang.ui,
  org.eclipse.xtext.ui,
  org.eclipse.xtext.ui.shared,
  org.eclipse.xtext.ui.codetemplates.ui,

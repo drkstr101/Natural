@@ -1,6 +1,6 @@
 package org.agileware.natural.cucumber.tests
 
-import org.agileware.natural.cucumber.cucumber.Feature
+import org.agileware.natural.cucumber.cucumber.CucumberModel
 import org.agileware.natural.testing.AbstractFormatterTest
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
@@ -11,7 +11,7 @@ import static org.agileware.natural.cucumber.tests.Constants.EXAMPLE_FEATURE
 
 @RunWith(XtextRunner)
 @InjectWith(CucumberInjectorProvider)
-class CucumberFormatterTest extends AbstractFormatterTest<Feature> {
+class CucumberFormatterTest extends AbstractFormatterTest<CucumberModel> {
 
 	@Test
 	def void preserveValidFormatting() {
@@ -227,8 +227,7 @@ class CucumberFormatterTest extends AbstractFormatterTest<Feature> {
 		'''
 		assertFormatted(toBeFormatted, expectation)
 	}
-	
-		
+
 	@Test
 	def void indentDocString_01() {
 		// SHOULD  DocString to column 1
@@ -256,7 +255,7 @@ class CucumberFormatterTest extends AbstractFormatterTest<Feature> {
 		'''
 		assertFormatted(toBeFormatted, expectation)
 	}
-	
+
 	@Test
 	def void indentStepInterior_01() {
 		// MUST preserve existing formatting
@@ -282,8 +281,7 @@ class CucumberFormatterTest extends AbstractFormatterTest<Feature> {
 		'''
 		assertFormatted(toBeFormatted)
 	}
-	
-	
+
 	@Test
 	def void indentStepInterior_02() {
 		// SHOULD align Table and DocString to column 1

@@ -6,167 +6,77 @@ package org.agileware.natural.cucumber.formatting2
 import com.google.inject.Inject
 import org.agileware.natural.cucumber.cucumber.AbstractScenario
 import org.agileware.natural.cucumber.cucumber.Background
+import org.agileware.natural.cucumber.cucumber.CucumberModel
 import org.agileware.natural.cucumber.cucumber.DocString
 import org.agileware.natural.cucumber.cucumber.Example
 import org.agileware.natural.cucumber.cucumber.Feature
 import org.agileware.natural.cucumber.cucumber.Scenario
 import org.agileware.natural.cucumber.cucumber.ScenarioOutline
 import org.agileware.natural.cucumber.cucumber.Step
-import org.agileware.natural.cucumber.cucumber.Table
-import org.agileware.natural.cucumber.cucumber.Tag
 import org.agileware.natural.cucumber.services.CucumberGrammarAccess
+import org.agileware.natural.lang.model.Table
 import org.eclipse.xtext.formatting2.AbstractFormatter2
 import org.eclipse.xtext.formatting2.IFormattableDocument
 import org.eclipse.xtext.formatting2.regionaccess.ISemanticRegion
 
 class CucumberFormatter extends AbstractFormatter2 {
 
+	// note: format extension methods SHOULD
+	//       be null-safe, hence the lack of guards
+	///////////////////////////////////////////////
+	
 	@Inject extension CucumberGrammarAccess cucumberGrammarAccess
 
-	def dispatch void format(Feature model, extension IFormattableDocument doc) {
+	def dispatch void format(CucumberModel model, extension IFormattableDocument doc) {
 		println(textRegionAccess)
-
-		// format tags
-		for (t : model.tags) {
-			t.format()
-		}
-
-		// format background
-		model.background.format()
-
-		// format scenarios
-		for (s : model.scenarios) {
-			s.format()
-		}
-
+		model.document.format()
 		println(doc)
 	}
 
-	def dispatch void format(Background model, extension IFormattableDocument doc) {
-		// format tags
-		for (t : model.tags) {
-			t.format()
+	def dispatch void format(Feature model, extension IFormattableDocument doc) {
+		model.meta.format()
+		model.narrative.format()
+		for (s : model.scenarios) {
+			s.format()
 		}
-		
-		// align keyword to column 0
-		model.regionFor
-				.keyword(backgroundAccess.backgroundKeyword_1)
-				.prepend[noIndentation]
+	}
 
-		// Indent interior
-		val begin = model.regionFor.ruleCallTo(EOLRule)
-		val end = endRegionFor(model, doc)
-		interior(begin, end)[indent]
-
-		// format steps
+	def dispatch void format(Background model, extension IFormattableDocument doc) {
+		model.meta.format()
+		model.narrative.format()
 		for (s : model.steps) {
-			s.prepend[indent]
 			s.format()
 		}
 	}
 
 	def dispatch void format(Scenario model, extension IFormattableDocument doc) {
-		// format tags
-		for (t : model.tags) {
-			t.format()
-		}
-		
-		// align keyword to column 0
-		model.regionFor
-				.keyword(scenarioAccess.scenarioKeyword_1)
-				.prepend[noIndentation]
-
-		// Indent interior
-		val begin = model.regionFor.ruleCallTo(EOLRule)
-		val end = endRegionFor(model, doc)
-		interior(begin, end)[indent]
-
-		// format steps
+		model.meta.format()
+		model.narrative.format()
 		for (s : model.steps) {
-			s.prepend[indent]
 			s.format()
 		}
 	}
 
 	def dispatch void format(ScenarioOutline model, extension IFormattableDocument doc) {
-		// format tags
-		for (t : model.tags) {
-			t.format()
-		}
-		
-		// align keyword to column 0
-		model.regionFor
-				.keyword(scenarioOutlineAccess.scenarioKeyword_1)
-				.prepend[noIndentation]
-
-		// Indent interior
-		val begin = model.regionFor.ruleCallTo(EOLRule)
-		val end = endRegionFor(model, doc)
-		interior(begin, end)[indent]
-
-		// format steps
+		model.meta.format()
+		model.narrative.format()
 		for (s : model.steps) {
-			s.prepend[indent]
 			s.format()
 		}
-
-		// format examples
 		for (e : model.examples) {
-			e.prepend[indent]
 			e.format()
 		}
 	}
 
 	def dispatch void format(Example model, extension IFormattableDocument doc) {
-		// format tags
-		for (t : model.tags) {
-			t.format()
-		}
-
-		// TODO this is just a hacky work-around until we can figure
-		// why having tags changes the indentation behavior of the 
-		// keyword
-		if (!model.tags.isEmpty()) {
-			val region = model.regionFor.keyword(exampleAccess.examplesKeyword_1)
-			region.prepend[indent]
-		}
-
-		// format table
-		model.table.rows.forEach[prepend[indent]]
+		model.meta.format()
+		model.narrative.format()
 		model.table.format()
 	}
 
 	def dispatch void format(Step model, extension IFormattableDocument doc) {
-		// TODO cleanup keyword/description
-		// format table
-		if (model.table !== null) {
-			model.table.rows.forEach[prepend[indent]]
-			model.table.format()
-		}
-
-		// format code
-		// TODO proper Text model support (see branch scratch/textmodel)
-		if (model.code !== null) {
-			val open = docStringAccess.quotationMarkQuotationMarkQuotationMarkKeyword_1_0
-			val close = docStringAccess.quotationMarkQuotationMarkQuotationMarkKeyword_1_3
-			
-			model.code.regionFor.keyword(open).prepend[indent]
-			model.code.text.lines.forEach[prepend[indent]]
-			model.code.regionFor.keyword(close).prepend[indent]
-			model.code.format()
-		}
-	}
-
-	def dispatch void format(Table model, extension IFormattableDocument doc) {
-		// TODO...
-	}
-
-	def dispatch void format(DocString model, extension IFormattableDocument doc) {
-		// TODO...
-	}
-
-	def dispatch void format(Tag model, extension IFormattableDocument doc) {
-		// TODO...
+		model.text.format()
+		model.table.format()
 	}
 
 	// ----------------------------------------------------------
@@ -186,11 +96,9 @@ class CucumberFormatter extends AbstractFormatter2 {
 	protected def ISemanticRegion endRegionFor(Feature model, extension IFormattableDocument doc) {
 		if (!model.scenarios.isEmpty()) {
 			return endRegionFor(model.scenarios.last, doc)
-		} else if (model.background !== null) {
-			return endRegionFor(model.background, doc)
 		}
 
-		return model.regionFor.ruleCallTo(EOLRule)
+		return model.regionFor.ruleCallTo(NLRule)
 	}
 
 	/**
@@ -205,7 +113,7 @@ class CucumberFormatter extends AbstractFormatter2 {
 			return endRegionFor(model.steps.last, doc)
 		}
 
-		return model.regionFor.ruleCallTo(EOLRule)
+		return model.regionFor.ruleCallTo(NLRule)
 	}
 
 	/**
@@ -223,7 +131,7 @@ class CucumberFormatter extends AbstractFormatter2 {
 			return endRegionFor(model.steps.last, doc)
 		}
 
-		return model.regionFor.ruleCallTo(EOLRule)
+		return model.regionFor.ruleCallTo(NLRule)
 	}
 
 	/**
@@ -238,7 +146,7 @@ class CucumberFormatter extends AbstractFormatter2 {
 			return endRegionFor(model.table, doc)
 		}
 
-		return model.regionFor.ruleCallTo(EOLRule)
+		return model.regionFor.ruleCallTo(NLRule)
 	}
 
 	/**
@@ -249,13 +157,13 @@ class CucumberFormatter extends AbstractFormatter2 {
 	 * 2. The EOL rule after `description`
 	 */
 	protected def ISemanticRegion endRegionFor(Step model, extension IFormattableDocument doc) {
-		if (model.code !== null) {
-			return endRegionFor(model.code, doc)
+		if (model.text !== null) {
+			return endRegionFor(model.text, doc)
 		} else if (model.table !== null) {
 			return endRegionFor(model.table, doc)
 		}
 
-		return model.regionFor.ruleCallTo(EOLRule)
+		return model.regionFor.ruleCallTo(NLRule)
 	}
 
 	/**
@@ -265,7 +173,7 @@ class CucumberFormatter extends AbstractFormatter2 {
 	 * 1. The EOLRule at the end of the element
 	 */
 	protected def ISemanticRegion endRegionFor(DocString model, extension IFormattableDocument doc) {
-		return model.regionFor.ruleCall(docStringAccess.EOLTerminalRuleCall_2)
+		return model.regionFor.ruleCall(docStringAccess.NLTerminalRuleCall_2)
 	}
 
 	/**
@@ -275,6 +183,6 @@ class CucumberFormatter extends AbstractFormatter2 {
 	 * 1. The EOLRule at the end of the table
 	 */
 	protected def ISemanticRegion endRegionFor(Table model, extension IFormattableDocument doc) {
-		return model.rows.last.regionFor.ruleCallTo(EOLRule)
+		return model.regionFor.ruleCallTo(NLRule)
 	}
 }

@@ -21,6 +21,10 @@ class NaturalSerializer {
 	
 	def String serialize(Document model) '''
 		# language: en
+		«IF model.meta !== null»
+			«serialize(model.meta)»
+		«ENDIF»
+		Document: «model.title»
 		«FOR s : model.sections»
 			«serialize(s)»
 		«ENDFOR»
