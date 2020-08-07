@@ -8,7 +8,7 @@ generate model "http://www.agileware.org/natural/lang"
  * 
  */
 NaturalModel: {NaturalModel}
-	EOL?
+	BLANK_SPACE?
 	document=Document?
 ;
 
@@ -16,20 +16,20 @@ NaturalModel: {NaturalModel}
  * 
  */
 Document: {Document}
-	(meta=Meta EOL)?
-	'Document:' title=Text?
-	(EOL narrative=Narrative)?
-	(EOL sections+=Section)*
-	EOL?
+	(meta=Meta BLANK_SPACE?)?
+	'Document:' title=Text? NL
+	(BLANK_SPACE? narrative=Narrative)?
+	(BLANK_SPACE? sections+=Section)*
+	BLANK_SPACE?
 ;
 
 /**
  * 
  */	
 Section: {Section}
-	(meta=Meta EOL)?
-	'Section:' title=Text?
-	(EOL narrative=Narrative)?
+	(meta=Meta BLANK_SPACE?)?
+	'Section:' title=Text? NL
+	(BLANK_SPACE? narrative=Narrative)?
 ;
 
 /**
@@ -37,11 +37,10 @@ Section: {Section}
  */
 Narrative: {Narrative}
    sections+=NarrativeSection
-     (EOL sections+=NarrativeSection)*
+     (BLANK_SPACE sections+=NarrativeSection)*
 ;
 
 NarrativeSection: Paragraph
-	| DocString
 	| Table
 ;
 
@@ -50,7 +49,8 @@ NarrativeSection: Paragraph
  */
 Meta: {Meta}
 	tags+=Tag
-	  (EOL? tags+=Tag)*
+	  (BLANK_SPACE? tags+=Tag)*
+	NL
 ;
 
 /**
@@ -87,35 +87,15 @@ terminal TABLE_CELL: '|' !('|' | '\n' | '\r')*;
 /**
  * 
  */
-DocString: {DocString}
-	('"""' contents=DocStringContent '"""')
-	  | ("'''" contents=DocStringContent "'''")
-;
-
-/**
- * 
- */
-DocStringContent: {DocStringContent}
-	(EOL lines+=Text)*
-	EOL
-;
-
-/**
- * 
- */
 Paragraph: {Paragraph}
-    lines+=TextLine+
+    text=MultilineText
 ;
 
 /**
  * 
  */
-TextLine: {TextLine}
-    value=Text NL
-;
-
-FilePath returns ecore::EString:
-	(WORD | './' | '../' | '/') WORD ('/' WORD)*
+MultilineText returns ecore::EString:
+	(TEXT_LITERAL+ NL)+
 ;
 
 /**
@@ -154,7 +134,7 @@ terminal PUNCTUATION: ASCII_SYMBOLS
 	| '...'
 ;
 
-EOL: NL+ WS*;
+BLANK_SPACE: NL+ WS*;
 terminal NL: ('\r'? '\n') | EOF;
 
 terminal WS: (SPACE | '\t');

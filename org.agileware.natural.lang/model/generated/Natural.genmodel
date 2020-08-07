@@ -40,17 +40,8 @@
     <genClasses ecoreClass="Natural.ecore#//TableCol">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Natural.ecore#//TableCol/cell"/>
     </genClasses>
-    <genClasses ecoreClass="Natural.ecore#//DocString">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Natural.ecore#//DocString/contents"/>
-    </genClasses>
-    <genClasses ecoreClass="Natural.ecore#//DocStringContent">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Natural.ecore#//DocStringContent/lines"/>
-    </genClasses>
     <genClasses ecoreClass="Natural.ecore#//Paragraph">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Natural.ecore#//Paragraph/lines"/>
-    </genClasses>
-    <genClasses ecoreClass="Natural.ecore#//TextLine">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Natural.ecore#//TextLine/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Natural.ecore#//Paragraph/text"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

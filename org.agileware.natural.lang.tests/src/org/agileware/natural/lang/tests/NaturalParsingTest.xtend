@@ -4,7 +4,6 @@
 package org.agileware.natural.lang.tests
 
 import com.google.inject.Inject
-import org.agileware.natural.lang.model.DocString
 import org.agileware.natural.lang.model.NaturalModel
 import org.agileware.natural.lang.model.Table
 import org.agileware.natural.lang.serializer.NaturalSerializer
@@ -57,7 +56,7 @@ class NaturalParsingTest extends AbstractExamplesTest<NaturalModel> {
 		assertThat(doc, notNullValue())
 		assertThat(doc.narrative, notNullValue())
 		assertThat(doc.narrative.sections, hasSize(1))
-		assertThat(serializer.serialize(doc.narrative), equalTo('''
+		assertThat(serializer.serialize(doc.narrative), equalToCompressingWhiteSpace('''
 			The quick brown fox
 			Jumps over the lazy dog
 		'''))
@@ -103,10 +102,6 @@ class NaturalParsingTest extends AbstractExamplesTest<NaturalModel> {
 			Jumps over the lazy dog
 		'''))
 		
-		val text = doc.narrative.sections.get(1) as DocString
-		assertThat(text.contents, notNullValue())
-		assertThat(text.contents.lines, hasSize(1))
-		
 		val table = doc.narrative.sections.get(2) as Table
 		assertThat(table.rows, hasSize(3))
 	}
@@ -140,7 +135,7 @@ class NaturalParsingTest extends AbstractExamplesTest<NaturalModel> {
 		assertThat(doc.meta.tags, hasSize(1))
 		assertThat(doc.meta.tags.get(0).id, equalTo("title"))
 		assertThat(doc.meta.tags.get(0).value, equalTo("Hello, Meta Tags!"))
-		assertThat(serializer.serialize(doc.narrative), equalTo('''
+		assertThat(serializer.serialize(doc.narrative), equalToCompressingWhiteSpace('''
 			The quick brown fox
 			Jumps over the lazy dog
 		'''))

@@ -43,19 +43,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="TableCol">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="cell" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="DocString" eSuperTypes="#//NarrativeSection">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="contents" eType="#//DocStringContent"
-        containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="DocStringContent">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="lines" unique="false" upperBound="-1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Paragraph" eSuperTypes="#//NarrativeSection">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="lines" upperBound="-1"
-        eType="#//TextLine" containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="TextLine">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="text" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
 </ecore:EPackage>

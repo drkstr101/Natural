@@ -1,6 +1,5 @@
 package org.agileware.natural.lang.serializer
 
-import org.agileware.natural.lang.model.DocString
 import org.agileware.natural.lang.model.Document
 import org.agileware.natural.lang.model.Meta
 import org.agileware.natural.lang.model.Narrative
@@ -42,7 +41,6 @@ class NaturalSerializer {
 	
 	def String serialize(NarrativeSection model) {
 		if(model instanceof Paragraph) return serialize(model as Paragraph)
-		else if(model instanceof DocString) return serialize(model as DocString)
 		else if(model instanceof Table) return serialize(model as Table)
 		
 		return "\n"
@@ -67,23 +65,7 @@ class NaturalSerializer {
 	}
 
 	def String serialize(Paragraph model) '''
-		«FOR l : model.lines»
-			«l.value»
-		«ENDFOR»
-	'''
-
-	/**
-	 * TODO whitespace must be preserved in String contents!
-	 *      We should use some kind of ITextReplacer implementation to
-	 *      handle multi-line string formatting rather than using a
-	 *      line-based text model in the AST.
-	 */
-	def String serialize(DocString model) '''
-		"""
-		«FOR l : model.contents.lines»
-			«l»
-		«ENDFOR»
-		"""
+		«model.text»
 	'''
 
 	def String serialize(Table model) '''
