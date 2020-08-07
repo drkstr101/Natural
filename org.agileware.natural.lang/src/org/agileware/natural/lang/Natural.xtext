@@ -1,0 +1,188 @@
+grammar org.agileware.natural.lang.Natural hidden(WS, SL_COMMENT)
+
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
+
+generate model "http://www.agileware.org/natural/lang"
+
+/**
+ * 
+ */
+NaturalModel: {NaturalModel}
+	EOL?
+	document=Document?
+;
+
+/**
+ * 
+ */
+Document: {Document}
+	(meta=Meta EOL)?
+	'Document:' title=Text?
+	(EOL narrative=Narrative)?
+	(EOL sections+=Section)*
+	EOL?
+;
+
+/**
+ * 
+ */	
+Section: {Section}
+	(meta=Meta EOL)?
+	'Section:' title=Text?
+	(EOL narrative=Narrative)?
+;
+
+/**
+ * 
+ */
+Narrative: {Narrative}
+   sections+=NarrativeSection
+     (EOL sections+=NarrativeSection)*
+;
+
+NarrativeSection: Paragraph
+	| DocString
+	| Table
+;
+
+/**
+ * 
+ */
+Meta: {Meta}
+	tags+=Tag
+	  (EOL? tags+=Tag)*
+;
+
+/**
+ * 
+ */
+Tag: {Tag}
+	'@' id=WORD
+	(':' value=Text)?
+;
+
+/**
+ * 
+ */
+Table: {Table}
+	rows+=TableRow+
+;
+
+/**
+ * 
+ */
+TableRow: {TableRow}
+	cols+=TableCol+ '|' NL
+;
+
+/**
+ * 
+ */
+TableCol: {TableCol}
+	cell=TABLE_CELL
+;
+
+terminal TABLE_CELL: '|' !('|' | '\n' | '\r')*;
+
+/**
+ * 
+ */
+DocString: {DocString}
+	('"""' contents=DocStringContent '"""')
+	  | ("'''" contents=DocStringContent "'''")
+;
+
+/**
+ * 
+ */
+DocStringContent: {DocStringContent}
+	(EOL lines+=Text)*
+	EOL
+;
+
+/**
+ * 
+ */
+Paragraph: {Paragraph}
+    lines+=TextLine+
+;
+
+/**
+ * 
+ */
+TextLine: {TextLine}
+    value=Text NL
+;
+
+FilePath returns ecore::EString:
+	(WORD | './' | '../' | '/') WORD ('/' WORD)*
+;
+
+/**
+ * 
+ */
+Text returns ecore::EString:
+	TEXT_LITERAL+
+;
+
+TEXT_LITERAL: WORD
+	| NUMBER
+	| STRING
+	| PUNCTUATION
+	| ANY_OTHER
+;
+
+terminal NUMBER returns ecore::EDouble:
+    '-'? ('0'..'9')+ ('.' ('0'..'9')+)?
+;
+ 
+terminal STRING returns ecore::EString:
+    '"' ( '\\'('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\') | !('\\'|'"') )* '"' 
+	    | "'" ( '\\'('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\') | !('\\'|"'") )* "'"
+;
+
+terminal WORD: 
+	(LETTER | DIGIT)
+	(LETTER | DIGIT | '_' | '-' | '.' )*
+;
+
+terminal SL_COMMENT: 
+	'#' !('\n' | '\r')* NL
+;
+
+terminal PUNCTUATION: ASCII_SYMBOLS 
+	| '...'
+;
+
+EOL: NL+ WS*;
+terminal NL: ('\r'? '\n') | EOF;
+
+terminal WS: (SPACE | '\t');
+
+terminal ANY_OTHER: .;
+
+// Character Ranges
+////
+
+terminal fragment SPACE: ASCII_SPACE;
+terminal fragment DIGIT: ASCII_DIGIT;
+terminal fragment LETTER: LATIN_ALPHABET;
+
+
+// Basic Latin
+////
+
+terminal fragment ASCII_SPACE: '\u0020';
+
+terminal fragment ASCII_DIGIT: ('\u0030'..'\u0039');
+
+// all ascii chars other than letters, digits, space, or control codes
+terminal fragment ASCII_SYMBOLS: ('\u0021'..'\u002F')
+	| ('\u003A'..'\u0040')
+	| ('\u005B'..'\u0060')
+	| ('\u007B'..'\u007E')
+;
+
+terminal fragment LATIN_ALPHABET: ('\u0041'..'\u005A')
+	| ('\u0061'..'\u007A')
+;
