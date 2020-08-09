@@ -7,6 +7,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({ 
 		CucumberExamplesTest.class, 
 		CucumberParsingTest.class, 
-		CucumberFormatterTest.class 
+		CucumberFormatterTest.class,
+		CucumberValidatorTest.class
 })
 public class CucumberTestSuite {}
