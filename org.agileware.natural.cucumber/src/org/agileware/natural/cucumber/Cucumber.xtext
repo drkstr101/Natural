@@ -47,22 +47,22 @@ Background: {Background}
 	(meta=Meta BLANK_SPACE?)?
 	'Background:' title=Text? NL
 	(BLANK_SPACE? narrative=Narrative)?
-	steps+=Step+
+	(BLANK_SPACE? steps+=Step)*
 ;
 
 Scenario: {Scenario}
 	(meta=Meta BLANK_SPACE?)?
 	'Scenario:' title=Text? NL
 	(BLANK_SPACE? narrative=Narrative)?
-	steps+=Step+
+	(BLANK_SPACE? steps+=Step)*
 ;
 
 ScenarioOutline: {ScenarioOutline}
 	(meta=Meta BLANK_SPACE?)?
 	'Scenario' 'Outline:' title=Text? NL
 	(BLANK_SPACE? narrative=Narrative)?
-	steps+=Step+
-	examples+=Example+
+	(BLANK_SPACE? steps+=Step)*
+	(BLANK_SPACE? examples+=Example)*
 ;
 
 

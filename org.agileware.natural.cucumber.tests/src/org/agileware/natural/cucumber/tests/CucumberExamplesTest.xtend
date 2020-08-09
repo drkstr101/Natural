@@ -164,7 +164,7 @@ class CucumberExamplesTest extends AbstractExamplesTest<CucumberModel> {
 	}
 
 	@Test
-	def void pathological_03() {
+	def void pathological_02() {
 		assertExampleParses('''
 			# language: en
 			Feature: Two-Byte Characters
@@ -180,6 +180,32 @@ class CucumberExamplesTest extends AbstractExamplesTest<CucumberModel> {
 			
 			Scenario:
 			Given a step𝅳𝅴𝅵𝅶𝅷𝅸𝅹𝅺󠀁󠀠󠀡󠀢󠀣󠀤󠀥󠀦󠀧󠀨󠀩󠀪󠀫󠀬󠀭󠀮󠀯󠀰󠀱󠀲󠀳󠀴󠀵󠀶󠀷󠀸󠀹󠀺󠀻󠀼󠀽󠀾󠀿󠁀󠁁󠁂󠁃󠁄󠁅󠁆󠁇󠁈󠁉󠁊󠁋󠁌󠁍󠁎󠁏󠁐󠁑󠁒󠁓󠁔󠁕󠁖󠁗󠁘󠁙󠁚󠁛󠁜󠁝󠁞󠁟󠁠󠁡󠁢󠁣󠁤󠁥󠁦󠁧󠁨󠁩󠁪󠁫󠁬󠁭󠁮󠁯󠁰󠁱󠁲󠁳󠁴󠁵󠁶󠁷󠁸󠁹󠁺󠁻󠁼󠁽󠁾󠁿
+		''')
+	}
+
+	@Test
+	def void pathological_03() {
+		assertExampleParses('''
+			# language: en
+		''')
+	}
+
+	@Test
+	def void pathological_04() {
+		assertExampleParses('''
+			# language: en
+			Feature: Hello, World!
+		''')
+	}
+
+	@Test
+	def void pathological_05() {
+		assertExampleParses('''
+			# language: en
+			Feature:
+			Background:
+			Scenario: A
+			Scenario: B
 		''')
 	}
 }
