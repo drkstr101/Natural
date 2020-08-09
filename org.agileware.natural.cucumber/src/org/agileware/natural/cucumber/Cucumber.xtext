@@ -99,7 +99,7 @@ DocString: {DocString}
 ;
 
 
-terminal STEP_KEYWORD: ('Given' | 'When' | 'Then' | 'And' | 'But') (' ' | '\t')+;
+terminal STEP_KEYWORD: ('Given' | 'When' | 'Then' | 'And' | 'But' | '*');
 
-terminal PLACEHOLDER: '<' !('>' | ' ' | '\t' | '\n' | '\r')+ '>';
+terminal PLACEHOLDER: '<' WORD '>';
 	
