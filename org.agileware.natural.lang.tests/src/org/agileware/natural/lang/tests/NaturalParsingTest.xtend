@@ -3,10 +3,7 @@
  */
 package org.agileware.natural.lang.tests
 
-import com.google.inject.Inject
 import org.agileware.natural.lang.model.NaturalModel
-import org.agileware.natural.lang.model.Table
-import org.agileware.natural.lang.serializer.NaturalSerializer
 import org.agileware.natural.testing.AbstractExamplesTest
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
@@ -19,8 +16,6 @@ import static org.hamcrest.Matchers.*
 @RunWith(XtextRunner)
 @InjectWith(NaturalInjectorProvider)
 class NaturalParsingTest extends AbstractExamplesTest<NaturalModel> {
-
-	@Inject NaturalSerializer serializer
 
 	@Test
 	def void documentWithTitle() {
@@ -55,8 +50,7 @@ class NaturalParsingTest extends AbstractExamplesTest<NaturalModel> {
 		val doc = model.document
 		assertThat(doc, notNullValue())
 		assertThat(doc.narrative, notNullValue())
-		assertThat(doc.narrative.sections, hasSize(1))
-		assertThat(serializer.serialize(doc.narrative), equalToCompressingWhiteSpace('''
+		assertThat(doc.narrative.value, equalToCompressingWhiteSpace('''
 			The quick brown fox
 			Jumps over the lazy dog
 		'''))
@@ -87,8 +81,7 @@ class NaturalParsingTest extends AbstractExamplesTest<NaturalModel> {
 		val doc = model.document
 		assertThat(doc, notNullValue())
 		assertThat(doc.narrative, notNullValue())
-		assertThat(doc.narrative.sections, hasSize(4))
-		assertThat(serializer.serialize(doc.narrative), equalToCompressingWhiteSpace('''
+		assertThat(doc.narrative.value, equalToCompressingWhiteSpace('''
 			The quick brown fox
 			
 			"""
@@ -101,9 +94,6 @@ class NaturalParsingTest extends AbstractExamplesTest<NaturalModel> {
 			
 			Jumps over the lazy dog
 		'''))
-		
-		val table = doc.narrative.sections.get(2) as Table
-		assertThat(table.rows, hasSize(3))
 	}
 
 	@Test
@@ -133,9 +123,8 @@ class NaturalParsingTest extends AbstractExamplesTest<NaturalModel> {
 		assertThat(doc.title, nullValue())
 		assertThat(doc.sections, hasSize(2))
 		assertThat(doc.meta.tags, hasSize(1))
-		assertThat(doc.meta.tags.get(0).id, equalTo("title"))
-		assertThat(doc.meta.tags.get(0).value, equalTo("Hello, Meta Tags!"))
-		assertThat(serializer.serialize(doc.narrative), equalToCompressingWhiteSpace('''
+		assertThat(doc.meta.tags.get(0).value, equalTo("@title: Hello, Meta Tags!"))
+		assertThat(doc.narrative.value, equalToCompressingWhiteSpace('''
 			The quick brown fox
 			Jumps over the lazy dog
 		'''))

@@ -54,7 +54,7 @@ public class CucumberValidator extends AbstractCucumberValidator {
 	 */
 	@Check(CheckType.FAST)
 	public void featureTitle(Feature model) {
-		if (Strings.isEmpty(model.getTitle())) {
+		if (model.getTitle() == null) {
 			warning("Feature title is missing", FEATURE__TITLE, ValidationMessageAcceptor.INSIGNIFICANT_INDEX,
 					MISSING_FEATURE_TITLE);
 		}

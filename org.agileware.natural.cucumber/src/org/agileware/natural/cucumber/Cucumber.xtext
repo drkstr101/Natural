@@ -11,95 +11,135 @@ CucumberModel: {CucumberModel}
 	document=Feature?
 ;
 
+/**
+ * 
+ */
 Feature: {Feature}
 	(meta=Meta BLANK_SPACE?)?
-	'Feature:' title=Text? NL
+	'Feature:' title=Title? NL
 	(BLANK_SPACE? narrative=Narrative)?
 	(BLANK_SPACE? scenarios+=AbstractScenario)*
 	BLANK_SPACE?
 ;
 
 /**
- * TODO default grammar element triggers backtracking
- */
-@Override
-Narrative: {Narrative}
-   sections+=Paragraph
-     (BLANK_SPACE sections+=Paragraph)*
-;
-
-/**
  * Base class for Scenario implementations. 
- * A Scenario is any type with the following structure:
+ * An AbstractScenario is any type with the following structure:
  * 
- * tags+=Tag*
- * 'Scenario:'
- * title=Title? EOL+
+ * meta=Meta?
+ * 'Keyword:' title=Title? NL
  * narrative=Narrative?
- * steps+=Step+;
+ * steps+=Step*
  */
 AbstractScenario: Scenario
 	| ScenarioOutline
 	| Background
 ;
 
+/**
+ * 
+ */
 Background: {Background}
 	(meta=Meta BLANK_SPACE?)?
-	'Background:' title=Text? NL
+	'Background:' title=Title? NL
 	(BLANK_SPACE? narrative=Narrative)?
 	(BLANK_SPACE? steps+=Step)*
 ;
 
+/**
+ * 
+ */
 Scenario: {Scenario}
 	(meta=Meta BLANK_SPACE?)?
-	'Scenario:' title=Text? NL
+	'Scenario:' title=Title? NL
 	(BLANK_SPACE? narrative=Narrative)?
 	(BLANK_SPACE? steps+=Step)*
 ;
 
+/**
+ * 
+ */
 ScenarioOutline: {ScenarioOutline}
 	(meta=Meta BLANK_SPACE?)?
-	'Scenario' 'Outline:' title=Text? NL
+	'Scenario' 'Outline:' title=Title? NL
 	(BLANK_SPACE? narrative=Narrative)?
 	(BLANK_SPACE? steps+=Step)*
 	(BLANK_SPACE? examples+=Example)*
 ;
 
-
-Example: {Example}
-	(meta=Meta BLANK_SPACE?)?
-	'Examples:' title=Text? NL
-	(BLANK_SPACE? narrative=Narrative)?
-	table=Table
-;
-
+/**
+ * 
+ */
 Step: {Step}
 	keyword=STEP_KEYWORD
-	description=StepDescription NL
+	description=STEP_DESCRIPTION NL
 	((BLANK_SPACE? table=Table) | (BLANK_SPACE? text=DocString))?
 ;
 
+STEP_DESCRIPTION:
+	(WORD | NUMBER | STRING | PLACEHOLDER | STEP_KEYWORD | TAGNAME)+
+;
+
+terminal STEP_KEYWORD: ('Given' | 'When' | 'Then' | 'And' | 'But' | '*');
+
+terminal PLACEHOLDER: '<' !('>' | ' ' | '\t' | '\n' | '\r')+ '>';
 
 /**
  * 
  */
-StepDescription returns ecore::EString:
-	STEP_DESCRIPTION_LITERAL+
-;
-
-STEP_DESCRIPTION_LITERAL: PLACEHOLDER
-	| TEXT_LITERAL
-;
-
 DocString: {DocString}
-	('"""' NL -> text=MultilineText '"""')
-	// TODO alternate quote support in formatter
-	// | ("'''" NL -> text=Text? "'''")
+	value=DOC_STRING_LITERAL
 	NL
 ;
 
+terminal DOC_STRING_LITERAL: 
+	('"""' -> '"""')
+	  | ("'''" -> "'''")
+;
 
-terminal STEP_KEYWORD: ('Given' | 'When' | 'Then' | 'And' | 'But' | '*');
+/**
+ * 
+ */
+Example: {Example}
+	(meta=Meta BLANK_SPACE?)?
+	'Examples:' title=Title? NL
+	(BLANK_SPACE? narrative=Narrative)?
+	(BLANK_SPACE? table=Table)
+;
 
-terminal PLACEHOLDER: '<' WORD '>';
-	
+
+@Override 
+TITLE_LITERAL:
+	(WORD | NUMBER | STRING | PLACEHOLDER)
+	(WORD | NUMBER | STRING | PLACEHOLDER | STEP_KEYWORD | TAGNAME)*
+;
+
+@Override
+NARRATIVE_LITERAL:
+	(
+		(WORD | NUMBER | STRING | PLACEHOLDER)
+		(WORD | NUMBER | STRING | TAGNAME | TABLE_CELL | PLACEHOLDER | STEP_KEYWORD)*
+		NL
+	)+
+	(
+		NL+
+		(WORD | NUMBER | STRING | PLACEHOLDER)
+		(WORD | NUMBER | STRING | TAGNAME | TABLE_CELL | PLACEHOLDER | STEP_KEYWORD)*
+		NL
+	)*
+;
+
+// Note: We must override so that terminal order is preserved
+@Override
+terminal NUMBER returns ecore::EDouble:
+	'-'?
+	DIGIT+
+	('.' DIGIT+)?
+;
+
+@Override 
+terminal WORD: 
+	!('@' | '|' | ' ' | '\t' | '\n' | '\r')
+	!(' ' | '\t' | '\n' | '\r')*
+;
+

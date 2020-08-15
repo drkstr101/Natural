@@ -17,7 +17,7 @@ NaturalModel: {NaturalModel}
  */
 Document: {Document}
 	(meta=Meta BLANK_SPACE?)?
-	'Document:' title=Text? NL
+	'Document:' title=Title? NL
 	(BLANK_SPACE? narrative=Narrative)?
 	(BLANK_SPACE? sections+=Section)*
 	BLANK_SPACE?
@@ -28,20 +28,8 @@ Document: {Document}
  */	
 Section: {Section}
 	(meta=Meta BLANK_SPACE?)?
-	'Section:' title=Text? NL
+	'Section:' title=Title? NL
 	(BLANK_SPACE? narrative=Narrative)?
-;
-
-/**
- * 
- */
-Narrative: {Narrative}
-   sections+=NarrativeSection
-     (BLANK_SPACE sections+=NarrativeSection)*
-;
-
-NarrativeSection: Paragraph
-	| Table
 ;
 
 /**
@@ -57,8 +45,7 @@ Meta: {Meta}
  * 
  */
 Tag: {Tag}
-	'@' id=WORD
-	(':' value=Text)?
+	value=TAGNAME 
 ;
 
 /**
@@ -79,7 +66,7 @@ TableRow: {TableRow}
  * 
  */
 TableCol: {TableCol}
-	cell=TABLE_CELL
+	value=TABLE_CELL
 ;
 
 terminal TABLE_CELL: '|' !('|' | '\n' | '\r')*;
@@ -87,59 +74,60 @@ terminal TABLE_CELL: '|' !('|' | '\n' | '\r')*;
 /**
  * 
  */
-Paragraph: {Paragraph}
-    text=MultilineText
+Title:
+	value=TITLE_LITERAL
+;
+
+TITLE_LITERAL:
+	(WORD | NUMBER | STRING)
+	(WORD | NUMBER | STRING | TAGNAME)*
 ;
 
 /**
  * 
  */
-MultilineText returns ecore::EString:
-	(TEXT_LITERAL+ NL)+
+Narrative:
+	value=NARRATIVE_LITERAL
 ;
 
-/**
- * 
- */
-Text returns ecore::EString:
-	TEXT_LITERAL+
+NARRATIVE_LITERAL:
+	(
+		(WORD | NUMBER | STRING)
+		(WORD | NUMBER | STRING | TAGNAME | TABLE_CELL)*
+		NL
+	)+
+	(
+		NL+
+		(WORD | NUMBER | STRING)
+		(WORD | NUMBER | STRING | TAGNAME | TABLE_CELL)*
+		NL
+	)*
 ;
 
-TEXT_LITERAL: WORD
-	| NUMBER
-	| STRING
-	| PUNCTUATION
-	| ANY_OTHER
-;
 
 terminal NUMBER returns ecore::EDouble:
-    '-'? ('0'..'9')+ ('.' ('0'..'9')+)?
+	'-'?
+	DIGIT+
+	('.' DIGIT+)?
 ;
- 
-terminal STRING returns ecore::EString:
-    '"' ( '\\'('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\') | !('\\'|'"') )* '"' 
-	    | "'" ( '\\'('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\') | !('\\'|"'") )* "'"
-;
+
+terminal STRING:
+	'"' ('\\' ('b' | 't' | 'n' | 'f' | 'r' | 'u' | '"' | "'" | '\\') | !('\\' | '"' | '\r' | '\n'))* '"' |
+	"'" ('\\' ('b' | 't' | 'n' | 'f' | 'r' | 'u' | '"' | "'" | '\\') | !('\\' | "'" | '\r' | '\n'))* "'";
+
+terminal SL_COMMENT: '#' !('\n' | '\r')* NL;
+
+terminal TAGNAME: '@' !(' ' | '\t' | '\n' | '\r')+ ;
 
 terminal WORD: 
-	(LETTER | DIGIT)
-	(LETTER | DIGIT | '_' | '-' | '.' )*
-;
-
-terminal SL_COMMENT: 
-	'#' !('\n' | '\r')* NL
-;
-
-terminal PUNCTUATION: ASCII_SYMBOLS 
-	| '...'
+	!('@' | '|' | ' ' | '\t' | '\n' | '\r')
+	!(' ' | '\t' | '\n' | '\r')*
 ;
 
 BLANK_SPACE: NL+ WS*;
 terminal NL: ('\r'? '\n') | EOF;
 
 terminal WS: (SPACE | '\t');
-
-terminal ANY_OTHER: .;
 
 // Character Ranges
 ////

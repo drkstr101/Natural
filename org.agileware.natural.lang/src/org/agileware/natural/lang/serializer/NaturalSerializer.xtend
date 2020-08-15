@@ -3,28 +3,24 @@ package org.agileware.natural.lang.serializer
 import org.agileware.natural.lang.model.Document
 import org.agileware.natural.lang.model.Meta
 import org.agileware.natural.lang.model.Narrative
-import org.agileware.natural.lang.model.NarrativeSection
 import org.agileware.natural.lang.model.NaturalModel
-import org.agileware.natural.lang.model.Paragraph
 import org.agileware.natural.lang.model.Section
 import org.agileware.natural.lang.model.Table
 import org.agileware.natural.lang.model.TableCol
 import org.agileware.natural.lang.model.TableRow
-import org.agileware.natural.lang.model.Tag
-import org.eclipse.xtext.util.Strings
+import org.agileware.natural.lang.model.Title
 
 class NaturalSerializer {
-	
+
 	def String serialize(NaturalModel model) {
-		return (model.document === null)? "\n" : serialize(model.document)
+		return (model.document === null) ? "\n" : serialize(model.document)
 	}
-	
+
 	def String serialize(Document model) '''
 		# language: en
-		«IF model.meta !== null»
-			«serialize(model.meta)»
-		«ENDIF»
-		Document: «model.title»
+		«serialize(model.meta)»
+		Document: «serialize(model.title)»
+		«serialize(model.narrative)»
 		«FOR s : model.sections»
 			«serialize(s)»
 		«ENDFOR»
@@ -32,51 +28,40 @@ class NaturalSerializer {
 
 	def String serialize(Section model) '''
 		Section: «model.title»
-		«IF model.narrative !== null»
-			«serialize(model.narrative)»
-		«ENDIF»
+		«serialize(model.narrative)»
 	'''
 
-	def String serialize(Narrative model) '''
-		«FOR s : model.sections SEPARATOR '\n'»
-			«serialize(s)»
-		«ENDFOR»
-	'''
-	
-	def String serialize(NarrativeSection model) {
-		if(model instanceof Paragraph) return serialize(model as Paragraph)
-		else if(model instanceof Table) return serialize(model as Table)
-		
-		return "\n"
+	def String serialize(Title model) {
+		if(model === null) return ""
+
+		return model.value
 	}
 
-	def String serialize(Meta model) '''
-		«FOR t : model.tags»
-			«serialize(t)»
-		«ENDFOR»
-	'''
+	def String serialize(Narrative model) {
+		if(model === null) return ""
 
-	def String serialize(Tag model) {
-		if(Strings.isEmpty(model.value)) {
-			return '''
-				@«model.id»
-			'''
-		}
-		
+		return model.value
+	}
+
+	def String serialize(Meta model) {
+		if(model === null) return ""
+
 		return '''
-			@«model.id»: «model.value»
+			«FOR t : model.tags»
+				«model.value»
+			«ENDFOR»
 		'''
 	}
 
-	def String serialize(Paragraph model) '''
-		«model.text»
-	'''
+	def String serialize(Table model) {
+		if(model === null) return ""
 
-	def String serialize(Table model) '''
-		«FOR r : model.rows»
-			«serialize(r)»
-		«ENDFOR»
-	'''
+		return '''
+			«FOR r : model.rows»
+				«serialize(r)»
+			«ENDFOR»
+		'''
+	}
 
 	def String serialize(TableRow model) '''
 		«model.cols.map[serialize].join()» |

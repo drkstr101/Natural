@@ -10,10 +10,6 @@ import org.agileware.natural.cucumber.cucumber.Feature
 import org.agileware.natural.cucumber.cucumber.Scenario
 import org.agileware.natural.cucumber.cucumber.ScenarioOutline
 import org.agileware.natural.cucumber.cucumber.Step
-import org.agileware.natural.lang.model.Table
-import org.agileware.natural.lang.model.TableCol
-import org.agileware.natural.lang.model.TableRow
-import org.agileware.natural.lang.model.Tag
 import org.agileware.natural.lang.serializer.NaturalSerializer
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 
@@ -29,13 +25,9 @@ class CucumberSerializer {
 	'''
 
 	def String serialize(Feature model) '''
-		«IF model.meta !== null»
-			«serialize(model.meta)»
-		«ENDIF»
+		«serialize(model.meta)»
 		Feature: «model.title»
-		«IF model.narrative !== null»
-			«serialize(model.narrative)»
-		«ENDIF»
+		«serialize(model.narrative)»
 		«FOR s : model.scenarios»
 			
 			«serialize(s)»
@@ -55,39 +47,27 @@ class CucumberSerializer {
 	}
 
 	def String serialize(Background model) '''
-		«IF model.meta !== null»
-			«serialize(model.meta)»
-		«ENDIF»
-		Background: «model.title»
-		«IF model.narrative !== null»
-			«serialize(model.narrative)»
-		«ENDIF»
+		«serialize(model.meta)»
+		Background: «serialize(model.title)»
+		«serialize(model.narrative)»
 		«FOR s : model.steps»
 			«serialize(s)»
 		«ENDFOR»
 	'''
 
 	def String serialize(Scenario model) '''
-		«IF model.meta !== null»
-			«serialize(model.meta)»
-		«ENDIF»
-		Scenario: «model.title»
-		«IF model.narrative !== null»
-			«serialize(model.narrative)»
-		«ENDIF»
+		«serialize(model.meta)»
+		Scenario: «serialize(model.title)»
+		«serialize(model.narrative)»
 		«FOR s : model.steps»
 			«serialize(s)»
 		«ENDFOR»
 	'''
 
 	def String serialize(ScenarioOutline model) '''
-		«IF model.meta !== null»
-			«serialize(model.meta)»
-		«ENDIF»
-		Scenario Outline: «model.title»
-		«IF model.narrative !== null»
-			«serialize(model.narrative)»
-		«ENDIF»
+		«serialize(model.meta)»
+		Scenario Outline:«serialize(model.title)»
+		«serialize(model.narrative)»
 		«FOR e : model.examples»
 			
 				«serialize(e)»
@@ -95,8 +75,8 @@ class CucumberSerializer {
 	'''
 
 	def String serialize(Example model) '''
-		Example: «model.title»
-		«model.narrative»
+		Example: «serialize(model.title)»
+		«serialize(model.narrative)»
 		«serialize(model.table)»
 	'''
 
@@ -109,27 +89,11 @@ class CucumberSerializer {
 		«ENDIF»
 	'''
 
-	def String serialize(Tag model) '''
-		@«model.id»
-	'''
+	def String serialize(DocString model) {
+		if(model === null) return ""
 
-	def String serialize(Table model) '''
-		«FOR r : model.rows»
-			«serialize(r)»
-		«ENDFOR»
-	'''
-
-	def String serialize(TableRow model) '''
-		«model.cols.map[serialize].join()» |
-	'''
-
-	def String serialize(TableCol model) {
-		return model.cell
+		return '''
+			«model.value»
+		'''
 	}
-
-	def String serialize(DocString model) '''
-		"""
-		«model.text»
-		"""
-	'''
 }
