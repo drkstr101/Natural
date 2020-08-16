@@ -30,9 +30,9 @@ public class CucumberLabelProvider extends DefaultEObjectLabelProvider {
 	public CucumberLabelProvider(AdapterFactoryLabelProvider delegate) {
 		super(delegate);
 	}
-	
+
 	String text(Feature ele) {
-		return ele.getTitle();
+		return ele.getTitle() == null ? "Feature" : merge("Feature: ", ele.getTitle().getValue());
 	}
 
 	String image(Feature ele) {
@@ -40,7 +40,7 @@ public class CucumberLabelProvider extends DefaultEObjectLabelProvider {
 	}
 
 	String text(Background ele) {
-		return ele.getTitle() == null ? "Background" : ele.getTitle();
+		return ele.getTitle() == null ? "Background" : merge("Background: ", ele.getTitle().getValue());
 	}
 
 	String image(Background ele) {
@@ -48,7 +48,7 @@ public class CucumberLabelProvider extends DefaultEObjectLabelProvider {
 	}
 
 	String text(Scenario ele) {
-		return ele.getTitle() == null ? "Scenario" : ele.getTitle();
+		return ele.getTitle() == null ? "Scenario" : merge("Scenario: ", ele.getTitle().getValue());
 	}
 
 	String image(Scenario ele) {
@@ -56,13 +56,13 @@ public class CucumberLabelProvider extends DefaultEObjectLabelProvider {
 	}
 
 	String text(ScenarioOutline ele) {
-		return ele.getTitle() == null ? "Scenario Outline" : ele.getTitle();
+		return ele.getTitle() == null ? "Scenario Outline" : merge("Scenario Outline: ", ele.getTitle().getValue());
 	}
 
 	String image(ScenarioOutline ele) {
 		return "scenario_outline.png";
 	}
-	
+
 	String text(Step ele) {
 		return ele.getDescription().trim();
 	}
@@ -78,7 +78,7 @@ public class CucumberLabelProvider extends DefaultEObjectLabelProvider {
 	String image(Table ele) {
 		return "table.gif";
 	}
-	
+
 	String text(DocString ele) {
 		return "DocString";
 	}
@@ -88,7 +88,7 @@ public class CucumberLabelProvider extends DefaultEObjectLabelProvider {
 	}
 
 	String text(Example ele) {
-		return ele.getTitle().isEmpty() ? "Examples" : ele.getTitle();
+		return ele.getTitle() == null ? "Examples" : merge("Examples: ", ele.getTitle().getValue());
 	}
 
 	String image(Example ele) {
@@ -96,14 +96,14 @@ public class CucumberLabelProvider extends DefaultEObjectLabelProvider {
 	}
 
 	String text(Tag ele) {
-		return ele.getId();
+		return ele.getValue();
 	}
 
 	String image(Tag ele) {
 		return "annotation.gif";
 	}
-	
-	private static String merge(EList<String> strings) {
+
+	private static String merge(String... strings) {
 		StringBuilder builder = new StringBuilder();
 		for (String string : strings) {
 			builder.append(string);

@@ -48,7 +48,7 @@ class NaturalSerializer {
 
 		return '''
 			«FOR t : model.tags»
-				«model.value»
+				«t.value»
 			«ENDFOR»
 		'''
 	}
@@ -68,7 +68,7 @@ class NaturalSerializer {
 	'''
 
 	def String serialize(TableCol model) {
-		return model.cell
+		return model.value
 	}
 
 }

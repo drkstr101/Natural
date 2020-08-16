@@ -5,8 +5,8 @@ package org.agileware.natural.cucumber.ui.outline;
 
 import org.agileware.natural.cucumber.cucumber.CucumberModel;
 import org.agileware.natural.cucumber.cucumber.DocString;
-import org.agileware.natural.cucumber.cucumber.Narrative;
 import org.agileware.natural.cucumber.cucumber.Step;
+import org.agileware.natural.lang.model.Narrative;
 import org.agileware.natural.lang.model.Table;
 import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider;
 import org.eclipse.xtext.ui.editor.outline.impl.DocumentRootNode;
