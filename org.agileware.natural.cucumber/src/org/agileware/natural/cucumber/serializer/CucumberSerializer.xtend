@@ -4,7 +4,6 @@ import com.google.inject.Inject
 import org.agileware.natural.cucumber.cucumber.AbstractScenario
 import org.agileware.natural.cucumber.cucumber.Background
 import org.agileware.natural.cucumber.cucumber.CucumberModel
-import org.agileware.natural.cucumber.cucumber.DocString
 import org.agileware.natural.cucumber.cucumber.Example
 import org.agileware.natural.cucumber.cucumber.Feature
 import org.agileware.natural.cucumber.cucumber.Scenario
@@ -88,12 +87,4 @@ class CucumberSerializer {
 			«serialize(model.text)»
 		«ENDIF»
 	'''
-
-	def String serialize(DocString model) {
-		if(model === null) return ""
-
-		return '''
-			«model.value»
-		'''
-	}
 }

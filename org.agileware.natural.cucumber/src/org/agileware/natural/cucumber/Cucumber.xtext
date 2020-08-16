@@ -87,19 +87,6 @@ terminal PLACEHOLDER: '<' !('>' | ' ' | '\t' | '\n' | '\r')+ '>';
 /**
  * 
  */
-DocString: {DocString}
-	value=DOC_STRING_LITERAL
-	NL
-;
-
-terminal DOC_STRING_LITERAL: 
-	('"""' -> '"""')
-	  | ("'''" -> "'''")
-;
-
-/**
- * 
- */
 Example: {Example}
 	(meta=Meta BLANK_SPACE?)?
 	'Examples:' title=Title? NL

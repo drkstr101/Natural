@@ -37,11 +37,8 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="table" eType="ecore:EClass platform:/resource/org.agileware.natural.lang/model/generated/Natural.ecore#//Table"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="text" eType="#//DocString"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="text" eType="ecore:EClass platform:/resource/org.agileware.natural.lang/model/generated/Natural.ecore#//DocString"
         containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="DocString">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Example">
     <eStructuralFeatures xsi:type="ecore:EReference" name="meta" eType="ecore:EClass platform:/resource/org.agileware.natural.lang/model/generated/Natural.ecore#//Meta"

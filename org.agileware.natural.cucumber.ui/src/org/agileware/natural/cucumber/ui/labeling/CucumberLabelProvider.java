@@ -4,15 +4,14 @@
 package org.agileware.natural.cucumber.ui.labeling;
 
 import org.agileware.natural.cucumber.cucumber.Background;
-import org.agileware.natural.cucumber.cucumber.DocString;
 import org.agileware.natural.cucumber.cucumber.Example;
 import org.agileware.natural.cucumber.cucumber.Feature;
 import org.agileware.natural.cucumber.cucumber.Scenario;
 import org.agileware.natural.cucumber.cucumber.ScenarioOutline;
 import org.agileware.natural.cucumber.cucumber.Step;
+import org.agileware.natural.lang.model.DocString;
 import org.agileware.natural.lang.model.Table;
 import org.agileware.natural.lang.model.Tag;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.xtext.ui.label.DefaultEObjectLabelProvider;
 

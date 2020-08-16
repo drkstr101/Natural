@@ -1,5 +1,6 @@
 package org.agileware.natural.lang.serializer
 
+import org.agileware.natural.lang.model.DocString
 import org.agileware.natural.lang.model.Document
 import org.agileware.natural.lang.model.Meta
 import org.agileware.natural.lang.model.Narrative
@@ -71,4 +72,11 @@ class NaturalSerializer {
 		return model.value
 	}
 
+	def String serialize(DocString model) {
+		if(model === null) return ""
+
+		return '''
+			«model.value»
+		'''
+	}
 }

@@ -51,6 +51,19 @@ Tag: {Tag}
 /**
  * 
  */
+DocString: {DocString}
+	value=DOC_STRING_LITERAL
+	NL
+;
+
+terminal DOC_STRING_LITERAL: 
+	('"""' -> '"""')
+	  | ("'''" -> "'''")
+;
+
+/**
+ * 
+ */
 Table: {Table}
 	rows+=TableRow+
 ;
