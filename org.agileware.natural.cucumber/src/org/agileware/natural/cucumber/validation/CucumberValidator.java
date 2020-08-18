@@ -10,16 +10,13 @@ import static org.agileware.natural.cucumber.validation.CucumberIssueCodes.MISSI
 import static org.agileware.natural.cucumber.validation.CucumberIssueCodes.MISSING_STEPDEFS;
 import static org.agileware.natural.cucumber.validation.CucumberIssueCodes.MULTIPLE_STEPDEFS;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Collection;
 
-import org.agileware.natural.common.JavaAnnotationMatcher;
+import org.agileware.natural.common.stepmatcher.StepMatchEntry;
+import org.agileware.natural.common.stepmatcher.IStepMatcher;
 import org.agileware.natural.cucumber.cucumber.AbstractScenario;
-import org.agileware.natural.cucumber.cucumber.Background;
 import org.agileware.natural.cucumber.cucumber.Feature;
 import org.agileware.natural.cucumber.cucumber.Step;
-import org.eclipse.jdt.core.IMethod;
-import org.eclipse.xtext.util.Strings;
 import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.validation.CheckType;
 import org.eclipse.xtext.validation.ValidationMessageAcceptor;
@@ -28,24 +25,8 @@ import com.google.inject.Inject;
 
 public class CucumberValidator extends AbstractCucumberValidator {
 
-	private static boolean isBackground(AbstractScenario scenario) {
-		return scenario instanceof Background;
-	}
-
-	private final static class Counter implements JavaAnnotationMatcher.Command {
-		private int count = 0;
-
-		public int get() {
-			return count;
-		}
-
-		public void match(String annotationValue, IMethod method) {
-			count++;
-		}
-	}
-
 	@Inject
-	private JavaAnnotationMatcher matcher;
+	private IStepMatcher stepMatcher;
 
 	/**
 	 * Issue a warning if the Feature has no title
@@ -86,18 +67,24 @@ public class CucumberValidator extends AbstractCucumberValidator {
 		}
 	}
 
+	/**
+	 * Scan for matching java annotation if activated
+	 * 
+	 * @param model
+	 */
 	@Check(CheckType.EXPENSIVE)
 	public void invalidStepDefs(Step model) {
-		System.out.println("Validating: " + model);
-		final Counter counter = new Counter();
-		String description = model.getDescription().trim();
-		matcher.findMatches(description, counter);
-		if (counter.get() == 0) {
-			warning(String.format("No step definition found for `%s`", description), model, STEP__DESCRIPTION,
-					MISSING_STEPDEFS);
-		} else if (counter.get() > 1) {
-			warning(String.format("Multiple step definitions found for `%s`", description), model, STEP__DESCRIPTION,
-					MULTIPLE_STEPDEFS);
+		if (stepMatcher.isActivated()) {
+			System.out.println("Validating: " + model);
+			final Collection<StepMatchEntry> matches = stepMatcher.findMatches(model.getKeyword(),
+					model.getDescription());
+			if (matches.size() == 0) {
+				warning(String.format("No step definition found for `%s`", model.getDescription()), model,
+						STEP__DESCRIPTION, MISSING_STEPDEFS);
+			} else if (matches.size() > 1) {
+				warning(String.format("Multiple step definitions found for `%s`", model.getDescription()), model,
+						STEP__DESCRIPTION, MULTIPLE_STEPDEFS);
+			}
 		}
 	}
 }

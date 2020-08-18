@@ -3,30 +3,19 @@
  */
 package org.agileware.natural.cucumber;
 
-import org.agileware.natural.common.AbstractAnnotationDescriptor;
+import org.agileware.natural.common.stepmatcher.DefaultStepMatcher;
+import org.agileware.natural.common.stepmatcher.IStepMatcher;
 
 /**
  * Use this class to register components to be used at runtime / without the Equinox extension registry.
  */
-public class CucumberRuntimeModule extends org.agileware.natural.cucumber.AbstractCucumberRuntimeModule {
-	public final static String[] STEPS = { "Given", "When", "Then", "And", "But" };
-	private static final String CUCUMBER_PACKAGE = "io.cucumber.java.en";
+public class CucumberRuntimeModule extends AbstractCucumberRuntimeModule {
 	
-	
-	public Class<? extends AbstractAnnotationDescriptor> bindAnnotationDescriptor() {
-		return CucumberAnnotationDescriptor.class;
+	/**
+	 * @return
+	 */
+	public Class<? extends IStepMatcher> bindStepMatcher() {
+		return DefaultStepMatcher.class;
 	}
 	
-	public static class CucumberAnnotationDescriptor extends AbstractAnnotationDescriptor {
-
-		@Override
-		public String[] getNames() {
-			return STEPS;
-		}
-
-		@Override
-		public String getPackage() {
-			return CUCUMBER_PACKAGE;
-		}
-	}
 }
