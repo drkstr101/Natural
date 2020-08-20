@@ -31,7 +31,7 @@ class NaturalParsingTest extends AbstractExamplesTest<NaturalModel> {
 		val doc = model.document
 		assertThat(doc.sections, hasSize(0))
 		assertThat(doc, notNullValue())
-		assertThat(doc.title, equalTo("Hello, Natural!"))
+		assertThat(doc.title.value, equalTo("Hello, Natural!"))
 	}
 
 	@Test

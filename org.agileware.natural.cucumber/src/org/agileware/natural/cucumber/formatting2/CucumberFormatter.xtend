@@ -15,10 +15,10 @@ import org.agileware.natural.cucumber.cucumber.Step
 import org.agileware.natural.cucumber.services.CucumberGrammarAccess
 import org.agileware.natural.lang.model.DocString
 import org.agileware.natural.lang.model.Meta
-import org.agileware.natural.lang.model.Narrative
+import org.agileware.natural.lang.model.MultilineText
 import org.agileware.natural.lang.model.Table
 import org.agileware.natural.lang.model.Tag
-import org.agileware.natural.lang.model.Title
+import org.agileware.natural.lang.model.Text
 import org.eclipse.xtext.formatting2.AbstractFormatter2
 import org.eclipse.xtext.formatting2.IFormattableDocument
 import org.eclipse.xtext.formatting2.regionaccess.ISemanticRegion
@@ -132,11 +132,11 @@ class CucumberFormatter extends AbstractFormatter2 {
 		// TODO...
 	}
 
-	def dispatch void format(Title model, extension IFormattableDocument doc) {
+	def dispatch void format(Text model, extension IFormattableDocument doc) {
 		// TODO...
 	}
 
-	def dispatch void format(Narrative model, extension IFormattableDocument doc) {
+	def dispatch void format(MultilineText model, extension IFormattableDocument doc) {
 		// TODO...
 	}
 

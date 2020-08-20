@@ -16,8 +16,8 @@ CucumberModel: {CucumberModel}
  */
 Feature: {Feature}
 	(meta=Meta BLANK_SPACE?)?
-	'Feature:' title=Title? NL
-	(BLANK_SPACE? narrative=Narrative)?
+	'Feature:' title=Text? NL
+	(BLANK_SPACE? narrative=MultilineText)?
 	(BLANK_SPACE? scenarios+=AbstractScenario)*
 	BLANK_SPACE?
 ;
@@ -41,8 +41,8 @@ AbstractScenario: Scenario
  */
 Background: {Background}
 	(meta=Meta BLANK_SPACE?)?
-	'Background:' title=Title? NL
-	(BLANK_SPACE? narrative=Narrative)?
+	'Background:' title=Text? NL
+	(BLANK_SPACE? narrative=MultilineText)?
 	(BLANK_SPACE? steps+=Step)*
 ;
 
@@ -51,8 +51,8 @@ Background: {Background}
  */
 Scenario: {Scenario}
 	(meta=Meta BLANK_SPACE?)?
-	'Scenario:' title=Title? NL
-	(BLANK_SPACE? narrative=Narrative)?
+	'Scenario:' title=Text? NL
+	(BLANK_SPACE? narrative=MultilineText)?
 	(BLANK_SPACE? steps+=Step)*
 ;
 
@@ -61,8 +61,8 @@ Scenario: {Scenario}
  */
 ScenarioOutline: {ScenarioOutline}
 	(meta=Meta BLANK_SPACE?)?
-	'Scenario' 'Outline:' title=Title? NL
-	(BLANK_SPACE? narrative=Narrative)?
+	'Scenario' 'Outline:' title=Text? NL
+	(BLANK_SPACE? narrative=MultilineText)?
 	(BLANK_SPACE? steps+=Step)*
 	(BLANK_SPACE? examples+=Example)*
 ;
@@ -72,12 +72,8 @@ ScenarioOutline: {ScenarioOutline}
  */
 Step: {Step}
 	keyword=STEP_KEYWORD
-	description=STEP_DESCRIPTION NL
+	description=Text NL
 	((BLANK_SPACE? table=Table) | (BLANK_SPACE? text=DocString))?
-;
-
-STEP_DESCRIPTION:
-	(WORD | NUMBER | STRING | PLACEHOLDER | STEP_KEYWORD | TAGNAME)+
 ;
 
 terminal STEP_KEYWORD: ('Given' | 'When' | 'Then' | 'And' | 'But' | '*');
@@ -89,32 +85,31 @@ terminal PLACEHOLDER: '<' !('>' | ' ' | '\t' | '\n' | '\r')+ '>';
  */
 Example: {Example}
 	(meta=Meta BLANK_SPACE?)?
-	'Examples:' title=Title? NL
-	(BLANK_SPACE? narrative=Narrative)?
+	'Examples:' title=Text? NL
+	(BLANK_SPACE? narrative=MultilineText)?
 	(BLANK_SPACE? table=Table)
 ;
 
 
 @Override 
-TITLE_LITERAL:
-	(WORD | NUMBER | STRING | PLACEHOLDER)
-	(WORD | NUMBER | STRING | PLACEHOLDER | STEP_KEYWORD | TAGNAME)*
+TEXT_LITERAL:
+	WORD_LITERAL (WORD_LITERAL | TAGNAME | TABLE_CELL | STEP_KEYWORD)*
 ;
 
 @Override
-NARRATIVE_LITERAL:
-	(
-		(WORD | NUMBER | STRING | PLACEHOLDER)
-		(WORD | NUMBER | STRING | TAGNAME | TABLE_CELL | PLACEHOLDER | STEP_KEYWORD)*
-		NL
-	)+
-	(
-		NL+
-		(WORD | NUMBER | STRING | PLACEHOLDER)
-		(WORD | NUMBER | STRING | TAGNAME | TABLE_CELL | PLACEHOLDER | STEP_KEYWORD)*
-		NL
-	)*
+MULTILINE_TEXT_LITERAL:
+	(WORD_LITERAL (WORD_LITERAL | TAGNAME | TABLE_CELL | STEP_KEYWORD)* NL)+
+	(NL+ WORD_LITERAL (WORD_LITERAL | TAGNAME | TABLE_CELL | STEP_KEYWORD)* NL)*
 ;
+
+@Override
+WORD_LITERAL: PLACEHOLDER
+	| NUMBER
+	| STRING
+	| WORD
+	| ANY_OTHER
+;
+
 
 // Note: We must override so that terminal order is preserved
 @Override
@@ -122,11 +117,5 @@ terminal NUMBER returns ecore::EDouble:
 	'-'?
 	DIGIT+
 	('.' DIGIT+)?
-;
-
-@Override 
-terminal WORD: 
-	!('@' | '|' | ' ' | '\t' | '\n' | '\r')
-	!(' ' | '\t' | '\n' | '\r')*
 ;
 

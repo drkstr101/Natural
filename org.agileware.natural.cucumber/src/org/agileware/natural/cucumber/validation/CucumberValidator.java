@@ -12,8 +12,8 @@ import static org.agileware.natural.cucumber.validation.CucumberIssueCodes.MULTI
 
 import java.util.Collection;
 
-import org.agileware.natural.common.stepmatcher.StepMatchEntry;
 import org.agileware.natural.common.stepmatcher.IStepMatcher;
+import org.agileware.natural.common.stepmatcher.StepMatchEntry;
 import org.agileware.natural.cucumber.cucumber.AbstractScenario;
 import org.agileware.natural.cucumber.cucumber.Feature;
 import org.agileware.natural.cucumber.cucumber.Step;
@@ -30,11 +30,11 @@ public class CucumberValidator extends AbstractCucumberValidator {
 
 	/**
 	 * Issue a warning if the Feature has no title
-	 * 
+	 *
 	 * @param model
 	 */
 	@Check(CheckType.FAST)
-	public void featureTitle(Feature model) {
+	public void featureTitle(final Feature model) {
 		if (model.getTitle() == null) {
 			warning("Feature title is missing", FEATURE__TITLE, ValidationMessageAcceptor.INSIGNIFICANT_INDEX,
 					MISSING_FEATURE_TITLE);
@@ -44,11 +44,11 @@ public class CucumberValidator extends AbstractCucumberValidator {
 	/**
 	 * Issue a warning if Feature has no scenarios defined. **note:** Do not depend
 	 * on grammar rule validation
-	 * 
+	 *
 	 * @param model
 	 */
 	@Check(CheckType.FAST)
-	public void missingScenarios(Feature model) {
+	public void missingScenarios(final Feature model) {
 		if (model.getScenarios().isEmpty()) {
 			warning("Feature has no scenarios", model, FEATURE__SCENARIOS, MISSING_SCENARIOS);
 		}
@@ -57,11 +57,11 @@ public class CucumberValidator extends AbstractCucumberValidator {
 	/**
 	 * Issue a warning if AbstractScenario has no defined steps. **note:** Do not
 	 * depend on grammar rule validation
-	 * 
+	 *
 	 * @param model
 	 */
 	@Check(CheckType.FAST)
-	public void missingScenarioSteps(AbstractScenario model) {
+	public void missingScenarioSteps(final AbstractScenario model) {
 		if (model.getSteps().isEmpty()) {
 			warning("Scenario has no steps", model, ABSTRACT_SCENARIO__STEPS, MISSING_SCENARIO_STEPS);
 		}
@@ -69,15 +69,15 @@ public class CucumberValidator extends AbstractCucumberValidator {
 
 	/**
 	 * Scan for matching java annotation if activated
-	 * 
+	 *
 	 * @param model
 	 */
 	@Check(CheckType.EXPENSIVE)
-	public void invalidStepDefs(Step model) {
+	public void invalidStepDefs(final Step model) {
 		if (stepMatcher.isActivated()) {
 			System.out.println("Validating: " + model);
 			final Collection<StepMatchEntry> matches = stepMatcher.findMatches(model.getKeyword(),
-					model.getDescription());
+					model.getDescription().getValue());
 			if (matches.size() == 0) {
 				warning(String.format("No step definition found for `%s`", model.getDescription()), model,
 						STEP__DESCRIPTION, MISSING_STEPDEFS);

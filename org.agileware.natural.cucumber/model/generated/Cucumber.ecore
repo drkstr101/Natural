@@ -9,9 +9,9 @@
   <eClassifiers xsi:type="ecore:EClass" name="Feature">
     <eStructuralFeatures xsi:type="ecore:EReference" name="meta" eType="ecore:EClass platform:/resource/org.agileware.natural.lang/model/generated/Natural.ecore#//Meta"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="title" eType="ecore:EClass platform:/resource/org.agileware.natural.lang/model/generated/Natural.ecore#//Title"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="title" eType="ecore:EClass platform:/resource/org.agileware.natural.lang/model/generated/Natural.ecore#//Text"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="narrative" eType="ecore:EClass platform:/resource/org.agileware.natural.lang/model/generated/Natural.ecore#//Narrative"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="narrative" eType="ecore:EClass platform:/resource/org.agileware.natural.lang/model/generated/Natural.ecore#//MultilineText"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="scenarios" upperBound="-1"
         eType="#//AbstractScenario" containment="true"/>
@@ -19,9 +19,9 @@
   <eClassifiers xsi:type="ecore:EClass" name="AbstractScenario">
     <eStructuralFeatures xsi:type="ecore:EReference" name="meta" eType="ecore:EClass platform:/resource/org.agileware.natural.lang/model/generated/Natural.ecore#//Meta"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="title" eType="ecore:EClass platform:/resource/org.agileware.natural.lang/model/generated/Natural.ecore#//Title"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="title" eType="ecore:EClass platform:/resource/org.agileware.natural.lang/model/generated/Natural.ecore#//Text"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="narrative" eType="ecore:EClass platform:/resource/org.agileware.natural.lang/model/generated/Natural.ecore#//Narrative"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="narrative" eType="ecore:EClass platform:/resource/org.agileware.natural.lang/model/generated/Natural.ecore#//MultilineText"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="steps" upperBound="-1"
         eType="#//Step" containment="true"/>
@@ -34,7 +34,8 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Step">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="keyword" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="description" eType="ecore:EClass platform:/resource/org.agileware.natural.lang/model/generated/Natural.ecore#//Text"
+        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="table" eType="ecore:EClass platform:/resource/org.agileware.natural.lang/model/generated/Natural.ecore#//Table"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="text" eType="ecore:EClass platform:/resource/org.agileware.natural.lang/model/generated/Natural.ecore#//DocString"
@@ -43,9 +44,9 @@
   <eClassifiers xsi:type="ecore:EClass" name="Example">
     <eStructuralFeatures xsi:type="ecore:EReference" name="meta" eType="ecore:EClass platform:/resource/org.agileware.natural.lang/model/generated/Natural.ecore#//Meta"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="title" eType="ecore:EClass platform:/resource/org.agileware.natural.lang/model/generated/Natural.ecore#//Title"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="title" eType="ecore:EClass platform:/resource/org.agileware.natural.lang/model/generated/Natural.ecore#//Text"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="narrative" eType="ecore:EClass platform:/resource/org.agileware.natural.lang/model/generated/Natural.ecore#//Narrative"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="narrative" eType="ecore:EClass platform:/resource/org.agileware.natural.lang/model/generated/Natural.ecore#//MultilineText"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="table" eType="ecore:EClass platform:/resource/org.agileware.natural.lang/model/generated/Natural.ecore#//Table"
         containment="true"/>

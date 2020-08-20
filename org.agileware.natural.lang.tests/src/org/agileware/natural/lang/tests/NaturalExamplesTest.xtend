@@ -106,21 +106,21 @@ class NaturalExamplesTest extends AbstractExamplesTest<NaturalModel> {
 	}
 
 
-
-	@Test
-	def void example_09() {
-		assertExampleParses('''
-			# language: en
-			@title: Hello, Meta Tags!
-			Document:   Hello, 	Natural! 
-			
-			  @foo
-			@bar
-			Section: A
-			
-			@foo @bar 
-				
-			Section: B
-		''')
-	}
+//	TODO
+//	@Test
+//	def void example_09() {
+//		assertExampleParses('''
+//			# language: en
+//			@title: Hello, Meta Tags!
+//			Document:   Hello, 	Natural! 
+//			
+//			  @foo
+//			@bar
+//			Section: A
+//			
+//			@foo @bar 
+//				
+//			Section: B
+//		''')
+//	}
 }
