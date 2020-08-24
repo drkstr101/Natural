@@ -17,8 +17,8 @@ NaturalModel: {NaturalModel}
  */
 Document: {Document}
 	(meta=Meta BLANK_SPACE?)?
-	'Document:' title=Title? NL
-	(BLANK_SPACE? narrative=Narrative)?
+	'Document:' title=Text? NL
+	(BLANK_SPACE? narrative=MultilineText)?
 	(BLANK_SPACE? sections+=Section)*
 	BLANK_SPACE?
 ;
@@ -28,8 +28,8 @@ Document: {Document}
  */	
 Section: {Section}
 	(meta=Meta BLANK_SPACE?)?
-	'Section:' title=Title? NL
-	(BLANK_SPACE? narrative=Narrative)?
+	'Section:' title=Text? NL
+	(BLANK_SPACE? narrative=MultilineText)?
 ;
 
 /**
@@ -87,34 +87,30 @@ terminal TABLE_CELL: '|' !('|' | '\n' | '\r')*;
 /**
  * 
  */
-Title:
-	value=TITLE_LITERAL
+Text:
+	value=TEXT_LITERAL
 ;
 
-TITLE_LITERAL:
-	(WORD | NUMBER | STRING)
-	(WORD | NUMBER | STRING | TAGNAME)*
+TEXT_LITERAL:
+	WORD_LITERAL (WORD_LITERAL | TAGNAME | TABLE_CELL)*
 ;
 
 /**
  * 
  */
-Narrative:
-	value=NARRATIVE_LITERAL
+MultilineText:
+	value=MULTILINE_TEXT_LITERAL
 ;
 
-NARRATIVE_LITERAL:
-	(
-		(WORD | NUMBER | STRING)
-		(WORD | NUMBER | STRING | TAGNAME | TABLE_CELL)*
-		NL
-	)+
-	(
-		NL+
-		(WORD | NUMBER | STRING)
-		(WORD | NUMBER | STRING | TAGNAME | TABLE_CELL)*
-		NL
-	)*
+MULTILINE_TEXT_LITERAL:
+	(WORD_LITERAL (WORD_LITERAL | TAGNAME | TABLE_CELL)* NL)+
+	(NL+ WORD_LITERAL (WORD_LITERAL | TAGNAME | TABLE_CELL)* NL)*
+;
+
+WORD_LITERAL: NUMBER
+	| STRING
+	| WORD
+	| ANY_OTHER
 ;
 
 
@@ -141,6 +137,8 @@ BLANK_SPACE: NL+ WS*;
 terminal NL: ('\r'? '\n') | EOF;
 
 terminal WS: (SPACE | '\t');
+
+terminal ANY_OTHER: .;
 
 // Character Ranges
 ////

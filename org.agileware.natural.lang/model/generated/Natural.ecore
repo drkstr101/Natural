@@ -7,18 +7,18 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Document">
     <eStructuralFeatures xsi:type="ecore:EReference" name="meta" eType="#//Meta" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="title" eType="#//Title"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="title" eType="#//Text"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="narrative" eType="#//Narrative"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="narrative" eType="#//MultilineText"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="sections" upperBound="-1"
         eType="#//Section" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Section">
     <eStructuralFeatures xsi:type="ecore:EReference" name="meta" eType="#//Meta" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="title" eType="#//Title"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="title" eType="#//Text"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="narrative" eType="#//Narrative"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="narrative" eType="#//MultilineText"
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Meta">
@@ -42,10 +42,10 @@
   <eClassifiers xsi:type="ecore:EClass" name="TableCol">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Title">
+  <eClassifiers xsi:type="ecore:EClass" name="Text">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Narrative">
+  <eClassifiers xsi:type="ecore:EClass" name="MultilineText">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
 </ecore:EPackage>

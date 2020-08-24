@@ -38,11 +38,11 @@
     <genClasses ecoreClass="Natural.ecore#//TableCol">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Natural.ecore#//TableCol/value"/>
     </genClasses>
-    <genClasses ecoreClass="Natural.ecore#//Title">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Natural.ecore#//Title/value"/>
+    <genClasses ecoreClass="Natural.ecore#//Text">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Natural.ecore#//Text/value"/>
     </genClasses>
-    <genClasses ecoreClass="Natural.ecore#//Narrative">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Natural.ecore#//Narrative/value"/>
+    <genClasses ecoreClass="Natural.ecore#//MultilineText">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Natural.ecore#//MultilineText/value"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

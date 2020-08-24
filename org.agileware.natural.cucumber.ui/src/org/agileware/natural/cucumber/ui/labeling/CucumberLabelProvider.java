@@ -19,92 +19,92 @@ import com.google.inject.Inject;
 
 /**
  * Provides labels for a EObjects.
- * 
+ *
  * see
  * http://www.eclipse.org/Xtext/documentation/latest/xtext.html#labelProvider
  */
 public class CucumberLabelProvider extends DefaultEObjectLabelProvider {
 
 	@Inject
-	public CucumberLabelProvider(AdapterFactoryLabelProvider delegate) {
+	public CucumberLabelProvider(final AdapterFactoryLabelProvider delegate) {
 		super(delegate);
 	}
 
-	String text(Feature ele) {
+	String text(final Feature ele) {
 		return ele.getTitle() == null ? "Feature" : merge("Feature: ", ele.getTitle().getValue());
 	}
 
-	String image(Feature ele) {
+	String image(final Feature ele) {
 		return "feature.png";
 	}
 
-	String text(Background ele) {
+	String text(final Background ele) {
 		return ele.getTitle() == null ? "Background" : merge("Background: ", ele.getTitle().getValue());
 	}
 
-	String image(Background ele) {
+	String image(final Background ele) {
 		return "background.gif";
 	}
 
-	String text(Scenario ele) {
+	String text(final Scenario ele) {
 		return ele.getTitle() == null ? "Scenario" : merge("Scenario: ", ele.getTitle().getValue());
 	}
 
-	String image(Scenario ele) {
+	String image(final Scenario ele) {
 		return "scenario.png";
 	}
 
-	String text(ScenarioOutline ele) {
+	String text(final ScenarioOutline ele) {
 		return ele.getTitle() == null ? "Scenario Outline" : merge("Scenario Outline: ", ele.getTitle().getValue());
 	}
 
-	String image(ScenarioOutline ele) {
+	String image(final ScenarioOutline ele) {
 		return "scenario_outline.png";
 	}
 
-	String text(Step ele) {
-		return ele.getDescription().trim();
+	String text(final Step ele) {
+		return ele.getDescription().getValue().trim();
 	}
 
-	String image(Step ele) {
+	String image(final Step ele) {
 		return "step.gif";
 	}
 
-	String text(Table ele) {
+	String text(final Table ele) {
 		return "Table of " + ele.getRows().size() + " rows";
 	}
 
-	String image(Table ele) {
+	String image(final Table ele) {
 		return "table.gif";
 	}
 
-	String text(DocString ele) {
+	String text(final DocString ele) {
 		return "DocString";
 	}
 
-	String image(DocString ele) {
+	String image(final DocString ele) {
 		return "code.gif";
 	}
 
-	String text(Example ele) {
+	String text(final Example ele) {
 		return ele.getTitle() == null ? "Examples" : merge("Examples: ", ele.getTitle().getValue());
 	}
 
-	String image(Example ele) {
+	String image(final Example ele) {
 		return "example.gif";
 	}
 
-	String text(Tag ele) {
+	String text(final Tag ele) {
 		return ele.getValue();
 	}
 
-	String image(Tag ele) {
+	String image(final Tag ele) {
 		return "annotation.gif";
 	}
 
-	private static String merge(String... strings) {
-		StringBuilder builder = new StringBuilder();
-		for (String string : strings) {
+	private static String merge(final String... strings) {
+		final StringBuilder builder = new StringBuilder();
+		for (final String string : strings) {
 			builder.append(string);
 		}
 		return builder.toString();

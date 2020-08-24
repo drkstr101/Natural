@@ -3,13 +3,13 @@ package org.agileware.natural.lang.serializer
 import org.agileware.natural.lang.model.DocString
 import org.agileware.natural.lang.model.Document
 import org.agileware.natural.lang.model.Meta
-import org.agileware.natural.lang.model.Narrative
+import org.agileware.natural.lang.model.MultilineText
 import org.agileware.natural.lang.model.NaturalModel
 import org.agileware.natural.lang.model.Section
 import org.agileware.natural.lang.model.Table
 import org.agileware.natural.lang.model.TableCol
 import org.agileware.natural.lang.model.TableRow
-import org.agileware.natural.lang.model.Title
+import org.agileware.natural.lang.model.Text
 
 class NaturalSerializer {
 
@@ -32,13 +32,13 @@ class NaturalSerializer {
 		«serialize(model.narrative)»
 	'''
 
-	def String serialize(Title model) {
+	def String serialize(Text model) {
 		if(model === null) return ""
 
 		return model.value
 	}
 
-	def String serialize(Narrative model) {
+	def String serialize(MultilineText model) {
 		if(model === null) return ""
 
 		return model.value
