@@ -77,7 +77,7 @@ public class CucumberValidator extends AbstractCucumberValidator {
 		if (stepMatcher.isActivated()) {
 			System.out.println("Validating: " + model);
 			final Collection<StepMatchEntry> matches = stepMatcher.findMatches(model.getKeyword(),
-					model.getDescription().getValue());
+					model.getDescription());
 			if (matches.size() == 0) {
 				warning(String.format("No step definition found for `%s`", model.getDescription()), model,
 						STEP__DESCRIPTION, MISSING_STEPDEFS);

@@ -84,35 +84,19 @@ TableCol: {TableCol}
 
 terminal TABLE_CELL: '|' !('|' | '\n' | '\r')*;
 
-/**
- * 
- */
-Text:
-	value=TEXT_LITERAL
+Text returns ecore::EString:
+	TEXT_LITERAL
+;
+
+MultilineText returns ecore::EString:
+	(TEXT_LITERAL NL)+
+	(NL+ TEXT_LITERAL NL)*
 ;
 
 TEXT_LITERAL:
-	WORD_LITERAL (WORD_LITERAL | TAGNAME | TABLE_CELL)*
+	(WORD | NUMBER | STRING)
+	(WORD | NUMBER | STRING | TAGNAME | TABLE_CELL | ANY_OTHER)*
 ;
-
-/**
- * 
- */
-MultilineText:
-	value=MULTILINE_TEXT_LITERAL
-;
-
-MULTILINE_TEXT_LITERAL:
-	(WORD_LITERAL (WORD_LITERAL | TAGNAME | TABLE_CELL)* NL)+
-	(NL+ WORD_LITERAL (WORD_LITERAL | TAGNAME | TABLE_CELL)* NL)*
-;
-
-WORD_LITERAL: NUMBER
-	| STRING
-	| WORD
-	| ANY_OTHER
-;
-
 
 terminal NUMBER returns ecore::EDouble:
 	'-'?

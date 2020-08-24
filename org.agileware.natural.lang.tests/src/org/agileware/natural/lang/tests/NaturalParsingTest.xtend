@@ -31,7 +31,7 @@ class NaturalParsingTest extends AbstractExamplesTest<NaturalModel> {
 		val doc = model.document
 		assertThat(doc.sections, hasSize(0))
 		assertThat(doc, notNullValue())
-		assertThat(doc.title.value, equalTo("Hello, Natural!"))
+		assertThat(doc.title, equalTo("Hello, Natural!"))
 	}
 
 	@Test
@@ -50,7 +50,7 @@ class NaturalParsingTest extends AbstractExamplesTest<NaturalModel> {
 		val doc = model.document
 		assertThat(doc, notNullValue())
 		assertThat(doc.narrative, notNullValue())
-		assertThat(doc.narrative.value, equalToIgnoringWhiteSpace('''
+		assertThat(doc.narrative, equalToIgnoringWhiteSpace('''
 			The quick brown fox
 			Jumps over the lazy dog
 		'''))
@@ -80,8 +80,7 @@ class NaturalParsingTest extends AbstractExamplesTest<NaturalModel> {
 
 		val doc = model.document
 		assertThat(doc, notNullValue())
-		assertThat(doc.narrative, notNullValue())
-		assertThat(doc.narrative.value, equalToIgnoringWhiteSpace('''
+		assertThat(doc.narrative, equalToIgnoringWhiteSpace('''
 			The quick brown fox
 			
 			"""
@@ -124,7 +123,7 @@ class NaturalParsingTest extends AbstractExamplesTest<NaturalModel> {
 		assertThat(doc.sections, hasSize(2))
 		assertThat(doc.meta.tags, hasSize(1))
 		assertThat(doc.meta.tags.get(0).value, equalTo("@title: Hello, Meta Tags!"))
-		assertThat(doc.narrative.value, equalToIgnoringWhiteSpace('''
+		assertThat(doc.narrative, equalToIgnoringWhiteSpace('''
 			The quick brown fox
 			Jumps over the lazy dog
 		'''))
