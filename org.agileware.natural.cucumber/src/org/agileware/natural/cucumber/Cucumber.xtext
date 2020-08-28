@@ -96,17 +96,7 @@ TEXT_LITERAL: WORD_LITERAL
 	| NUMBER_LITERAL
 	| TAG_LITERAL
 	| PLACEHOLDER
-	| PUNCTUATION
 	| STEP_KEYWORD
 	| ANY_OTHER
 ;
-
-
-// Note: We must override so that terminal order is preserved
-//@Override
-//terminal NUMBER_LITERAL returns ecore::EDouble:
-//	'-'?
-//	DIGIT+
-//	('.' DIGIT+)?
-//;
 

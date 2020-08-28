@@ -53,17 +53,26 @@ terminal TAG_LITERAL returns ecore::EString:
 	(':'? !('@' | ':' | '\n' | '\r')+)?
 ;
 
-Narrative:
+/**
+ * 
+ */
+Narrative: {Narrative}
    sections+=NarrativeSection
      (BLANK_SPACE sections+=NarrativeSection)*
 ;
 
+/**
+ * 
+ */
 NarrativeSection: Paragraph
 	| DocString
 	| Table
 ;
 
-Paragraph:
+/**
+ * 
+ */
+Paragraph: {Paragraph}
 	value=MultilineText
 ;
 
@@ -108,22 +117,29 @@ terminal TABLE_CELL: '|' !('|' | '\n' | '\r')*;
 // Text Literals
 // --------------------------------------
 
-Text: TEXT_LITERAL+;
+/**
+ * 
+ */
+Text returns ecore::EString:
+	TEXT_LITERAL+
+;
 
 TEXT_LITERAL: WORD_LITERAL
 	| STRING_LITERAL
 	| NUMBER_LITERAL
 	| TAG_LITERAL
-	| PUNCTUATION
 	| ANY_OTHER
 ;
 
-MultilineText:
+/**
+ * 
+ */
+MultilineText returns ecore::EString:
 	MULTILINE_TEXT_LITERAL+
 ;
 
 MULTILINE_TEXT_LITERAL:
-	(WORD_LITERAL | NUMBER_LITERAL | STRING_LITERAL | PUNCTUATION | ANY_OTHER)
+	(WORD_LITERAL | NUMBER_LITERAL | STRING_LITERAL | ANY_OTHER)
 	TEXT_LITERAL*
 	NL
 ;
@@ -151,7 +167,7 @@ terminal fragment OCTAL_ESCAPE:
 ;
 
 
-terminal NUMBER_LITERAL returns ecore::EDouble:
+terminal NUMBER_LITERAL returns ecore::EBigInteger:
 	'-'? DIGIT+ '.' DIGIT* EXPONENT_PART?
 	| '-'? '.' DIGIT+ EXPONENT_PART?
 	| '-'? DIGIT+ EXPONENT_PART
@@ -196,24 +212,8 @@ terminal fragment LATIN_ALPHABET: ('\u0041'..'\u005A')
 terminal SL_COMMENT: '#' !('\n' | '\r')* NL;
 
 BLANK_SPACE: NL+ WS*;
-
-terminal NL: ('\r'? '\n') 
-	| EOF
-;
-
+terminal NL: ('\r'? '\n') | EOF;
 terminal WS: (' ' | '\t');
-
-terminal PUNCTUATION: ASCII_SYMBOLS
-	| '...'
-	| '```'
-;
-
-// all ascii chars other than letters, digits, space, or control codes
-terminal fragment ASCII_SYMBOLS: ('\u0021'..'\u002F')
-	| ('\u003A'..'\u0040')
-	| ('\u005B'..'\u0060')
-	| ('\u007B'..'\u007E')
-;
 
 terminal ANY_OTHER: .;
 
