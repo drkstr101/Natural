@@ -18,7 +18,7 @@ NaturalModel: {NaturalModel}
 Document: {Document}
 	(meta=Meta BLANK_SPACE?)?
 	'Document:' title=Text? NL
-	(BLANK_SPACE? narrative=MultilineText)?
+	(BLANK_SPACE? narrative=Narrative)?
 	(BLANK_SPACE? sections+=Section)*
 	BLANK_SPACE?
 ;
@@ -29,7 +29,7 @@ Document: {Document}
 Section: {Section}
 	(meta=Meta BLANK_SPACE?)?
 	'Section:' title=Text? NL
-	(BLANK_SPACE? narrative=MultilineText)?
+	(BLANK_SPACE? narrative=Narrative)?
 ;
 
 /**
@@ -45,7 +45,26 @@ Meta: {Meta}
  * 
  */
 Tag: {Tag}
-	value=TAGNAME 
+	value=TAG_LITERAL
+;
+
+terminal TAG_LITERAL returns ecore::EString:
+	'@' WORD_LITERAL
+	(':'? !('@' | ':' | '\n' | '\r')+)?
+;
+
+Narrative:
+   sections+=NarrativeSection
+     (BLANK_SPACE sections+=NarrativeSection)*
+;
+
+NarrativeSection: Paragraph
+	| DocString
+	| Table
+;
+
+Paragraph:
+	value=MultilineText
 ;
 
 /**
@@ -84,60 +103,110 @@ TableCol: {TableCol}
 
 terminal TABLE_CELL: '|' !('|' | '\n' | '\r')*;
 
-Text returns ecore::EString:
-	TEXT_LITERAL
+
+// --------------------------------------
+// Text Literals
+// --------------------------------------
+
+Text: TEXT_LITERAL+;
+
+TEXT_LITERAL: WORD_LITERAL
+	| STRING_LITERAL
+	| NUMBER_LITERAL
+	| TAG_LITERAL
+	| PUNCTUATION
+	| ANY_OTHER
 ;
 
-MultilineText returns ecore::EString:
-	(TEXT_LITERAL NL)+
-	(NL+ TEXT_LITERAL NL)*
+MultilineText:
+	MULTILINE_TEXT_LITERAL+
 ;
 
-TEXT_LITERAL:
-	(WORD | NUMBER | STRING)
-	(WORD | NUMBER | STRING | TAGNAME | TABLE_CELL | ANY_OTHER)*
+MULTILINE_TEXT_LITERAL:
+	(WORD_LITERAL | NUMBER_LITERAL | STRING_LITERAL | PUNCTUATION | ANY_OTHER)
+	TEXT_LITERAL*
+	NL
 ;
 
-terminal NUMBER returns ecore::EDouble:
-	'-'?
-	DIGIT+
-	('.' DIGIT+)?
+
+terminal STRING_LITERAL returns ecore::EString:
+	('"' STRING_CHARACTER* '"')
+	| ("'" STRING_CHARACTER* "'")
 ;
 
-terminal STRING:
-	'"' ('\\' ('b' | 't' | 'n' | 'f' | 'r' | 'u' | '"' | "'" | '\\') | !('\\' | '"' | '\r' | '\n'))* '"' |
-	"'" ('\\' ('b' | 't' | 'n' | 'f' | 'r' | 'u' | '"' | "'" | '\\') | !('\\' | "'" | '\r' | '\n'))* "'";
+terminal fragment STRING_CHARACTER:
+	!('"' | '\\' | '\n' | '\r')
+	| ESCAPE_SEQUENCE
+;
+
+terminal fragment ESCAPE_SEQUENCE:
+	'\\' ('b' | 't' | 'n' | 'f' | 'r' | '"' | '\'' | '\\')
+	| OCTAL_ESCAPE
+;
+
+terminal fragment OCTAL_ESCAPE:
+	'\\' '0'..'7'
+	| '\\' '0'..'7' '0'..'7'
+	| '\\' '0'..'3' '0'..'7' '0'..'7'
+;
+
+
+terminal NUMBER_LITERAL returns ecore::EDouble:
+	'-'? DIGIT+ '.' DIGIT* EXPONENT_PART?
+	| '-'? '.' DIGIT+ EXPONENT_PART?
+	| '-'? DIGIT+ EXPONENT_PART
+	| '-'? DECIMAL_NUMBER
+	| '-'? HEX_NUMBER
+	| '-'? OCTAL_NUMBER
+;
+
+terminal fragment DECIMAL_NUMBER:
+	NON_ZERO_DIGIT DIGIT*
+;
+
+terminal fragment HEX_NUMBER:
+	'0' ('x' | 'X') ('0'..'9' | 'a'..'f' | 'A'..'F')+
+;
+
+terminal fragment OCTAL_NUMBER:
+	'0' '0'..'7'*
+;
+
+terminal fragment EXPONENT_PART:
+	('e' | 'E') ('+' | '-')? DIGIT+
+;
+
+terminal WORD_LITERAL returns ecore::EString:
+	(LETTER | DIGIT)
+	(LETTER | DIGIT | '_' | '.' | '-')*
+;
+
+
+terminal fragment DIGIT: '0' | NON_ZERO_DIGIT;
+
+terminal fragment NON_ZERO_DIGIT: '1'..'9';
+
+terminal fragment LETTER: LATIN_ALPHABET;
+
+terminal fragment LATIN_ALPHABET: ('\u0041'..'\u005A')
+	| ('\u0061'..'\u007A')
+;
+
 
 terminal SL_COMMENT: '#' !('\n' | '\r')* NL;
 
-terminal TAGNAME: '@' !(' ' | '\t' | '\n' | '\r')+ ;
+BLANK_SPACE: NL+ WS*;
 
-terminal WORD: 
-	!('@' | '|' | ' ' | '\t' | '\n' | '\r')
-	!(' ' | '\t' | '\n' | '\r')*
+terminal NL: ('\r'? '\n') 
+	| EOF
 ;
 
-BLANK_SPACE: NL+ WS*;
-terminal NL: ('\r'? '\n') | EOF;
+terminal WS: (' ' | '\t');
 
-terminal WS: (SPACE | '\t');
-
-terminal ANY_OTHER: .;
-
-// Character Ranges
-////
-
-terminal fragment SPACE: ASCII_SPACE;
-terminal fragment DIGIT: ASCII_DIGIT;
-terminal fragment LETTER: LATIN_ALPHABET;
-
-
-// Basic Latin
-////
-
-terminal fragment ASCII_SPACE: '\u0020';
-
-terminal fragment ASCII_DIGIT: ('\u0030'..'\u0039');
+terminal PUNCTUATION: ASCII_SYMBOLS
+	| '...'
+	| '```'
+;
 
 // all ascii chars other than letters, digits, space, or control codes
 terminal fragment ASCII_SYMBOLS: ('\u0021'..'\u002F')
@@ -146,6 +215,5 @@ terminal fragment ASCII_SYMBOLS: ('\u0021'..'\u002F')
 	| ('\u007B'..'\u007E')
 ;
 
-terminal fragment LATIN_ALPHABET: ('\u0041'..'\u005A')
-	| ('\u0061'..'\u007A')
-;
+terminal ANY_OTHER: .;
+

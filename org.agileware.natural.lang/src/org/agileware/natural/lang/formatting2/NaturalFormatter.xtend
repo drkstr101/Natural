@@ -16,9 +16,8 @@ import org.eclipse.xtext.formatting2.IFormattableDocument
 class NaturalFormatter extends AbstractFormatter2 {
 
 	@Inject extension NaturalGrammarAccess naturalGrammarAccess
-	
-	@Inject NaturalTextFormatter.Factory textFormatterFactory
 
+	// @Inject NaturalTextFormatter.Factory textFormatterFactory
 	def dispatch void format(NaturalModel model, extension IFormattableDocument doc) {
 		println(textRegionAccess)
 		model.document.format()
@@ -26,17 +25,14 @@ class NaturalFormatter extends AbstractFormatter2 {
 	}
 
 	def dispatch void format(Document model, extension IFormattableDocument doc) {
-		val textFormatter = textFormatterFactory.create(request.textRegionAccess, naturalGrammarAccess)
-		
+		// val textFormatter = textFormatterFactory.create(request.textRegionAccess, naturalGrammarAccess)
 		// Format meta tags
 		model.meta.format()
-		
+
 		// Format title
-		textFormatter.formatText(model, documentAccess.titleAssignment_3, doc)
-		
+		// textFormatter.formatText(model, documentAccess.titleAssignment_3, doc)
 		// Format narrative
-		textFormatter.formatMultilineText(model, documentAccess.narrativeAssignment_5_1, doc)
-		
+		// textFormatter.formatMultilineText(model, documentAccess.narrativeAssignment_5_1, doc)
 		// Format sections
 		for (s : model.sections) {
 			s.format()
@@ -44,17 +40,14 @@ class NaturalFormatter extends AbstractFormatter2 {
 	}
 
 	def dispatch void format(Section model, extension IFormattableDocument doc) {
-		val textFormatter = textFormatterFactory.create(request.textRegionAccess, naturalGrammarAccess)
-		
+		// val textFormatter = textFormatterFactory.create(request.textRegionAccess, naturalGrammarAccess)
 		// Format meta tags
 		model.meta.format()
-		
-		// Format title
-		textFormatter.formatText(model, sectionAccess.titleAssignment_3, doc)
-		
-		// Format narrative
-		textFormatter.formatMultilineText(model, sectionAccess.narrativeAssignment_5_1, doc)
-		
+
+	// Format title
+	// textFormatter.formatText(model, sectionAccess.titleAssignment_3, doc)
+	// Format narrative
+	// textFormatter.formatMultilineText(model, sectionAccess.narrativeAssignment_5_1, doc)
 	}
 
 	def dispatch void format(Meta model, extension IFormattableDocument doc) {

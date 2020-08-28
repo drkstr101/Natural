@@ -41,14 +41,23 @@ class NaturalTextFormatter {
 
 	def formatMultilineText(EObject owner, Assignment assignment, extension IFormattableDocument doc) {
 		val region = owner.regionFor.assignment(assignment)
-	 	addReplacer(new MultilineTextReplacer(region))
+		if (region instanceof NodeSemanticRegion) {
+			val model = LinesModel.build(region.text)
+
+			println("======= LINE MODEL =======")
+			for (l : model.lines) {
+				println('''«l.relativeOffset»	«l.length»: «l»''')
+			}
+			println("======= LINE MODEL =======")
+			// addReplacer(new MultilineTextReplacer(region))
+		}
 	}
 
 }
 
 @FinalFieldsConstructor
 class MultilineTextReplacer implements ITextReplacer {
-	
+
 	val ISemanticRegion region
 
 	override ITextSegment getRegion() {
@@ -57,18 +66,18 @@ class MultilineTextReplacer implements ITextReplacer {
 
 	override createReplacements(ITextReplacerContext context) {
 		val model = LinesModel.build(region.text)
-		
+
 		println("======= LINE MODEL =======")
-		for(l : model.lines) {
+		for (l : model.lines) {
 			println('''
-			«l.relativeOffset»	«l.length»: «l»
+				«l.relativeOffset»	«l.length»: «l»
 			''')
 		}
 		println("======= LINE MODEL =======")
-			
+
 		val newText = model.toString()
 		context.addReplacement(region.replaceWith(newText))
-		
+
 		return context
 	}
 }
@@ -264,4 +273,3 @@ class LeadingWSTextLinePart extends TextLine {
 		return true
 	}
 }
-
