@@ -4,20 +4,25 @@
 package org.agileware.natural.lang.formatting2
 
 import com.google.inject.Inject
+import org.agileware.natural.lang.model.DocString
 import org.agileware.natural.lang.model.Document
 import org.agileware.natural.lang.model.Meta
+import org.agileware.natural.lang.model.Narrative
 import org.agileware.natural.lang.model.NaturalModel
+import org.agileware.natural.lang.model.Paragraph
 import org.agileware.natural.lang.model.Section
+import org.agileware.natural.lang.model.Table
 import org.agileware.natural.lang.model.Tag
 import org.agileware.natural.lang.services.NaturalGrammarAccess
 import org.eclipse.xtext.formatting2.AbstractFormatter2
 import org.eclipse.xtext.formatting2.IFormattableDocument
+import org.eclipse.xtext.formatting2.regionaccess.ISemanticRegion
 
 class NaturalFormatter extends AbstractFormatter2 {
 
 	@Inject extension NaturalGrammarAccess naturalGrammarAccess
 
-	// @Inject NaturalTextFormatter.Factory textFormatterFactory
+// @Inject NaturalTextFormatter.Factory textFormatterFactory
 	def dispatch void format(NaturalModel model, extension IFormattableDocument doc) {
 		println(textRegionAccess)
 		model.document.format()
@@ -26,30 +31,98 @@ class NaturalFormatter extends AbstractFormatter2 {
 
 	def dispatch void format(Document model, extension IFormattableDocument doc) {
 		// val textFormatter = textFormatterFactory.create(request.textRegionAccess, naturalGrammarAccess)
+		
 		// Format meta tags
-		model.meta.format()
+		if (model.meta !== null) {
+			model.meta.format()
+		}
 
 		// Format title
+		if (model.title === null) {
+			model.regionFor.keyword(documentAccess.documentKeyword_2)
+					.append[oneSpace]
+		} else {
+			model.regionFor.assignment(documentAccess.titleAssignment_3)
+					.prepend[oneSpace]
+					.append[noSpace]
+		}
+
+		// Indent Block interior
+		val start = model.startBlock(doc)
+		val end = model.endBlock(doc)
+		interior(start, end)[indent]
+		
 		// textFormatter.formatText(model, documentAccess.titleAssignment_3, doc)
 		// Format narrative
 		// textFormatter.formatMultilineText(model, documentAccess.narrativeAssignment_5_1, doc)
+		
+		// Format Narrative blocks
+		if(model.narrative !== null) {
+			model.narrative.format()
+		}
+		
 		// Format sections
 		for (s : model.sections) {
+			s.prepend[indent]
 			s.format()
 		}
 	}
 
 	def dispatch void format(Section model, extension IFormattableDocument doc) {
 		// val textFormatter = textFormatterFactory.create(request.textRegionAccess, naturalGrammarAccess)
+		
 		// Format meta tags
 		model.meta.format()
 
-	// Format title
-	// textFormatter.formatText(model, sectionAccess.titleAssignment_3, doc)
-	// Format narrative
-	// textFormatter.formatMultilineText(model, sectionAccess.narrativeAssignment_5_1, doc)
+		// Format title
+		if (model.title === null) {
+			model.regionFor.keyword(sectionAccess.sectionKeyword_2)
+					.append[oneSpace]
+		} else {
+			model.regionFor.assignment(sectionAccess.titleAssignment_3)
+					.prepend[oneSpace]
+					.append[noSpace]
+		}
+
+		// Format Narrative blocks
+		if (model.narrative !== null) {
+			// Indent Block interior
+			val start = model.startBlock(doc)
+			val end = model.endBlock(doc)
+			interior(start, end)[indent]
+
+			//model.narrative.prepend[indent]
+			model.narrative.format()
+		}
+		
+		// Format title
+		// textFormatter.formatText(model, sectionAccess.titleAssignment_3, doc)
+		// Format narrative
+		// textFormatter.formatMultilineText(model, sectionAccess.narrativeAssignment_5_1, doc)
 	}
 
+	def dispatch void format(Narrative model, extension IFormattableDocument doc) {
+		
+		// Format section blocks 
+		for (s : model.sections) {
+			if (s instanceof Table) {
+				s.rows.forEach[prepend[indent]]
+			} else {
+				s.prepend[indent]
+			}
+
+			s.format()
+		}
+	}
+
+	def dispatch void format(Table model, extension IFormattableDocument doc) {
+		// TODO...
+	}
+
+	def dispatch void format(DocString model, extension IFormattableDocument doc) {
+		// TODO...
+	}
+	
 	def dispatch void format(Meta model, extension IFormattableDocument doc) {
 		for (t : model.tags) {
 			t.format()
@@ -58,5 +131,55 @@ class NaturalFormatter extends AbstractFormatter2 {
 
 	def dispatch void format(Tag model, extension IFormattableDocument doc) {
 		// TODO...
+	}
+
+	// --------------------------------------
+	// Document Blocks
+	// --------------------------------------
+	
+	def dispatch ISemanticRegion startBlock(Document model, extension IFormattableDocument doc) {
+		return model.regionFor.ruleCallTo(NLRule)
+	}
+
+	def dispatch ISemanticRegion endBlock(Document model, extension IFormattableDocument doc) {
+		if (!model.sections.isEmpty()) {
+			return model.sections.last.endBlock(doc)
+		} else if (model.narrative !== null) {
+			return model.narrative.endBlock(doc)
+		}
+
+		return model.regionFor.ruleCallTo(BLANK_SPACERule)
+	}
+
+	def dispatch ISemanticRegion startBlock(Section model, extension IFormattableDocument doc) {
+		return model.regionFor.ruleCallTo(NLRule)
+	}
+
+	def dispatch ISemanticRegion endBlock(Section model, extension IFormattableDocument doc) {
+		if (model.narrative !== null) {
+			return model.narrative.endBlock(doc)
+		}
+
+		return model.regionFor.ruleCallTo(NLRule)
+	}
+
+	def dispatch ISemanticRegion endBlock(Narrative model, extension IFormattableDocument doc) {
+		if (!model.sections.isEmpty()) {
+			return model.sections.last.endBlock(doc)
+		}
+
+		return model.regionFor.ruleCallTo(NLRule)
+	}
+	
+	def dispatch ISemanticRegion endBlock(Paragraph model, extension IFormattableDocument doc) {
+		return model.regionFor.ruleCall(multilineTextAccess.NLTerminalRuleCall_2)
+	}
+	
+	def dispatch ISemanticRegion endBlock(DocString model, extension IFormattableDocument doc) {
+		return model.regionFor.ruleCallTo(NLRule)
+	}
+	
+	def dispatch ISemanticRegion endBlock(Table model, extension IFormattableDocument doc) {
+		return model.rows.last.regionFor.ruleCallTo(NLRule)
 	}
 }

@@ -130,13 +130,14 @@ class CucumberFormatter extends AbstractFormatter2 {
 	// Helper Methods
 	//
 	// ----------------------------------------------------------
+	
 	/**
 	 * Returns the semantic element that closes the Feature
 	 * 
 	 * Delegates to:
 	 * 1. The last element in scenarios
 	 * 2. The last element in background
-	 * 3. The EOL rule after title
+	 * 3. The NL rule after title
 	 */
 	def ISemanticRegion endRegionFor(Feature model, extension IFormattableDocument doc) {
 		if (!model.scenarios.isEmpty()) {
@@ -151,7 +152,7 @@ class CucumberFormatter extends AbstractFormatter2 {
 	 * 
 	 * Delegates to:
 	 * 1. The last element in `steps`
-	 * 3. The EOL rule after title
+	 * 3. The NL rule after title
 	 */
 	def ISemanticRegion endRegionFor(AbstractScenario model, extension IFormattableDocument doc) {
 		if (!model.steps.isEmpty()) {
@@ -167,7 +168,7 @@ class CucumberFormatter extends AbstractFormatter2 {
 	 * Delegates to:
 	 * 1. The last element in examples
 	 * 2. The last element in steps
-	 * 3. The EOL rule after title
+	 * 3. The NL rule after title
 	 */
 	def ISemanticRegion endRegionFor(ScenarioOutline model, extension IFormattableDocument doc) {
 		if (!model.examples.isEmpty()) {
@@ -183,8 +184,8 @@ class CucumberFormatter extends AbstractFormatter2 {
 	 * Returns the semantic element that closes an Example
 	 * 
 	 * Delegates to:
-	 * 1. The EOL rule after the Table
-	 * 1. The EOL rule after the title
+	 * 1. The NL rule after the Table
+	 * 1. The NL rule after the title
 	 */
 	def ISemanticRegion endRegionFor(Example model, extension IFormattableDocument doc) {
 		if (model.table !== null) {
@@ -199,7 +200,7 @@ class CucumberFormatter extends AbstractFormatter2 {
 	 * 
 	 * Delegates to:
 	 * 1. Either to code or table if present
-	 * 2. The EOL rule after `description`
+	 * 2. The NL rule after `description`
 	 */
 	def ISemanticRegion endRegionFor(Step model, extension IFormattableDocument doc) {
 		if (model.text !== null) {
@@ -215,7 +216,7 @@ class CucumberFormatter extends AbstractFormatter2 {
 	 * Returns the semantic element that closes a DocString
 	 * 
 	 * Delegates to:
-	 * 1. The EOLRule at the end of the element
+	 * 1. The NLRule at the end of the element
 	 */
 	def ISemanticRegion endRegionFor(DocString model, extension IFormattableDocument doc) {
 		return model.regionFor.ruleCall(docStringAccess.NLTerminalRuleCall_2)
@@ -225,7 +226,7 @@ class CucumberFormatter extends AbstractFormatter2 {
 	 * Returns the semantic element that closes a Table
 	 * 
 	 * Delegates to:
-	 * 1. The EOLRule at the end of the table
+	 * 1. The NLRule at the end of the table
 	 */
 	def ISemanticRegion endRegionFor(Table model, extension IFormattableDocument doc) {
 		return model.rows.last.regionFor.ruleCallTo(NLRule)
