@@ -45,7 +45,12 @@ Meta: {Meta}
  * 
  */
 Tag: {Tag}
-	value=TAG_LITERAL
+	id=TAG_LITERAL
+	(':' value=Text)?
+;
+
+terminal TAG_LITERAL: 
+	'@' !('@' | ':'  | ' ' | '\t' | '\n' | '\r')+
 ;
 
 /**
@@ -119,10 +124,10 @@ Text returns ecore::EString:
 	TEXT_LITERAL+
 ;
 
-TEXT_LITERAL: WORD_LITERAL 
+TEXT_LITERAL: WORD_LITERAL
 	| NUMBER_LITERAL 
-	| STRING_LITERAL 
-	| TAG_LITERAL 
+	| STRING_LITERAL
+//	| PUNCTUATION
 	| TABLE_CELL 
 	| ANY_OTHER
 ;
@@ -174,15 +179,20 @@ terminal fragment EXPONENT_PART:
 
 terminal SL_COMMENT: '#' !('\n' | '\r')* NL;
 
-terminal TAG_LITERAL: 
-	'@' !('@' | ':'  | ' ' | '\t' | '\n' | '\r')+
-	//	(':'? !('@' | ':' | '\n' | '\r')+)?
-;
-
 terminal WORD_LITERAL: 
 	!('@' | '|' | ' ' | '\t' | '\n' | '\r')
 	!(' ' | '\t' | '\n' | '\r')*
 ;
+
+//terminal WORD: 
+//	(LETTER | DIGIT)
+//	(LETTER | DIGIT | '_' | '-' | '.' )*
+//;
+
+//terminal fragment LETTER: LATIN_ALPHABET;
+//terminal fragment LATIN_ALPHABET: ('\u0041'..'\u005A')
+//	| ('\u0061'..'\u007A')
+//;
 
 BLANK_SPACE: NL+ WS*;
 terminal NL: ('\r'? '\n') | EOF;

@@ -109,7 +109,7 @@ class NaturalExamplesTest extends AbstractExamplesTest<NaturalModel> {
 	def void example_09() {
 		assertExampleParses('''
 			# language: en
-			# @title: Hello, Meta Tags!
+			@title: Hello, Meta Tags!
 			Document:   Hello, 	Natural! 
 			
 			  @foo
