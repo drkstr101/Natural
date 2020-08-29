@@ -3,7 +3,7 @@
  */
 package org.agileware.natural.lang;
 
-import org.agileware.natural.lang.conversion.NaturalValueConverterService;
+import org.agileware.natural.lang.text.TextValueConverterService;
 import org.eclipse.xtext.conversion.IValueConverterService;
 
 /**
@@ -12,6 +12,6 @@ import org.eclipse.xtext.conversion.IValueConverterService;
 public class NaturalRuntimeModule extends AbstractNaturalRuntimeModule {
 	@Override
 	public Class<? extends IValueConverterService> bindIValueConverterService() {
-		return NaturalValueConverterService.class;
+		return TextValueConverterService.class;
 	}
 }

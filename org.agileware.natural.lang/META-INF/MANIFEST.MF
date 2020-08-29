@@ -17,7 +17,6 @@ Require-Bundle: org.agileware.natural.common;visibility:=reexport,
  org.antlr.runtime;bundle-version="[3.2.0,3.2.1)"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.agileware.natural.lang;uses:="com.google.inject,org.eclipse.xtext.service,org.eclipse.xtext",
- org.agileware.natural.lang.conversion;uses:="org.eclipse.xtext.nodemodel,org.eclipse.xtext.conversion,org.eclipse.xtext.conversion.impl",
  org.agileware.natural.lang.formatting2;
   uses:="org.eclipse.emf.ecore,
    org.agileware.natural.lang.model,
@@ -48,5 +47,6 @@ Export-Package: org.agileware.natural.lang;uses:="com.google.inject,org.eclipse.
  org.agileware.natural.lang.scoping;uses:="org.eclipse.xtext.scoping.impl",
  org.agileware.natural.lang.serializer;uses:="org.agileware.natural.lang.model",
  org.agileware.natural.lang.services;uses:="org.eclipse.xtext.service,org.eclipse.xtext",
+ org.agileware.natural.lang.text;uses:="org.eclipse.xtext.nodemodel,org.eclipse.xtext.conversion,org.eclipse.xtext.conversion.impl",
  org.agileware.natural.lang.validation;uses:="org.eclipse.xtext.util,org.eclipse.xtext.validation"
 Import-Package: org.apache.log4j

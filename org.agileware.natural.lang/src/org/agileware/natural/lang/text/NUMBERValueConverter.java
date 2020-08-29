@@ -1,4 +1,4 @@
-package org.agileware.natural.lang.conversion;
+package org.agileware.natural.lang.text;
 
 import java.math.BigInteger;
 

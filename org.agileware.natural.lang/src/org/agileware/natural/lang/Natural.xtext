@@ -49,16 +49,14 @@ Tag: {Tag}
 	(':' value=Text)?
 ;
 
-terminal TAG_LITERAL: 
-	'@' !('@' | ':'  | ' ' | '\t' | '\n' | '\r')+
-;
+terminal TAG_LITERAL: '@' !('@' | ':'  | ' ' | '\t' | '\n' | '\r')+;
 
 /**
  * 
  */
 Narrative: {Narrative}
-   sections+=NarrativeSection
-     (BLANK_SPACE sections+=NarrativeSection)*
+	sections+=NarrativeSection
+      (BLANK_SPACE sections+=NarrativeSection)*
 ;
 
 /**
@@ -114,7 +112,7 @@ terminal TABLE_CELL: '|' !('|' | '\n' | '\r')*;
 
 
 // --------------------------------------
-// Text Model
+// Text Literals
 // --------------------------------------
 
 /**
@@ -124,31 +122,30 @@ Text returns ecore::EString:
 	TEXT_LITERAL+
 ;
 
-TEXT_LITERAL: WORD_LITERAL
-	| NUMBER_LITERAL 
-	| STRING_LITERAL
-//	| PUNCTUATION
+MultilineText returns ecore::EString:
+	(START_TEXT_LITERAL TEXT_LITERAL* NL)+
+;
+
+START_TEXT_LITERAL: WORD 
+	| NUMBER 
+	| STRING 
+	| ANY_OTHER
+;
+
+TEXT_LITERAL: WORD
+	| NUMBER 
+	| STRING
 	| TABLE_CELL 
 	| ANY_OTHER
 ;
 
-/**
- * 
- */
-MultilineText returns ecore::EString:
-	MULTILINE_TEXT_LITERAL+
-;
 
-MULTILINE_TEXT_LITERAL:
-	(WORD_LITERAL | NUMBER_LITERAL | STRING_LITERAL | ANY_OTHER) TEXT_LITERAL* NL
-;
-
-terminal STRING_LITERAL returns ecore::EString:
+terminal STRING returns ecore::EString:
 	'"' ('\\' ('b' | 't' | 'n' | 'f' | 'r' | 'u' | '"' | '\\') | !('\\' | '"' | '\r' | '\n'))* '"' |
 	"'" ('\\' ('b' | 't' | 'n' | 'f' | 'r' | 'u' | "'" | '\\') | !('\\' | "'" | '\r' | '\n'))* "'"
 ;
 
-terminal NUMBER_LITERAL returns ecore::EBigInteger:
+terminal NUMBER returns ecore::EBigInteger:
 	'-'? DIGIT+ '.' DIGIT* EXPONENT_PART?
 	| '-'? '.' DIGIT+ EXPONENT_PART?
 	| '-'? DIGIT+ EXPONENT_PART
@@ -179,12 +176,12 @@ terminal fragment EXPONENT_PART:
 
 terminal SL_COMMENT: '#' !('\n' | '\r')* NL;
 
-terminal WORD_LITERAL: 
+terminal WORD: 
 	!('@' | '|' | ' ' | '\t' | '\n' | '\r')
 	!(' ' | '\t' | '\n' | '\r')*
 ;
 
-//terminal WORD: 
+//terminal SIMPLE_WORD: 
 //	(LETTER | DIGIT)
 //	(LETTER | DIGIT | '_' | '-' | '.' )*
 //;

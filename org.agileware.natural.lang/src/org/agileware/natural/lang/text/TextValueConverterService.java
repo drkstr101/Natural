@@ -1,4 +1,4 @@
-package org.agileware.natural.lang.conversion;
+package org.agileware.natural.lang.text;
 
 import java.math.BigInteger;
 
@@ -9,12 +9,12 @@ import org.eclipse.xtext.conversion.impl.STRINGValueConverter;
 
 import com.google.inject.Inject;
 
-public class NaturalValueConverterService extends AbstractDeclarativeValueConverterService {
+public class TextValueConverterService extends AbstractDeclarativeValueConverterService {
 
 	@Inject
 	private STRINGValueConverter stringValueConverter;
 
-	@ValueConverter(rule = "STRING_LITERAL")
+	@ValueConverter(rule = TextLiterals.STRING)
 	public IValueConverter<String> STRING_LITERAL() {
 		return stringValueConverter;
 	}
@@ -22,9 +22,8 @@ public class NaturalValueConverterService extends AbstractDeclarativeValueConver
 	@Inject
 	private NUMBERValueConverter numberValueConverter;
 
-	@ValueConverter(rule = "NUMBER_LITERAL")
+	@ValueConverter(rule = TextLiterals.NUMBER)
 	public IValueConverter<BigInteger> NUMBER_LITERAL() {
 		return numberValueConverter;
 	}
-
 }
