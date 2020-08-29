@@ -22,7 +22,8 @@ class NaturalFormatter extends AbstractFormatter2 {
 
 	@Inject extension NaturalGrammarAccess naturalGrammarAccess
 
-// @Inject NaturalTextFormatter.Factory textFormatterFactory
+	@Inject MultilineTextFormatter.Factory textFormatterFactory
+
 	def dispatch void format(NaturalModel model, extension IFormattableDocument doc) {
 		println(textRegionAccess)
 		model.document.format()
@@ -30,8 +31,7 @@ class NaturalFormatter extends AbstractFormatter2 {
 	}
 
 	def dispatch void format(Document model, extension IFormattableDocument doc) {
-		// val textFormatter = textFormatterFactory.create(request.textRegionAccess, naturalGrammarAccess)
-		
+
 		// Format meta tags
 		if (model.meta !== null) {
 			model.meta.format()
@@ -39,28 +39,22 @@ class NaturalFormatter extends AbstractFormatter2 {
 
 		// Format title
 		if (model.title === null) {
-			model.regionFor.keyword(documentAccess.documentKeyword_2)
-					.append[oneSpace]
+			model.regionFor.keyword(documentAccess.documentKeyword_2).append[oneSpace]
 		} else {
-			model.regionFor.assignment(documentAccess.titleAssignment_3)
-					.prepend[oneSpace]
-					.append[noSpace]
+			model.regionFor.assignment(documentAccess.titleAssignment_3).prepend[oneSpace].append[noSpace]
 		}
 
-		// Indent Block interior
+		// Indent block
 		val start = model.startBlock(doc)
 		val end = model.endBlock(doc)
 		interior(start, end)[indent]
-		
-		// textFormatter.formatText(model, documentAccess.titleAssignment_3, doc)
+
 		// Format narrative
-		// textFormatter.formatMultilineText(model, documentAccess.narrativeAssignment_5_1, doc)
-		
-		// Format Narrative blocks
-		if(model.narrative !== null) {
+		if (model.narrative !== null) {
+			model.narrative.prepend[indent]
 			model.narrative.format()
 		}
-		
+
 		// Format sections
 		for (s : model.sections) {
 			s.prepend[indent]
@@ -69,19 +63,15 @@ class NaturalFormatter extends AbstractFormatter2 {
 	}
 
 	def dispatch void format(Section model, extension IFormattableDocument doc) {
-		// val textFormatter = textFormatterFactory.create(request.textRegionAccess, naturalGrammarAccess)
-		
+
 		// Format meta tags
 		model.meta.format()
 
 		// Format title
 		if (model.title === null) {
-			model.regionFor.keyword(sectionAccess.sectionKeyword_2)
-					.append[oneSpace]
+			model.regionFor.keyword(sectionAccess.sectionKeyword_2).append[oneSpace]
 		} else {
-			model.regionFor.assignment(sectionAccess.titleAssignment_3)
-					.prepend[oneSpace]
-					.append[noSpace]
+			model.regionFor.assignment(sectionAccess.titleAssignment_3).prepend[oneSpace].append[noSpace]
 		}
 
 		// Format Narrative blocks
@@ -91,24 +81,21 @@ class NaturalFormatter extends AbstractFormatter2 {
 			val end = model.endBlock(doc)
 			interior(start, end)[indent]
 
-			//model.narrative.prepend[indent]
 			model.narrative.format()
 		}
-		
-		// Format title
-		// textFormatter.formatText(model, sectionAccess.titleAssignment_3, doc)
-		// Format narrative
-		// textFormatter.formatMultilineText(model, sectionAccess.narrativeAssignment_5_1, doc)
 	}
 
 	def dispatch void format(Narrative model, extension IFormattableDocument doc) {
+		val textFormatter = multilineTextFormatter(doc)
 		
 		// Format section blocks 
 		for (s : model.sections) {
 			if (s instanceof Table) {
 				s.rows.forEach[prepend[indent]]
-			} else {
-				s.prepend[indent]
+			} else if (s instanceof Paragraph) {
+				textFormatter.formatText(s, paragraphAccess.valueAssignment_1, doc)
+			} else if (s instanceof DocString) {
+				textFormatter.formatText(s, docStringAccess.valueAssignment_1, doc)
 			}
 
 			s.format()
@@ -122,7 +109,7 @@ class NaturalFormatter extends AbstractFormatter2 {
 	def dispatch void format(DocString model, extension IFormattableDocument doc) {
 		// TODO...
 	}
-	
+
 	def dispatch void format(Meta model, extension IFormattableDocument doc) {
 		for (t : model.tags) {
 			t.format()
@@ -131,6 +118,10 @@ class NaturalFormatter extends AbstractFormatter2 {
 
 	def dispatch void format(Tag model, extension IFormattableDocument doc) {
 		// TODO...
+	}
+	
+	def dispatch MultilineTextFormatter multilineTextFormatter(extension IFormattableDocument doc) {
+		return textFormatterFactory.create(request.textRegionAccess, naturalGrammarAccess)
 	}
 
 	// --------------------------------------
@@ -170,15 +161,15 @@ class NaturalFormatter extends AbstractFormatter2 {
 
 		return model.regionFor.ruleCallTo(NLRule)
 	}
-	
+
 	def dispatch ISemanticRegion endBlock(Paragraph model, extension IFormattableDocument doc) {
 		return model.regionFor.ruleCall(multilineTextAccess.NLTerminalRuleCall_2)
 	}
-	
+
 	def dispatch ISemanticRegion endBlock(DocString model, extension IFormattableDocument doc) {
 		return model.regionFor.ruleCallTo(NLRule)
 	}
-	
+
 	def dispatch ISemanticRegion endBlock(Table model, extension IFormattableDocument doc) {
 		return model.rows.last.regionFor.ruleCallTo(NLRule)
 	}
