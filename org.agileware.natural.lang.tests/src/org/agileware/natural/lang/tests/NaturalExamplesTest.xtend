@@ -109,7 +109,7 @@ class NaturalExamplesTest extends AbstractExamplesTest<NaturalModel> {
 	def void example_09() {
 		assertExampleParses('''
 			# language: en
-			@title: Hello, Meta Tags!
+			# @title: Hello, Meta Tags!
 			Document:   Hello, 	Natural! 
 			
 			  @foo
@@ -119,6 +119,16 @@ class NaturalExamplesTest extends AbstractExamplesTest<NaturalModel> {
 			@foo @bar 
 				
 			Section: B
+		''')
+	}
+	
+	@Test
+	def void example_10() {
+		assertExampleParses('''
+			Document: Hello, ASCII Punctuation! 
+				,./;'[]\-=
+				<>?:"{}|_+
+				!@#$%^&*()`~
 		''')
 	}
 }

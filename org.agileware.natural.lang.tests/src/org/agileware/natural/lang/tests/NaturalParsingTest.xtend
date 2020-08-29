@@ -6,8 +6,8 @@ package org.agileware.natural.lang.tests
 import com.google.inject.Inject
 import org.agileware.natural.lang.model.DocString
 import org.agileware.natural.lang.model.NaturalModel
-import org.agileware.natural.lang.model.Paragraph
 import org.agileware.natural.lang.model.Table
+import org.agileware.natural.lang.model.Paragraph
 import org.agileware.natural.lang.serializer.NaturalSerializer
 import org.agileware.natural.testing.AbstractExamplesTest
 import org.eclipse.xtext.testing.InjectWith
@@ -72,7 +72,9 @@ class NaturalParsingTest extends AbstractExamplesTest<NaturalModel> {
 		val model = parse('''
 			# language: en
 			Document:
-				The quick brown fox
+				,./;'[]\\-=
+				<>?:"{}|_+
+				!@#$%^&*()`~
 				
 				"""
 				At -9.8 m/s^2
@@ -82,7 +84,8 @@ class NaturalParsingTest extends AbstractExamplesTest<NaturalModel> {
 				| a | 0 |
 				| b | 1 |
 				
-				Jumps over the lazy dog
+				田中さんにあげて下さい
+				パーティーへ行かないか
 		''')
 
 		assertThat(model, notNullValue())
@@ -96,7 +99,9 @@ class NaturalParsingTest extends AbstractExamplesTest<NaturalModel> {
 		
 		val p1 = doc.narrative.sections.get(0) as Paragraph
 		assertThat(p1.value, equalToIgnoringWhiteSpace('''
-			The quick brown fox
+			,./;'[]\\-=
+			<>?:"{}|_+
+			!@#$%^&*()`~
 		'''))
 		
 		val ds = doc.narrative.sections.get(1) as DocString
@@ -115,7 +120,8 @@ class NaturalParsingTest extends AbstractExamplesTest<NaturalModel> {
 		
 		val p2 = doc.narrative.sections.get(3) as Paragraph
 		assertThat(p2.value, equalToIgnoringWhiteSpace('''
-			Jumps over the lazy dog
+			田中さんにあげて下さい
+			パーティーへ行かないか
 		'''))
 	}
 
@@ -123,7 +129,7 @@ class NaturalParsingTest extends AbstractExamplesTest<NaturalModel> {
 	def void multipleSectionsWithMetaTags() {
 		val model = parse('''
 			# language: en
-			@title: Hello, World!
+			# @title: Hello, World!
 			Document:  
 				The quick brown fox
 				Jumps over the lazy dog
