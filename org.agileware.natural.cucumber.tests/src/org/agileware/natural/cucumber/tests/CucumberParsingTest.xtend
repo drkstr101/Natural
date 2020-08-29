@@ -64,13 +64,13 @@ class CucumberParsingTest extends AbstractParserTest<CucumberModel> {
 		val doc = model.document
 		assertThat(doc, notNullValue())
 
-		val t1 = doc.scenarios.get(0).steps.get(0).table
-		assertThat(t1, notNullValue())
-		assertThat(t1.rows, hasSize(1))
-
-		val t2 = (doc.scenarios.get(1) as ScenarioOutline).examples.get(0).table
-		assertThat(t2, notNullValue())
-		assertThat(t2.rows, hasSize(3))
+//		val t1 = doc.scenarios.get(0).steps.get(0).table
+//		assertThat(t1, notNullValue())
+//		assertThat(t1.rows, hasSize(1))
+//
+//		val t2 = (doc.scenarios.get(1) as ScenarioOutline).examples.get(0).table
+//		assertThat(t2, notNullValue())
+//		assertThat(t2.rows, hasSize(3))
 	}
 
 	@Test

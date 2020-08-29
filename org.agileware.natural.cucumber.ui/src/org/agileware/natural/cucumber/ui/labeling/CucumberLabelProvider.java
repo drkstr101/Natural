@@ -31,7 +31,7 @@ public class CucumberLabelProvider extends DefaultEObjectLabelProvider {
 	}
 
 	String text(final Feature ele) {
-		return ele.getTitle() == null ? "Feature" : merge("Feature: ", ele.getTitle().getValue());
+		return ele.getTitle() == null ? "Feature" : merge("Feature: ", ele.getTitle());
 	}
 
 	String image(final Feature ele) {
@@ -39,7 +39,7 @@ public class CucumberLabelProvider extends DefaultEObjectLabelProvider {
 	}
 
 	String text(final Background ele) {
-		return ele.getTitle() == null ? "Background" : merge("Background: ", ele.getTitle().getValue());
+		return ele.getTitle() == null ? "Background" : merge("Background: ", ele.getTitle());
 	}
 
 	String image(final Background ele) {
@@ -47,7 +47,7 @@ public class CucumberLabelProvider extends DefaultEObjectLabelProvider {
 	}
 
 	String text(final Scenario ele) {
-		return ele.getTitle() == null ? "Scenario" : merge("Scenario: ", ele.getTitle().getValue());
+		return ele.getTitle() == null ? "Scenario" : merge("Scenario: ", ele.getTitle());
 	}
 
 	String image(final Scenario ele) {
@@ -55,7 +55,7 @@ public class CucumberLabelProvider extends DefaultEObjectLabelProvider {
 	}
 
 	String text(final ScenarioOutline ele) {
-		return ele.getTitle() == null ? "Scenario Outline" : merge("Scenario Outline: ", ele.getTitle().getValue());
+		return ele.getTitle() == null ? "Scenario Outline" : merge("Scenario Outline: ", ele.getTitle());
 	}
 
 	String image(final ScenarioOutline ele) {
@@ -63,7 +63,7 @@ public class CucumberLabelProvider extends DefaultEObjectLabelProvider {
 	}
 
 	String text(final Step ele) {
-		return ele.getDescription().getValue().trim();
+		return ele.getDescription();
 	}
 
 	String image(final Step ele) {
@@ -87,7 +87,7 @@ public class CucumberLabelProvider extends DefaultEObjectLabelProvider {
 	}
 
 	String text(final Example ele) {
-		return ele.getTitle() == null ? "Examples" : merge("Examples: ", ele.getTitle().getValue());
+		return ele.getTitle() == null ? "Examples" : merge("Examples: ", ele.getTitle());
 	}
 
 	String image(final Example ele) {

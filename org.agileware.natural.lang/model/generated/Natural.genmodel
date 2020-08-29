@@ -11,13 +11,13 @@
     </genClasses>
     <genClasses ecoreClass="Natural.ecore#//Document">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Natural.ecore#//Document/meta"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Natural.ecore#//Document/title"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Natural.ecore#//Document/title"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Natural.ecore#//Document/narrative"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Natural.ecore#//Document/sections"/>
     </genClasses>
     <genClasses ecoreClass="Natural.ecore#//Section">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Natural.ecore#//Section/meta"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Natural.ecore#//Section/title"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Natural.ecore#//Section/title"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Natural.ecore#//Section/narrative"/>
     </genClasses>
     <genClasses ecoreClass="Natural.ecore#//Meta">
@@ -25,6 +25,13 @@
     </genClasses>
     <genClasses ecoreClass="Natural.ecore#//Tag">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Natural.ecore#//Tag/value"/>
+    </genClasses>
+    <genClasses ecoreClass="Natural.ecore#//Narrative">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Natural.ecore#//Narrative/sections"/>
+    </genClasses>
+    <genClasses ecoreClass="Natural.ecore#//NarrativeSection"/>
+    <genClasses ecoreClass="Natural.ecore#//Paragraph">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Natural.ecore#//Paragraph/value"/>
     </genClasses>
     <genClasses ecoreClass="Natural.ecore#//DocString">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Natural.ecore#//DocString/value"/>
@@ -37,12 +44,6 @@
     </genClasses>
     <genClasses ecoreClass="Natural.ecore#//TableCol">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Natural.ecore#//TableCol/value"/>
-    </genClasses>
-    <genClasses ecoreClass="Natural.ecore#//Text">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Natural.ecore#//Text/value"/>
-    </genClasses>
-    <genClasses ecoreClass="Natural.ecore#//MultilineText">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Natural.ecore#//MultilineText/value"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

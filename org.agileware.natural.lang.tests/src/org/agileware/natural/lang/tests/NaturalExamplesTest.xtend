@@ -101,26 +101,34 @@ class NaturalExamplesTest extends AbstractExamplesTest<NaturalModel> {
 				  The quick brown fox  
 				  
 				  	Jumps over the lazy dog
-				   
+				  	
 		''')
 	}
 
-
-//	TODO
-//	@Test
-//	def void example_09() {
-//		assertExampleParses('''
-//			# language: en
-//			@title: Hello, Meta Tags!
-//			Document:   Hello, 	Natural! 
-//			
-//			  @foo
-//			@bar
-//			Section: A
-//			
-//			@foo @bar 
-//				
-//			Section: B
-//		''')
-//	}
+	@Test
+	def void example_09() {
+		assertExampleParses('''
+			# language: en
+			# @title: Hello, Meta Tags!
+			Document:   Hello, 	Natural! 
+			
+			  @foo
+			@bar
+			Section: A
+			
+			@foo @bar 
+				
+			Section: B
+		''')
+	}
+	
+	@Test
+	def void example_10() {
+		assertExampleParses('''
+			Document: Hello, ASCII Punctuation! 
+				,./;'[]\-=
+				<>?:"{}|_+
+				!@#$%^&*()`~
+		''')
+	}
 }

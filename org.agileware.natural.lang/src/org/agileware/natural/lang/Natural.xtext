@@ -18,7 +18,7 @@ NaturalModel: {NaturalModel}
 Document: {Document}
 	(meta=Meta BLANK_SPACE?)?
 	'Document:' title=Text? NL
-	(BLANK_SPACE? narrative=MultilineText)?
+	(BLANK_SPACE? narrative=Narrative)?
 	(BLANK_SPACE? sections+=Section)*
 	BLANK_SPACE?
 ;
@@ -29,7 +29,7 @@ Document: {Document}
 Section: {Section}
 	(meta=Meta BLANK_SPACE?)?
 	'Section:' title=Text? NL
-	(BLANK_SPACE? narrative=MultilineText)?
+	(BLANK_SPACE? narrative=Narrative)?
 ;
 
 /**
@@ -45,7 +45,30 @@ Meta: {Meta}
  * 
  */
 Tag: {Tag}
-	value=TAGNAME 
+	value=TAG_LITERAL
+;
+
+/**
+ * 
+ */
+Narrative: {Narrative}
+   sections+=NarrativeSection
+     (BLANK_SPACE sections+=NarrativeSection)*
+;
+
+/**
+ * 
+ */
+NarrativeSection: Paragraph
+	| DocString
+	| Table
+;
+
+/**
+ * 
+ */
+Paragraph: {Paragraph}
+	value=MultilineText
 ;
 
 /**
@@ -84,51 +107,79 @@ TableCol: {TableCol}
 
 terminal TABLE_CELL: '|' !('|' | '\n' | '\r')*;
 
-/**
- * 
- */
-Text:
-	value=TEXT_LITERAL
-;
 
-TEXT_LITERAL:
-	WORD_LITERAL (WORD_LITERAL | TAGNAME | TABLE_CELL)*
-;
+// --------------------------------------
+// Text Model
+// --------------------------------------
 
 /**
  * 
  */
-MultilineText:
-	value=MULTILINE_TEXT_LITERAL
+Text returns ecore::EString:
+	TEXT_LITERAL+
 ;
 
-MULTILINE_TEXT_LITERAL:
-	(WORD_LITERAL (WORD_LITERAL | TAGNAME | TABLE_CELL)* NL)+
-	(NL+ WORD_LITERAL (WORD_LITERAL | TAGNAME | TABLE_CELL)* NL)*
-;
-
-WORD_LITERAL: NUMBER
-	| STRING
-	| WORD
+TEXT_LITERAL: WORD_LITERAL 
+	| NUMBER_LITERAL 
+	| STRING_LITERAL 
+	| TAG_LITERAL 
+	| TABLE_CELL 
 	| ANY_OTHER
 ;
 
-
-terminal NUMBER returns ecore::EDouble:
-	'-'?
-	DIGIT+
-	('.' DIGIT+)?
+/**
+ * 
+ */
+MultilineText returns ecore::EString:
+	MULTILINE_TEXT_LITERAL+
 ;
 
-terminal STRING:
-	'"' ('\\' ('b' | 't' | 'n' | 'f' | 'r' | 'u' | '"' | "'" | '\\') | !('\\' | '"' | '\r' | '\n'))* '"' |
-	"'" ('\\' ('b' | 't' | 'n' | 'f' | 'r' | 'u' | '"' | "'" | '\\') | !('\\' | "'" | '\r' | '\n'))* "'";
+MULTILINE_TEXT_LITERAL:
+	(WORD_LITERAL | NUMBER_LITERAL | STRING_LITERAL | ANY_OTHER) TEXT_LITERAL* NL
+;
+
+terminal STRING_LITERAL returns ecore::EString:
+	'"' ('\\' ('b' | 't' | 'n' | 'f' | 'r' | 'u' | '"' | '\\') | !('\\' | '"' | '\r' | '\n'))* '"' |
+	"'" ('\\' ('b' | 't' | 'n' | 'f' | 'r' | 'u' | "'" | '\\') | !('\\' | "'" | '\r' | '\n'))* "'"
+;
+
+terminal NUMBER_LITERAL returns ecore::EBigInteger:
+	'-'? DIGIT+ '.' DIGIT* EXPONENT_PART?
+	| '-'? '.' DIGIT+ EXPONENT_PART?
+	| '-'? DIGIT+ EXPONENT_PART
+	| '-'? DECIMAL_NUMBER
+	| '-'? HEX_NUMBER
+	| '-'? OCTAL_NUMBER
+;
+
+terminal fragment DECIMAL_NUMBER:
+	NON_ZERO_DIGIT DIGIT*
+;
+
+terminal fragment DIGIT: '0' | NON_ZERO_DIGIT;
+
+terminal fragment NON_ZERO_DIGIT: '1'..'9';
+
+terminal fragment HEX_NUMBER:
+	'0' ('x' | 'X') ('0'..'9' | 'a'..'f' | 'A'..'F')+
+;
+
+terminal fragment OCTAL_NUMBER:
+	'0' '0'..'7'*
+;
+
+terminal fragment EXPONENT_PART:
+	('e' | 'E') ('+' | '-')? DIGIT+
+;
 
 terminal SL_COMMENT: '#' !('\n' | '\r')* NL;
 
-terminal TAGNAME: '@' !(' ' | '\t' | '\n' | '\r')+ ;
+terminal TAG_LITERAL: 
+	'@' !('@' | ':'  | ' ' | '\t' | '\n' | '\r')+
+	//	(':'? !('@' | ':' | '\n' | '\r')+)?
+;
 
-terminal WORD: 
+terminal WORD_LITERAL: 
 	!('@' | '|' | ' ' | '\t' | '\n' | '\r')
 	!(' ' | '\t' | '\n' | '\r')*
 ;
@@ -136,32 +187,6 @@ terminal WORD:
 BLANK_SPACE: NL+ WS*;
 terminal NL: ('\r'? '\n') | EOF;
 
-terminal WS: (SPACE | '\t');
+terminal WS: (' ' | '\t');
 
 terminal ANY_OTHER: .;
-
-// Character Ranges
-////
-
-terminal fragment SPACE: ASCII_SPACE;
-terminal fragment DIGIT: ASCII_DIGIT;
-terminal fragment LETTER: LATIN_ALPHABET;
-
-
-// Basic Latin
-////
-
-terminal fragment ASCII_SPACE: '\u0020';
-
-terminal fragment ASCII_DIGIT: ('\u0030'..'\u0039');
-
-// all ascii chars other than letters, digits, space, or control codes
-terminal fragment ASCII_SYMBOLS: ('\u0021'..'\u002F')
-	| ('\u003A'..'\u0040')
-	| ('\u005B'..'\u0060')
-	| ('\u007B'..'\u007E')
-;
-
-terminal fragment LATIN_ALPHABET: ('\u0041'..'\u005A')
-	| ('\u0061'..'\u007A')
-;

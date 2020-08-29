@@ -17,7 +17,7 @@ CucumberModel: {CucumberModel}
 Feature: {Feature}
 	(meta=Meta BLANK_SPACE?)?
 	'Feature:' title=Text? NL
-	(BLANK_SPACE? narrative=MultilineText)?
+	(BLANK_SPACE? narrative=Narrative)?
 	(BLANK_SPACE? scenarios+=AbstractScenario)*
 	BLANK_SPACE?
 ;
@@ -42,7 +42,7 @@ AbstractScenario: Scenario
 Background: {Background}
 	(meta=Meta BLANK_SPACE?)?
 	'Background:' title=Text? NL
-	(BLANK_SPACE? narrative=MultilineText)?
+	(BLANK_SPACE? narrative=Narrative)?
 	(BLANK_SPACE? steps+=Step)*
 ;
 
@@ -52,7 +52,7 @@ Background: {Background}
 Scenario: {Scenario}
 	(meta=Meta BLANK_SPACE?)?
 	'Scenario:' title=Text? NL
-	(BLANK_SPACE? narrative=MultilineText)?
+	(BLANK_SPACE? narrative=Narrative)?
 	(BLANK_SPACE? steps+=Step)*
 ;
 
@@ -62,7 +62,7 @@ Scenario: {Scenario}
 ScenarioOutline: {ScenarioOutline}
 	(meta=Meta BLANK_SPACE?)?
 	'Scenario' 'Outline:' title=Text? NL
-	(BLANK_SPACE? narrative=MultilineText)?
+	(BLANK_SPACE? narrative=Narrative)?
 	(BLANK_SPACE? steps+=Step)*
 	(BLANK_SPACE? examples+=Example)*
 ;
@@ -71,8 +71,7 @@ ScenarioOutline: {ScenarioOutline}
  * 
  */
 Step: {Step}
-	keyword=STEP_KEYWORD
-	description=Text NL
+	keyword=STEP_KEYWORD description=Text NL
 	((BLANK_SPACE? table=Table) | (BLANK_SPACE? text=DocString))?
 ;
 
@@ -91,31 +90,13 @@ Example: {Example}
 ;
 
 
-@Override 
-TEXT_LITERAL:
-	WORD_LITERAL (WORD_LITERAL | TAGNAME | TABLE_CELL | STEP_KEYWORD)*
-;
-
 @Override
-MULTILINE_TEXT_LITERAL:
-	(WORD_LITERAL (WORD_LITERAL | TAGNAME | TABLE_CELL | STEP_KEYWORD)* NL)+
-	(NL+ WORD_LITERAL (WORD_LITERAL | TAGNAME | TABLE_CELL | STEP_KEYWORD)* NL)*
-;
-
-@Override
-WORD_LITERAL: PLACEHOLDER
-	| NUMBER
-	| STRING
-	| WORD
+TEXT_LITERAL: WORD_LITERAL
+	| STRING_LITERAL
+	| NUMBER_LITERAL
+	| TAG_LITERAL
+	| PLACEHOLDER
+	| STEP_KEYWORD
 	| ANY_OTHER
-;
-
-
-// Note: We must override so that terminal order is preserved
-@Override
-terminal NUMBER returns ecore::EDouble:
-	'-'?
-	DIGIT+
-	('.' DIGIT+)?
 ;
 

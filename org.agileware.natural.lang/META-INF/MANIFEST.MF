@@ -17,11 +17,14 @@ Require-Bundle: org.agileware.natural.common;visibility:=reexport,
  org.antlr.runtime;bundle-version="[3.2.0,3.2.1)"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.agileware.natural.lang;uses:="com.google.inject,org.eclipse.xtext.service,org.eclipse.xtext",
+ org.agileware.natural.lang.conversion;uses:="org.eclipse.xtext.nodemodel,org.eclipse.xtext.conversion,org.eclipse.xtext.conversion.impl",
  org.agileware.natural.lang.formatting2;
   uses:="org.eclipse.emf.ecore,
    org.agileware.natural.lang.model,
    org.eclipse.xtext.formatting2.regionaccess,
-   org.eclipse.xtext.formatting2",
+   org.agileware.natural.lang.services,
+   org.eclipse.xtext.formatting2,
+   org.eclipse.xtext",
  org.agileware.natural.lang.generator;uses:="org.eclipse.xtext.generator,org.eclipse.emf.ecore.resource",
  org.agileware.natural.lang.model;uses:="org.eclipse.emf.ecore,org.eclipse.emf.common.util",
  org.agileware.natural.lang.model.impl;

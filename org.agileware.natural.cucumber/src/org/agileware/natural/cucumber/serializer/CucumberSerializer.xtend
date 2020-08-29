@@ -26,7 +26,7 @@ class CucumberSerializer {
 	def String serialize(Feature model) '''
 		«serialize(model.meta)»
 		Feature: «model.title»
-		«serialize(model.narrative)»
+		«model.narrative»
 		«FOR s : model.scenarios»
 			
 			«serialize(s)»
@@ -47,8 +47,8 @@ class CucumberSerializer {
 
 	def String serialize(Background model) '''
 		«serialize(model.meta)»
-		Background: «serialize(model.title)»
-		«serialize(model.narrative)»
+		Background: «model.title»
+		«model.narrative»
 		«FOR s : model.steps»
 			«serialize(s)»
 		«ENDFOR»
@@ -56,8 +56,8 @@ class CucumberSerializer {
 
 	def String serialize(Scenario model) '''
 		«serialize(model.meta)»
-		Scenario: «serialize(model.title)»
-		«serialize(model.narrative)»
+		Scenario: «model.title»
+		«model.narrative»
 		«FOR s : model.steps»
 			«serialize(s)»
 		«ENDFOR»
@@ -65,8 +65,8 @@ class CucumberSerializer {
 
 	def String serialize(ScenarioOutline model) '''
 		«serialize(model.meta)»
-		Scenario Outline:«serialize(model.title)»
-		«serialize(model.narrative)»
+		Scenario Outline:«model.title»
+		«model.narrative»
 		«FOR e : model.examples»
 			
 				«serialize(e)»
@@ -74,8 +74,8 @@ class CucumberSerializer {
 	'''
 
 	def String serialize(Example model) '''
-		Example: «serialize(model.title)»
-		«serialize(model.narrative)»
+		Example: «model.title»
+		«model.narrative»
 		«serialize(model.table)»
 	'''
 

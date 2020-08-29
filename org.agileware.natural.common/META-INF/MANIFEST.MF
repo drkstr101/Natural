@@ -23,5 +23,4 @@ Export-Package: org.agileware.natural.common;
    org.eclipse.jface.text,
    org.eclipse.jface.text.hyperlink,
    org.eclipse.jdt.core.search",
- org.agileware.natural.common.stepmatcher;uses:="org.eclipse.jdt.core",
- org.agileware.natural.common.text
+ org.agileware.natural.common.stepmatcher;uses:="org.eclipse.jdt.core"

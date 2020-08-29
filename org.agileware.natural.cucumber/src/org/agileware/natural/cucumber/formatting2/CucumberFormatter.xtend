@@ -15,10 +15,8 @@ import org.agileware.natural.cucumber.cucumber.Step
 import org.agileware.natural.cucumber.services.CucumberGrammarAccess
 import org.agileware.natural.lang.model.DocString
 import org.agileware.natural.lang.model.Meta
-import org.agileware.natural.lang.model.MultilineText
 import org.agileware.natural.lang.model.Table
 import org.agileware.natural.lang.model.Tag
-import org.agileware.natural.lang.model.Text
 import org.eclipse.xtext.formatting2.AbstractFormatter2
 import org.eclipse.xtext.formatting2.IFormattableDocument
 import org.eclipse.xtext.formatting2.regionaccess.ISemanticRegion
@@ -37,18 +35,19 @@ class CucumberFormatter extends AbstractFormatter2 {
 	}
 
 	def dispatch void format(Feature model, extension IFormattableDocument doc) {
+		
+		// Format Tags
 		model.meta.format()
-		model.title.format()
-		model.narrative.format()
+		
 		for (s : model.scenarios) {
 			s.format()
 		}
 	}
 
 	def dispatch void format(Background model, extension IFormattableDocument doc) {
+		
+		// Format Tags
 		model.meta.format()
-		model.title.format()
-		model.narrative.format()
 
 		// Indent interior
 		val begin = model.regionFor.ruleCallTo(NLRule)
@@ -63,8 +62,6 @@ class CucumberFormatter extends AbstractFormatter2 {
 
 	def dispatch void format(Scenario model, extension IFormattableDocument doc) {
 		model.meta.format()
-		model.title.format()
-		model.narrative.format()
 
 		// Indent interior
 		val begin = model.regionFor.ruleCallTo(NLRule)
@@ -79,8 +76,6 @@ class CucumberFormatter extends AbstractFormatter2 {
 
 	def dispatch void format(ScenarioOutline model, extension IFormattableDocument doc) {
 		model.meta.format()
-		model.title.format()
-		model.narrative.format()
 
 		// Indent interior
 		val begin = model.regionFor.ruleCallTo(NLRule)
@@ -100,8 +95,6 @@ class CucumberFormatter extends AbstractFormatter2 {
 
 	def dispatch void format(Example model, extension IFormattableDocument doc) {
 		model.meta.format()
-		model.title.format()
-		model.narrative.format()
 		
 		// TODO this is just a hacky work-around until we can figure
 		// why having tags changes the indentation behavior of the 
@@ -129,14 +122,6 @@ class CucumberFormatter extends AbstractFormatter2 {
 	}
 
 	def dispatch void format(Tag model, extension IFormattableDocument doc) {
-		// TODO...
-	}
-
-	def dispatch void format(Text model, extension IFormattableDocument doc) {
-		// TODO...
-	}
-
-	def dispatch void format(MultilineText model, extension IFormattableDocument doc) {
 		// TODO...
 	}
 
