@@ -16,7 +16,7 @@ CucumberModel: {CucumberModel}
  */
 Feature: {Feature}
 	(meta=Meta BLANK_SPACE?)?
-	'Feature:' title=Text? NL
+	'Feature:' title=RawText? NL
 	(BLANK_SPACE? narrative=Narrative)?
 	(BLANK_SPACE? scenarios+=AbstractScenario)*
 	BLANK_SPACE?
@@ -41,7 +41,7 @@ AbstractScenario: Scenario
  */
 Background: {Background}
 	(meta=Meta BLANK_SPACE?)?
-	'Background:' title=Text? NL
+	'Background:' title=RawText? NL
 	(BLANK_SPACE? narrative=Narrative)?
 	(BLANK_SPACE? steps+=Step)*
 ;
@@ -51,7 +51,7 @@ Background: {Background}
  */
 Scenario: {Scenario}
 	(meta=Meta BLANK_SPACE?)?
-	'Scenario:' title=Text? NL
+	'Scenario:' title=RawText? NL
 	(BLANK_SPACE? narrative=Narrative)?
 	(BLANK_SPACE? steps+=Step)*
 ;
@@ -61,7 +61,7 @@ Scenario: {Scenario}
  */
 ScenarioOutline: {ScenarioOutline}
 	(meta=Meta BLANK_SPACE?)?
-	'Scenario' 'Outline:' title=Text? NL
+	'Scenario' 'Outline:' title=RawText? NL
 	(BLANK_SPACE? narrative=Narrative)?
 	(BLANK_SPACE? steps+=Step)*
 	(BLANK_SPACE? examples+=Example)*
@@ -71,7 +71,7 @@ ScenarioOutline: {ScenarioOutline}
  * 
  */
 Step: {Step}
-	keyword=STEP_KEYWORD description=Text NL
+	keyword=STEP_KEYWORD description=RawText NL
 	((BLANK_SPACE? table=Table) | (BLANK_SPACE? text=DocString))?
 ;
 
@@ -84,7 +84,7 @@ terminal PLACEHOLDER: '<' !('>' | ' ' | '\t' | '\n' | '\r')+ '>';
  */
 Example: {Example}
 	(meta=Meta BLANK_SPACE?)?
-	'Examples:' title=Text? NL
+	'Examples:' title=RawText? NL
 	(BLANK_SPACE? narrative=MultilineText)?
 	(BLANK_SPACE? table=Table)
 ;
