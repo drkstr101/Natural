@@ -21,7 +21,7 @@ Export-Package: org.agileware.natural.lang;uses:="com.google.inject,org.eclipse.
   uses:="org.eclipse.emf.ecore,
    org.agileware.natural.lang.model,
    org.eclipse.xtext.formatting2.regionaccess,
-   org.agileware.natural.lang.services,
+   org.eclipse.xtext.formatting2.regionaccess.internal,
    org.eclipse.xtext.formatting2,
    org.eclipse.xtext",
  org.agileware.natural.lang.generator;uses:="org.eclipse.xtext.generator,org.eclipse.emf.ecore.resource",
@@ -47,6 +47,6 @@ Export-Package: org.agileware.natural.lang;uses:="com.google.inject,org.eclipse.
  org.agileware.natural.lang.scoping;uses:="org.eclipse.xtext.scoping.impl",
  org.agileware.natural.lang.serializer;uses:="org.agileware.natural.lang.model",
  org.agileware.natural.lang.services;uses:="org.eclipse.xtext.service,org.eclipse.xtext",
- org.agileware.natural.lang.text;uses:="org.eclipse.xtext.nodemodel,org.eclipse.xtext.conversion,org.eclipse.xtext.conversion.impl",
+ org.agileware.natural.lang.text;uses:="org.eclipse.xtext.conversion,org.eclipse.xtext.nodemodel,org.eclipse.xtext.conversion.impl",
  org.agileware.natural.lang.validation;uses:="org.eclipse.xtext.util,org.eclipse.xtext.validation"
 Import-Package: org.apache.log4j
