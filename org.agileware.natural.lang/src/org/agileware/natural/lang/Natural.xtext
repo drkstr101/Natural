@@ -17,7 +17,7 @@ NaturalModel: {NaturalModel}
  */
 Document: {Document}
 	(meta=Meta BLANK_SPACE?)?
-	'Document:' title=Text? NL
+	'Document:' title=RawText? NL
 	(BLANK_SPACE? narrative=Narrative)?
 	(BLANK_SPACE? sections+=Section)*
 	BLANK_SPACE?
@@ -28,7 +28,7 @@ Document: {Document}
  */	
 Section: {Section}
 	(meta=Meta BLANK_SPACE?)?
-	'Section:' title=Text? NL
+	'Section:' title=RawText? NL
 	(BLANK_SPACE? narrative=Narrative)?
 ;
 
@@ -46,7 +46,7 @@ Meta: {Meta}
  */
 Tag: {Tag}
 	id=TAG_LITERAL
-	(':' value=Text)?
+	(':' value=RawText)?
 ;
 
 terminal TAG_LITERAL: '@' !('@' | ':'  | ' ' | '\t' | '\n' | '\r')+;
@@ -72,6 +72,7 @@ NarrativeSection: Paragraph
  */
 Paragraph: {Paragraph}
 	value=MultilineText
+	NL
 ;
 
 /**
@@ -118,12 +119,13 @@ terminal TABLE_CELL: '|' !('|' | '\n' | '\r')*;
 /**
  * 
  */
-Text returns ecore::EString:
+RawText returns ecore::EString:
 	TEXT_LITERAL+
 ;
 
 MultilineText returns ecore::EString:
-	(START_TEXT_LITERAL TEXT_LITERAL* NL)+
+	(START_TEXT_LITERAL TEXT_LITERAL*)
+	(NL START_TEXT_LITERAL TEXT_LITERAL*)*
 ;
 
 START_TEXT_LITERAL: WORD 

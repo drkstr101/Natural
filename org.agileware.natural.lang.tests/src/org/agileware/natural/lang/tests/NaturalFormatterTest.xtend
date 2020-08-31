@@ -27,48 +27,88 @@ class NaturalFormatterTest extends AbstractFormatterTest<NaturalModel> {
 				
 				Section: A
 				
-				Section: 
+				Section:
 		'''
 		assertFormatted(toBeFormatted, expectation)
 	}
 
 	@Test
-	def void indentDocumentBlocks() {
+	def void indentBlocks_01() {
+		val toBeFormatted = '''
+			# language: en
+			Document:
+				The quick brown fox
+				Jumps over the lazy dog
+		'''
+		assertFormatted(toBeFormatted)
+	}
+
+	@Test
+	def void indentBlocks_02() {
+		val toBeFormatted = '''
+			# language: en
+			Document:
+			The quick brown fox
+			Jumps over the lazy dog
+		'''
+		val expectation = '''
+			# language: en
+			Document:
+				The quick brown fox
+				Jumps over the lazy dog
+		'''
+		assertFormatted(toBeFormatted, expectation)
+	}
+
+	@Test
+	def void indentBlocks_xx() {
 		val toBeFormatted = '''
 			# language: en
 			Document: Hello, Natural Formatter!
 			
-			The quick brown fox
-			Jumps over the lazy dog
+			* The quick brown fox
+				* Jumps over the lazy dog
+			
+			Section: With a title
 			
 			Section: A
-			"""
-			,./;'[]\-=
-			<>?:"{}|_+
-			!@#$%^&*()`~
-			"""
+				"""
+					,./;'[]\-=
+					<>?:"{}|_+
+					!@#$%^&*()`~
+				"""
 			
-			Section: 
-			| a | 0 |
-			| b | 1 |
+				Section: B
+				| a | 0 |
+				| b | 1 |
+				
+			Section: C
+						* The quick brown fox
+							* Jumps over the lazy dog
 		'''
 		val expectation = '''
 			# language: en
 			Document: Hello, Natural Formatter!
 				
-				The quick brown fox
-			Jumps over the lazy dog
+				* The quick brown fox
+					* Jumps over the lazy dog
+			
+				Section: With a title
 			
 				Section: A
 					"""
-			,./;'[]\-=
-			<>?:"{}|_+
-			!@#$%^&*()`~
-			"""
+						,./;'[]\-=
+						<>?:"{}|_+
+						!@#$%^&*()`~
+					"""
 			
-				Section: 
+				Section: B
 					| a | 0 |
 					| b | 1 |
+					
+				Section: C
+					* The quick brown fox
+						* Jumps over the lazy dog
 		'''
 		assertFormatted(toBeFormatted, expectation)
 	}

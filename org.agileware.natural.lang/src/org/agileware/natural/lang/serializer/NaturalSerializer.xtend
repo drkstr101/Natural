@@ -3,7 +3,10 @@ package org.agileware.natural.lang.serializer
 import org.agileware.natural.lang.model.DocString
 import org.agileware.natural.lang.model.Document
 import org.agileware.natural.lang.model.Meta
+import org.agileware.natural.lang.model.Narrative
+import org.agileware.natural.lang.model.NarrativeSection
 import org.agileware.natural.lang.model.NaturalModel
+import org.agileware.natural.lang.model.Paragraph
 import org.agileware.natural.lang.model.Section
 import org.agileware.natural.lang.model.Table
 import org.agileware.natural.lang.model.TableCol
@@ -19,7 +22,7 @@ class NaturalSerializer {
 		# language: en
 		«serialize(model.meta)»
 		Document: «model.title»
-		«model.narrative»
+		«serialize(model.narrative)»
 		«FOR s : model.sections»
 			«serialize(s)»
 		«ENDFOR»
@@ -27,7 +30,7 @@ class NaturalSerializer {
 
 	def String serialize(Section model) '''
 		Section: «model.title»
-		«model.narrative»
+		«serialize(model.narrative)»
 	'''
 
 	def String serialize(Meta model) {
@@ -38,6 +41,33 @@ class NaturalSerializer {
 				«t.value»
 			«ENDFOR»
 		'''
+	}
+	
+	def String serialize(Narrative model) {
+		if(model === null) return ""
+		return '''
+			«FOR s : model.sections»
+				«serialize(s)»
+			«ENDFOR»
+		'''
+	}
+	
+	def String serialize(NarrativeSection model) {
+		if(model instanceof Paragraph) {
+			return serialize(model as Paragraph)
+		} else if(model instanceof Table) {
+			return serialize(model as Table)
+		} else if(model instanceof DocString) {
+			return serialize(model as DocString)
+		}
+		
+		return ""
+	}
+
+	def String serialize(Paragraph model) {
+		if(model === null) return ""
+
+		return model.value
 	}
 
 	def String serialize(Table model) {
