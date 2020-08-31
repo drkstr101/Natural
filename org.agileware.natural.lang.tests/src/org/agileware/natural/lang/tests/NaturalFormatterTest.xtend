@@ -6,6 +6,7 @@ import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.eclipse.xtext.formatting2.FormatterPreferenceKeys
 
 @RunWith(XtextRunner)
 @InjectWith(NaturalInjectorProvider)
@@ -33,10 +34,11 @@ class NaturalFormatterTest extends AbstractFormatterTest<NaturalModel> {
 	}
 
 	@Test
-	def void indentBlocks_01() {
+	def void indentNarrative_01() {
 		val toBeFormatted = '''
 			# language: en
 			Document:
+				
 				The quick brown fox
 				Jumps over the lazy dog
 		'''
@@ -44,16 +46,18 @@ class NaturalFormatterTest extends AbstractFormatterTest<NaturalModel> {
 	}
 
 	@Test
-	def void indentBlocks_02() {
+	def void indentNarrative_02() {
 		val toBeFormatted = '''
 			# language: en
 			Document:
+			
 			The quick brown fox
 			Jumps over the lazy dog
 		'''
 		val expectation = '''
 			# language: en
 			Document:
+				
 				The quick brown fox
 				Jumps over the lazy dog
 		'''
@@ -61,56 +65,266 @@ class NaturalFormatterTest extends AbstractFormatterTest<NaturalModel> {
 	}
 
 	@Test
-	def void indentBlocks_xx() {
+	def void indentNarrative_03() {
 		val toBeFormatted = '''
 			# language: en
-			Document: Hello, Natural Formatter!
+			Document:
+				
+				* 1
+					* 1.1
+					* 1.2
+				* 2
+					* 2.1
+		'''
+		assertFormatted(toBeFormatted)
+	}
+
+	@Test
+	def void indentNarrative_04() {
+		val toBeFormatted = '''
+			# language: en
+			Document:
 			
-			* The quick brown fox
-				* Jumps over the lazy dog
+			* 1
+				* 1.1
+				* 1.2
+			* 2
+				* 2.1
+		'''
+		val expectation = '''
+			# language: en
+			Document:
+				
+				* 1
+					* 1.1
+					* 1.2
+				* 2
+					* 2.1
+		'''
+		assertFormatted(toBeFormatted, expectation)
+	}
+
+	@Test
+	def void indentNarrative_05() {
+		// TODO patch MultilineTextReplacer::indentToRemove to pass
+		val toBeFormatted = '''
+			# language: en
+			Document:
 			
-			Section: With a title
+				* 1
+					* 1.1
+					* 1.2
+			* 2
+				* 2.1
+		'''
+		val expectation = '''
+			# language: en
+			Document:
+				
+				* 1
+					* 1.1
+					* 1.2
+				* 2
+					* 2.1
+		'''
+		assertFormatted(toBeFormatted, expectation)
+	}
+
+	@Test
+	def void indentNarrative_06() {
+		val toBeFormatted = '''
+			# language: en
+			Document:
 			
-			Section: A
+			The quick brown fox
+			Jumps over the lazy dog
+			
+			| a | 0 |
+			| b | 1 |
+			
+			"""
+				,./;'[]\-=
+				<>?:"{}|_+
+				!@#$%^&*()`~
+			"""
+		'''
+		val expectation = '''
+			# language: en
+			Document:
+				
+				The quick brown fox
+				Jumps over the lazy dog
+			
+				| a | 0 |
+				| b | 1 |
+			
 				"""
 					,./;'[]\-=
 					<>?:"{}|_+
 					!@#$%^&*()`~
 				"""
-			
-				Section: B
-				| a | 0 |
-				| b | 1 |
+		'''
+		assertFormatted(toBeFormatted, expectation)
+	}
+	
+	
+	@Test
+	def void indentSections_01() {
+		val toBeFormatted = '''
+			# language: en
+			Document:
 				
-			Section: C
-						* The quick brown fox
-							* Jumps over the lazy dog
+				The quick brown fox
+				Jumps over the lazy dog
+				
+				Section:
+					The quick brown fox
+				
+				Section:
+					Jumps over the lazy dog
+		'''
+		assertFormatted(toBeFormatted)
+	}
+	
+	@Test
+	def void indentSections_02() {
+		val toBeFormatted = '''
+			# language: en
+			Document:
+			
+			The quick brown fox
+			Jumps over the lazy dog
+			
+			Section:
+			The quick brown fox
+			
+			Section:
+			Jumps over the lazy dog
 		'''
 		val expectation = '''
 			# language: en
-			Document: Hello, Natural Formatter!
+			Document:
 				
-				* The quick brown fox
-					* Jumps over the lazy dog
+				The quick brown fox
+				Jumps over the lazy dog
 			
-				Section: With a title
+				Section:
+					The quick brown fox
 			
-				Section: A
+				Section:
+					Jumps over the lazy dog
+		'''
+		assertFormatted(toBeFormatted, expectation)
+	}
+	
+	@Test
+	def void correctMessyIndentation_01() {
+		// TODO failure...
+		val toBeFormatted = '''
+			# language: en
+			Document:
+			
+			The quick brown fox
+				Jumps over the lazy dog
+			
+			Section:
+					The quick brown fox
+						Jumps over the lazy dog
+			
+				Section:
+				The quick brown fox
+			Jumps over the lazy dog
+		'''
+		val expectation = '''
+			# language: en
+			Document:
+			
+				The quick brown fox
+					Jumps over the lazy dog
+			
+				Section:
+					The quick brown fox
+						Jumps over the lazy dog
+			
+				Section:
+					The quick brown fox
+					Jumps over the lazy dog
+		'''
+		assertFormatted(toBeFormatted, expectation)
+	}
+	
+	
+	@Test
+	def void correctMessyIndentation_02() {
+		// TODO failure...
+		val toBeFormatted = '''
+			# language: en
+			Document:
+				
+				The quick brown fox
+			Jumps over the lazy dog
+			
+					Section:
+				The quick brown fox
+			
+				Section:
+						"""
+							,./;'[]\-=
+							<>?:"{}|_+
+							!@#$%^&*()`~
+						"""
+			
+			Section:
+				The quick brown fox
+			Jumps over the lazy dog
+			
+			| a | 0 |
+			| b | 1 |
+		'''
+		val expectation = '''
+			# language: en
+			Document:
+				
+				The quick brown fox
+				Jumps over the lazy dog
+			
+				Section:
+					The quick brown fox
+			
+				Section:
 					"""
 						,./;'[]\-=
 						<>?:"{}|_+
 						!@#$%^&*()`~
 					"""
 			
-				Section: B
+				Section:
+					The quick brown fox
+					Jumps over the lazy dog
+			
 					| a | 0 |
 					| b | 1 |
-					
-				Section: C
-					* The quick brown fox
-						* Jumps over the lazy dog
 		'''
 		assertFormatted(toBeFormatted, expectation)
 	}
-
+	
+	@Test
+	def void indentWithSpaces_01() {
+		// TODO add support for user indentation preferences
+		formatterTestHelper.assertFormatted[
+			preferences[ put(FormatterPreferenceKeys.indentation, "  ") ]
+			toBeFormatted = '''
+				# language: en
+				Document:
+				The quick brown fox
+				Jumps over the lazy dog
+			'''
+			expectation = '''
+				# language: en
+				Document:
+				  The quick brown fox
+				  Jumps over the lazy dog
+			'''
+		]
+	}
 }

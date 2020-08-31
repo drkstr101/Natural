@@ -9,7 +9,7 @@ public class TextLine implements CharSequence {
 
 	protected static class LeadingWSTextLinePart extends TextLine {
 
-		public LeadingWSTextLinePart(String completeText, int offset, int length) {
+		public LeadingWSTextLinePart(final String completeText, final int offset, final int length) {
 			super(completeText, offset, length, 0);
 		}
 
@@ -34,7 +34,7 @@ public class TextLine implements CharSequence {
 	private final int length;
 	private final int delimiterLength;
 
-	public TextLine(String completeText, int offset, int length, int delimiterLength) {
+	public TextLine(final String completeText, final int offset, final int length, final int delimiterLength) {
 		this.completeText = completeText;
 		this.offset = offset;
 		this.length = length;
@@ -48,7 +48,7 @@ public class TextLine implements CharSequence {
 	public boolean hasLeadingWhiteSpace() {
 		if (length == 0)
 			return false;
-		boolean result = Character.isWhitespace(charAt(0));
+		final boolean result = Character.isWhitespace(charAt(0));
 		return result;
 	}
 
@@ -86,12 +86,16 @@ public class TextLine implements CharSequence {
 	}
 
 	@Override
-	public char charAt(int index) {
+	public char charAt(final int index) {
 		return completeText.charAt(index + offset);
 	}
 
 	public int getDelimiterLength() {
 		return delimiterLength;
+	}
+
+	public CharSequence getSemanticText() {
+		return subSequence(getLeadingWhiteSpace().length(), length);
 	}
 
 	@Override
@@ -109,14 +113,14 @@ public class TextLine implements CharSequence {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		TextLine other = (TextLine) obj;
+		final TextLine other = (TextLine) obj;
 		if (length != other.length)
 			return false;
 		if (delimiterLength != other.delimiterLength)
@@ -133,7 +137,7 @@ public class TextLine implements CharSequence {
 	 *          or if <tt>start</tt> is greater than <tt>end</tt>
 	 */
 	@Override
-	public CharSequence subSequence(int start, int end) {
+	public CharSequence subSequence(final int start, final int end) {
 		if (start < 0 || start > end) {
 			throwIndexOutOfBounds(start);
 		}
@@ -146,7 +150,7 @@ public class TextLine implements CharSequence {
 		return completeText.subSequence(start + offset, end + offset);
 	}
 
-	protected void throwIndexOutOfBounds(int offset) {
+	protected void throwIndexOutOfBounds(final int offset) {
 		throw new IndexOutOfBoundsException(("Index out of range: " + offset));
 	}
 

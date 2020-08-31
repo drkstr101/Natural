@@ -51,7 +51,7 @@ class MultilineTextReplacer implements ITextReplacer {
 
 		val (TextLine)=>Integer countLeadingWS = [leadingWhiteSpace.length()]
 		val minCountLeadingWS = lines.tail.take(count).map[countLeadingWS.apply(it)].min
-		
+
 		return Math.min(minCountLeadingWS, originalStartColumn)
 	}
 
@@ -70,32 +70,30 @@ class MultilineTextReplacer implements ITextReplacer {
 		val model = TextModel.build(region.text)
 		val indentToRemove = indentToRemove(model.lines, originalStartColumn)
 		println('''======= Processng Text Indentation (indentationLevel: «indentationLevel», originalStartColumn: «originalStartColumn», indentToRemove: «indentToRemove») =======''')
-		for (line : model.lines) {
-			println('''[offset: «line.relativeOffset», length: «line.length», leadingWhiteSpace: «line.leadingWhiteSpace.length»] «line»''')
-		}
 
 		context.addReplacement(region.replaceWith(toIndentedString(model.lines, indentationString, indentToRemove)))
+
 		return context
 	}
 
 	def String toIndentedString(List<TextLine> lines, String indentationString, int indentToRemove) {
-		println('''toIndentedString(«indentationString.length», «indentToRemove»)''')
 		val result = new StringBuilder()
 		val length = lines.size()
 
 		for (var i = 0; i < length; i++) {
 			val line = lines.get(i)
-			
-			println('''[«line.relativeOffset», «line.leadingWhiteSpace.length»/«line.length»] «line»''')
+			println('''[offset: «line.relativeOffset», length: «line.length», leadingWhiteSpace: «line.leadingWhiteSpace.length»] «line»''')
 
 			if (i == 0) {
 				result.append(line)
+			} else if (indentationString.length <= indentToRemove) {
+				result.append(line)
 			} else {
-				val leadingWs = line.getLeadingWhiteSpace()
-				val text = line.subSequence(leadingWs.length, line.length)
-				result.append(indentationString).append(leadingWs).append(text)
+				result.append(indentationString)
+						.append(line.leadingWhiteSpace)
+						.append(line.semanticText)
 			}
-			
+
 			if (i < length - 1) {
 				result.append(System.lineSeparator());
 			}
