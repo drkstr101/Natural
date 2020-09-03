@@ -8,10 +8,12 @@ import org.apache.commons.lang.StringUtils
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.FinalFieldsConstructor
 import org.eclipse.xtext.Assignment
+import org.eclipse.xtext.RuleCall
 import org.eclipse.xtext.formatting.IIndentationInformation
 import org.eclipse.xtext.formatting2.IFormattableDocument
 import org.eclipse.xtext.formatting2.ITextReplacer
 import org.eclipse.xtext.formatting2.ITextReplacerContext
+import org.eclipse.xtext.formatting2.regionaccess.ISemanticRegion
 import org.eclipse.xtext.formatting2.regionaccess.ITextRegionAccess
 import org.eclipse.xtext.formatting2.regionaccess.ITextRegionExtensions
 import org.eclipse.xtext.formatting2.regionaccess.ITextSegment
@@ -33,11 +35,49 @@ class MultilineTextFormatter {
 
 	val extension ITextRegionExtensions
 
-	def formatText(EObject owner, Assignment assignment, int indentationLevel, extension IFormattableDocument doc) {
+	def formatTextBlock(EObject owner, Assignment assignment, int indentationLevel,
+		extension IFormattableDocument doc) {
 		val region = owner.regionFor.assignment(assignment)
 		if (region instanceof NodeSemanticRegion) {
 			addReplacer(new MultilineTextReplacer(region, indentationLevel))
 		}
+	}
+
+	def trimBlankSpace(EObject owner, RuleCall rule, extension IFormattableDocument doc) {
+		trimBlankSpace(owner, rule, 0, doc)
+	}
+
+	def trimBlankSpace(EObject owner, RuleCall rule, int newLines, extension IFormattableDocument doc) {
+		val region = owner.regionFor.ruleCall(rule)
+		if (region instanceof NodeSemanticRegion) {
+			addReplacer(new BlankSpaceReplacer(region, newLines))
+		}
+	}
+
+	def trimBlankSpace(ISemanticRegion region, int newLines, extension IFormattableDocument doc) {
+		if (region instanceof NodeSemanticRegion) {
+			addReplacer(new BlankSpaceReplacer(region, newLines))
+		}
+	}
+}
+
+@FinalFieldsConstructor
+public class BlankSpaceReplacer implements ITextReplacer {
+	val NodeSemanticRegion region
+
+	val int newLines
+
+	override ITextSegment getRegion() {
+		region
+	}
+
+	override createReplacements(ITextReplacerContext context) {
+		val newText = (newLines === 0)? 
+				"" : StringUtils.repeat(System.lineSeparator, newLines)
+		
+		context.addReplacement(region.replaceWith(newText))
+
+		return context
 	}
 }
 
@@ -69,38 +109,42 @@ class MultilineTextReplacer implements ITextReplacer {
 		val originalStartColumn = NodeModelUtils.getLineAndColumn(region.node, region.offset).column
 
 		val model = TextModel.build(region.text)
-		val indentToRemove = indentToRemove(model.lines, originalStartColumn)
-		println('''======= Processng Text Indentation (indentationLevel: «indentationLevel», originalStartColumn: «originalStartColumn», indentToRemove: «indentToRemove») =======''')
-
-		context.addReplacement(region.replaceWith(toIndentedString(model.lines, indentationString, indentationLevel, originalStartColumn, indentToRemove)))
+		if (model.lines.size > 1) {
+			val indentToRemove = indentToRemove(model.lines, originalStartColumn)
+			// println('''======= Processng Text Indentation (indentationLevel: «indentationLevel», originalStartColumn: «originalStartColumn», indentToRemove: «indentToRemove») =======''')
+			context.addReplacement(
+				region.replaceWith(
+					toIndentedString(model.lines, indentationString, indentationLevel, originalStartColumn,
+						indentToRemove)))
+		}
 
 		return context
 	}
 
-	def String toIndentedString(List<TextLine> lines, String indentationString, int indentationLevel, int originalStartColumn, int indentToRemove) {
+	def String toIndentedString(List<TextLine> lines, String indentationString, int indentationLevel,
+		int originalStartColumn, int indentToRemove) {
 		val result = new StringBuilder()
 		val length = lines.size()
 
 		for (var i = 0; i < length; i++) {
 			val line = lines.get(i)
-			println('''[offset: «line.relativeOffset», length: «line.length», leadingWhiteSpace: «line.leadingWhiteSpace.length»] «line»''')
-
+			// println('''[offset: «line.relativeOffset», length: «line.length», leadingWhiteSpace: «line.leadingWhiteSpace.length»] «line»''')
 			val toColumn = indentationLevel + 1
 			if (i == 0) {
 				// append first line as is (will be indented by formatter rules)
 				result.append(line)
 			} else {
-				if(originalStartColumn < toColumn) {
+				if (originalStartColumn < toColumn) {
 					// increase indent
 					val indentIncrease = StringUtils.repeat(indentationString, toColumn - originalStartColumn)
 					result.append(indentIncrease).append(line)
-				} else if(originalStartColumn > toColumn) {
+				} else if (originalStartColumn > toColumn) {
 					// decrease indent
 					val leadingWs = line.leadingWhiteSpace.toString()
-					val newIndent = StringUtils.replace(leadingWs, indentationString, "", originalStartColumn - toColumn)
+					val newIndent = StringUtils.replace(leadingWs, indentationString, "",
+						originalStartColumn - toColumn)
 					result.append(newIndent).append(line.semanticText)
-				}
-				else {
+				} else {
 					// no adjustment needed
 					result.append(line)
 				}
