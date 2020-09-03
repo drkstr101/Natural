@@ -106,26 +106,37 @@ class NaturalFormatterTest extends AbstractFormatterTest<NaturalModel> {
 
 	@Test
 	def void indentNarrative_05() {
-		// TODO patch MultilineTextReplacer::indentToRemove to pass
 		val toBeFormatted = '''
 			# language: en
 			Document:
 			
-				* 1
-					* 1.1
-					* 1.2
-			* 2
-				* 2.1
+			1)
+				* 1.1
+				* 1.2
+			
+				2)
+					* 2.1
+					* 2.2
+			
+					3)
+						* 3.1
+						* 3.2
 		'''
 		val expectation = '''
 			# language: en
 			Document:
 				
-				* 1
+				1)
 					* 1.1
 					* 1.2
-				* 2
+			
+				2)
 					* 2.1
+					* 2.2
+			
+				3)
+					* 3.1
+					* 3.2
 		'''
 		assertFormatted(toBeFormatted, expectation)
 	}

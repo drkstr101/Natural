@@ -1,8 +1,10 @@
 package org.agileware.natural.lang.formatting2
 
 import com.google.inject.Inject
+import java.util.List
 import org.agileware.natural.lang.text.TextLine
 import org.agileware.natural.lang.text.TextModel
+import org.apache.commons.lang.StringUtils
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.FinalFieldsConstructor
 import org.eclipse.xtext.Assignment
@@ -15,7 +17,6 @@ import org.eclipse.xtext.formatting2.regionaccess.ITextRegionExtensions
 import org.eclipse.xtext.formatting2.regionaccess.ITextSegment
 import org.eclipse.xtext.formatting2.regionaccess.internal.NodeSemanticRegion
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
-import java.util.List
 
 @FinalFieldsConstructor
 class MultilineTextFormatter {
@@ -64,19 +65,19 @@ class MultilineTextReplacer implements ITextReplacer {
 	}
 
 	override createReplacements(ITextReplacerContext context) {
-		val indentationString = context.getIndentationString(indentationLevel)
+		val indentationString = context.getIndentationString(1)
 		val originalStartColumn = NodeModelUtils.getLineAndColumn(region.node, region.offset).column
 
 		val model = TextModel.build(region.text)
 		val indentToRemove = indentToRemove(model.lines, originalStartColumn)
 		println('''======= Processng Text Indentation (indentationLevel: «indentationLevel», originalStartColumn: «originalStartColumn», indentToRemove: «indentToRemove») =======''')
 
-		context.addReplacement(region.replaceWith(toIndentedString(model.lines, indentationString, indentToRemove)))
+		context.addReplacement(region.replaceWith(toIndentedString(model.lines, indentationString, indentationLevel, originalStartColumn, indentToRemove)))
 
 		return context
 	}
 
-	def String toIndentedString(List<TextLine> lines, String indentationString, int indentToRemove) {
+	def String toIndentedString(List<TextLine> lines, String indentationString, int indentationLevel, int originalStartColumn, int indentToRemove) {
 		val result = new StringBuilder()
 		val length = lines.size()
 
@@ -84,14 +85,25 @@ class MultilineTextReplacer implements ITextReplacer {
 			val line = lines.get(i)
 			println('''[offset: «line.relativeOffset», length: «line.length», leadingWhiteSpace: «line.leadingWhiteSpace.length»] «line»''')
 
+			val toColumn = indentationLevel + 1
 			if (i == 0) {
-				result.append(line)
-			} else if (indentationString.length <= indentToRemove) {
+				// append first line as is (will be indented by formatter rules)
 				result.append(line)
 			} else {
-				result.append(indentationString)
-						.append(line.leadingWhiteSpace)
-						.append(line.semanticText)
+				if(originalStartColumn < toColumn) {
+					// increase indent
+					val indentIncrease = StringUtils.repeat(indentationString, toColumn - originalStartColumn)
+					result.append(indentIncrease).append(line)
+				} else if(originalStartColumn > toColumn) {
+					// decrease indent
+					val leadingWs = line.leadingWhiteSpace.toString()
+					val newIndent = StringUtils.replace(leadingWs, indentationString, "", originalStartColumn - toColumn)
+					result.append(newIndent).append(line.semanticText)
+				}
+				else {
+					// no adjustment needed
+					result.append(line)
+				}
 			}
 
 			if (i < length - 1) {

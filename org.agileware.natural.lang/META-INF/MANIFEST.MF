@@ -49,4 +49,5 @@ Export-Package: org.agileware.natural.lang;uses:="com.google.inject,org.eclipse.
  org.agileware.natural.lang.services;uses:="org.eclipse.xtext.service,org.eclipse.xtext",
  org.agileware.natural.lang.text;uses:="org.eclipse.xtext.conversion,org.eclipse.xtext.nodemodel,org.eclipse.xtext.conversion.impl",
  org.agileware.natural.lang.validation;uses:="org.eclipse.xtext.util,org.eclipse.xtext.validation"
-Import-Package: org.apache.log4j
+Import-Package: org.apache.commons.lang;version="2.6.0",
+ org.apache.log4j
