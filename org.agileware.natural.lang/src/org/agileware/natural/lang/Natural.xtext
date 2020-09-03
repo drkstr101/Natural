@@ -8,7 +8,6 @@ generate model "http://www.agileware.org/natural/lang"
  * 
  */
 NaturalModel: {NaturalModel}
-	BLANK_SPACE?
 	document=Document?
 ;
 
@@ -16,6 +15,7 @@ NaturalModel: {NaturalModel}
  * 
  */
 Document: {Document}
+	BLANK_SPACE?
 	(meta=Meta BLANK_SPACE?)?
 	'Document:' title=RawText? NL
 	(BLANK_SPACE? narrative=Narrative)?
@@ -71,7 +71,7 @@ NarrativeSection: Paragraph
  * 
  */
 Paragraph: {Paragraph}
-	value=MultilineText
+	value=RawTextBlock
 	NL
 ;
 
@@ -123,7 +123,7 @@ RawText returns ecore::EString:
 	TEXT_LITERAL+
 ;
 
-MultilineText returns ecore::EString:
+RawTextBlock returns ecore::EString:
 	(START_TEXT_LITERAL TEXT_LITERAL*)
 	(NL START_TEXT_LITERAL TEXT_LITERAL*)*
 ;

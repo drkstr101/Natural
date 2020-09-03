@@ -85,7 +85,7 @@ terminal PLACEHOLDER: '<' !('>' | ' ' | '\t' | '\n' | '\r')+ '>';
 Example: {Example}
 	(meta=Meta BLANK_SPACE?)?
 	'Examples:' title=RawText? NL
-	(BLANK_SPACE? narrative=MultilineText)?
+	(BLANK_SPACE? narrative=RawTextBlock)?
 	(BLANK_SPACE? table=Table)
 ;
 
