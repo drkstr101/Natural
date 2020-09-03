@@ -23,6 +23,7 @@ import org.eclipse.xtext.formatting2.FormatterRequest
 import org.eclipse.xtext.formatting2.IFormattableDocument
 import org.eclipse.xtext.formatting2.regionaccess.ISemanticRegion
 import org.eclipse.xtext.preferences.MapBasedPreferenceValues
+import org.eclipse.emf.ecore.EObject
 
 class NaturalFormatter extends AbstractFormatter2 {
 
@@ -53,18 +54,26 @@ class NaturalFormatter extends AbstractFormatter2 {
 		val textFormatter = createTextFormatter()
 
 		indentationLevel = 0
+		
+		// Condense all BLANK_SPACE regions into single line break
+		model.allRegionsFor.ruleCallsTo(BLANK_SPACERule).forEach [ region |
+			println('''Trimming BLANK_SPACE: «region.offset» «region.length»''')
+			textFormatter.trimBlankSpace(region, 1, doc)
+		]
 
 		// Format meta tags
 		if (model.meta !== null) {
 			model.meta.format()
-			// textFormatter.trimBlankSpace(model, documentAccess.BLANK_SPACEParserRuleCall_6_0, 1, doc)
 		}
 
 		// Format title
 		if (model.title === null) {
-			model.regionFor.keyword(documentAccess.documentKeyword_3).append[noSpace]
+			model.regionFor.keyword(documentAccess.documentKeyword_3)
+					.append[noSpace]
 		} else {
-			model.regionFor.assignment(documentAccess.titleAssignment_4).prepend[oneSpace].append[noSpace]
+			model.regionFor.assignment(documentAccess.titleAssignment_4)
+					.prepend[oneSpace]
+					.append[noSpace]
 		}
 
 		// Indent block
@@ -77,27 +86,34 @@ class NaturalFormatter extends AbstractFormatter2 {
 		// Format narrative
 		if (model.narrative !== null) {
 			model.narrative.format().prepend[indent]
+			if(!model.narrative.hasLeadingBlankSpace) {
+				model.narrative.prepend[setNewLines(2)]
+			}
 		}
 
 		// Format sections
-		for (s : model.sections) {
-			s.format().prepend[indent]
-		}
+		model.sections.forEach[
+			format().prepend[indent]
+		]
 
 		indentationLevel--
 	}
 
 	def dispatch void format(Section model, extension IFormattableDocument doc) {
 		val textFormatter = createTextFormatter()
+		
+		// Set block spacing
+		if (!model.hasLeadingBlankSpace) {
+			model.prepend[setNewLines(2)]
+		}
 
 		// Format meta tags
 		if (model.meta !== null) {
 			model.meta.format()
-			model.meta.tags.forEach[prepend[indent]]
+//			model.meta.tags.forEach[prepend[indent]]
 
 			// Work-around for strange keyword placement when tags are present
 			model.regionFor.keyword(sectionAccess.sectionKeyword_2).prepend[indent]
-			// textFormatter.trimBlankSpace(model, sectionAccess.BLANK_SPACEParserRuleCall_1_1, 1, doc)
 		}
 
 		// Format title
@@ -123,34 +139,33 @@ class NaturalFormatter extends AbstractFormatter2 {
 	}
 
 	def dispatch void format(Meta model, extension IFormattableDocument doc) {
-		val textFormatter = createTextFormatter()
-
-		// trim blank space
-		model.allRegionsFor.ruleCallsTo(BLANK_SPACERule).forEach [ region |
-			textFormatter.trimBlankSpace(region, 1, doc)
-		]
-
 		model.tags.forEach[format]
 	}
 
 	def dispatch void format(Tag model, extension IFormattableDocument doc) {
+		
+		// Trim leading/trailing whitespace
 		model.surround[noSpace]
+//		if(!model.isLast) {
+//			model.append[newLine]
+//		}
+		
 		if (model.value !== null) {
+			// Cleanup whitespace around value assignment
 			model.regionFor.keyword(':').prepend[noSpace].append[oneSpace]
 			model.regionFor.assignment(tagAccess.valueAssignment_2_1).prepend[oneSpace].append[noSpace]
 		}
 		
-		if(!model.isLast() && immediatelyFollowing(model).ruleCallTo(BLANK_SPACERule) === null) {
+		// Insert newline if not present from BLANK_SPACE
+		if(model.isLast()) {
+			model.append[setNewLines(0)]
+		} else if(!model.hasTrailingBlankSpace) {
 			model.append[newLine]
 		}
 	}
 
 	def dispatch void format(Narrative model, extension IFormattableDocument doc) {
-
-		// Format text blocks 
-		for (s : model.sections) {
-			s.format()
-		}
+		model.sections.forEach[format]
 	}
 
 	def dispatch void format(Paragraph model, extension IFormattableDocument doc) {
@@ -203,6 +218,19 @@ class NaturalFormatter extends AbstractFormatter2 {
 
 	def dispatch ISemanticRegion endRegion(Table model) {
 		return model.rows.last.regionFor.ruleCallTo(NLRule)
+	}
+
+	def dispatch boolean hasLeadingBlankSpace(EObject model) {
+		immediatelyPreceding(model).ruleCallTo(BLANK_SPACERule) !== null
+	}
+
+	def dispatch boolean hasTrailingBlankSpace(EObject model) {
+		immediatelyFollowing(model).ruleCallTo(BLANK_SPACERule) !== null
+	}
+
+	def dispatch boolean isLast(Section model) {
+		val document = model.eContainer as Document
+		model == document.sections.last
 	}
 
 	def dispatch boolean isLast(Tag model) {
