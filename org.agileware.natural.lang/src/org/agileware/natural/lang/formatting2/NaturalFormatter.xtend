@@ -4,8 +4,6 @@
 package org.agileware.natural.lang.formatting2
 
 import com.google.inject.Inject
-import java.util.Collections
-import java.util.stream.Collectors
 import org.agileware.natural.lang.model.DocString
 import org.agileware.natural.lang.model.Document
 import org.agileware.natural.lang.model.Meta
@@ -16,146 +14,144 @@ import org.agileware.natural.lang.model.Section
 import org.agileware.natural.lang.model.Table
 import org.agileware.natural.lang.model.Tag
 import org.agileware.natural.lang.services.NaturalGrammarAccess
-import org.eclipse.xtext.formatting.IIndentationInformation
 import org.eclipse.xtext.formatting2.AbstractFormatter2
-import org.eclipse.xtext.formatting2.FormatterPreferenceKeys
 import org.eclipse.xtext.formatting2.FormatterRequest
 import org.eclipse.xtext.formatting2.IFormattableDocument
 import org.eclipse.xtext.formatting2.regionaccess.ISemanticRegion
-import org.eclipse.xtext.preferences.MapBasedPreferenceValues
 
 class NaturalFormatter extends AbstractFormatter2 {
 
 	@Inject extension NaturalGrammarAccess naturalGrammarAccess
 
-	@Inject IIndentationInformation indentationInformation
-
-	@Inject MultilineTextFormatter.Factory textFormatterFactory
+	@Inject NaturalFormatHelper.Factory formatHelperFactory
 
 	// TODO there must be a better way to get the current indentation level!
 	var int indentationLevel = -1
+	
+	var extension NaturalFormatHelper _formatHelper = null
 
 	override protected initialize(FormatterRequest request) {
-		val preferences = request.preferences
-		if (preferences instanceof MapBasedPreferenceValues) {
-			preferences.put(FormatterPreferenceKeys.indentation, indentationInformation.indentString)
-		}
+		_formatHelper = formatHelperFactory.create(request.textRegionAccess, naturalGrammarAccess)
+		_formatHelper.initialize(request)
+
 		super.initialize(request)
 	}
 
 	def dispatch void format(NaturalModel model, extension IFormattableDocument doc) {
-		println(textRegionAccess)
+		// println(textRegionAccess)
 		model.document.format()
-		println(doc)
+		// println(doc)
 	}
 
 	def dispatch void format(Document model, extension IFormattableDocument doc) {
-		val textFormatter = createTextFormatter()
 
 		indentationLevel = 0
+		
+		// Condense all BLANK_SPACE regions into single line break
+		model.allRegionsFor.ruleCallsTo(BLANK_SPACERule).forEach [ region |
+			// println('''Trimming BLANK_SPACE: «region.offset» «region.length»''')
+			trimBlankSpace(region, 1, doc)
+		]
 
 		// Format meta tags
-		if (model.meta !== null) {
-			model.meta.format()
-			// textFormatter.trimBlankSpace(model, documentAccess.BLANK_SPACEParserRuleCall_6_0, 1, doc)
-		}
+		model.meta.format()
 
-		// Format title
+		// Cleanup whitespace around keyword/title
 		if (model.title === null) {
-			model.regionFor.keyword(documentAccess.documentKeyword_3).append[noSpace]
+			model.regionFor.keyword(documentAccess.documentKeyword_3)
+					.append[noSpace]
 		} else {
-			model.regionFor.assignment(documentAccess.titleAssignment_4).prepend[oneSpace].append[noSpace]
+			model.regionFor.assignment(documentAccess.titleAssignment_4)
+					.prepend[oneSpace]
+					.append[noSpace]
 		}
 
-		// Indent block
-		val start = model.regionFor.ruleCallTo(NLRule)
-		val end = model.endRegion()
-		interior(start, end)[indent]
-
+		// Increase indent
+		indentBlock(model.startIndent, model.endIndent, doc)
 		indentationLevel++
 
 		// Format narrative
 		if (model.narrative !== null) {
 			model.narrative.format().prepend[indent]
+			if(!model.narrative.hasLeadingBlankSpace) {
+				model.narrative.prepend[setNewLines(2)]
+			}
 		}
 
 		// Format sections
-		for (s : model.sections) {
-			s.format().prepend[indent]
-		}
+		model.sections.forEach[ format().prepend[indent] ]
 
+		// Decrease indent
 		indentationLevel--
 	}
 
 	def dispatch void format(Section model, extension IFormattableDocument doc) {
-		val textFormatter = createTextFormatter()
+
+		// Set block spacing
+		if (!model.hasLeadingBlankSpace) {
+			model.prepend[setNewLines(2)]
+		}
 
 		// Format meta tags
 		if (model.meta !== null) {
 			model.meta.format()
-			model.meta.tags.forEach[prepend[indent]]
 
 			// Work-around for strange keyword placement when tags are present
 			model.regionFor.keyword(sectionAccess.sectionKeyword_2).prepend[indent]
-			// textFormatter.trimBlankSpace(model, sectionAccess.BLANK_SPACEParserRuleCall_1_1, 1, doc)
 		}
 
-		// Format title
+		// Cleanup whitespace around keyword/title
 		if (model.title === null) {
 			model.regionFor.keyword(sectionAccess.sectionKeyword_2).append[noSpace]
 		} else {
 			model.regionFor.assignment(sectionAccess.titleAssignment_3).prepend[oneSpace].append[noSpace]
 		}
 
+		// Increase indent
+		indentBlock(model.startIndent, model.endIndent, doc)
 		indentationLevel++
 
 		// Format narrative
 		if (model.narrative !== null) {
-			// Indent block interior
-			val start = model.regionFor.ruleCallTo(NLRule)
-			val end = model.endRegion()
-			interior(start, end)[indent]
-
 			model.narrative.format().prepend[indent]
+			// TODO (opinionated) should we increase spacing here? 
+			// if(!model.narrative.hasLeadingBlankSpace) {
+			// 	model.narrative.prepend[setNewLines(2)]
+			// }
 		}
 
 		indentationLevel--
 	}
 
 	def dispatch void format(Meta model, extension IFormattableDocument doc) {
-		val textFormatter = createTextFormatter()
-
-		// trim blank space
-		model.allRegionsFor.ruleCallsTo(BLANK_SPACERule).forEach [ region |
-			textFormatter.trimBlankSpace(region, 1, doc)
-		]
-
 		model.tags.forEach[format]
 	}
 
 	def dispatch void format(Tag model, extension IFormattableDocument doc) {
+		
+		// Trim leading/trailing whitespace
 		model.surround[noSpace]
+		
 		if (model.value !== null) {
+			// Cleanup whitespace around value assignment
 			model.regionFor.keyword(':').prepend[noSpace].append[oneSpace]
 			model.regionFor.assignment(tagAccess.valueAssignment_2_1).prepend[oneSpace].append[noSpace]
 		}
 		
-		if(!model.isLast() && immediatelyFollowing(model).ruleCallTo(BLANK_SPACERule) === null) {
+		// Insert newline if not present from BLANK_SPACE
+		if(model.isLast()) {
+			model.append[setNewLines(0)]
+		} else if(!model.hasTrailingBlankSpace) {
 			model.append[newLine]
 		}
 	}
 
 	def dispatch void format(Narrative model, extension IFormattableDocument doc) {
-
-		// Format text blocks 
-		for (s : model.sections) {
-			s.format()
-		}
+		model.sections.forEach[format().prepend[indent]]
 	}
 
 	def dispatch void format(Paragraph model, extension IFormattableDocument doc) {
-		model.prepend[indent]
-		createTextFormatter().formatTextBlock(model, paragraphAccess.valueAssignment_1, indentationLevel, doc)
+		formatMultilineText(model, paragraphAccess.valueAssignment_1, indentationLevel, doc)
 	}
 
 	def dispatch void format(Table model, extension IFormattableDocument doc) {
@@ -163,46 +159,54 @@ class NaturalFormatter extends AbstractFormatter2 {
 	}
 
 	def dispatch void format(DocString model, extension IFormattableDocument doc) {
-		model.prepend[indent]
-		createTextFormatter().formatTextBlock(model, docStringAccess.valueAssignment_1, indentationLevel, doc)
+		formatMultilineText(model, docStringAccess.valueAssignment_1, indentationLevel, doc)
 	}
 
-	def MultilineTextFormatter createTextFormatter() {
-		return textFormatterFactory.create(request.textRegionAccess)
+	def dispatch ISemanticRegion startIndent(Document model) {
+		return model.regionFor.ruleCallTo(NLRule)
 	}
-
-	def dispatch ISemanticRegion endRegion(Document model) {
+	
+	def dispatch ISemanticRegion endIndent(Document model) {
 		if (!model.sections.isEmpty()) {
-			return model.sections.last.endRegion()
+			return model.sections.last.endIndent()
 		} else if (model.narrative !== null) {
-			return model.narrative.endRegion()
+			return model.narrative.endIndent()
 		}
 
 		return model.regionFor.ruleCall(documentAccess.BLANK_SPACEParserRuleCall_8)
 	}
+	
+	def dispatch ISemanticRegion startIndent(Section model) {
+		return model.regionFor.ruleCallTo(NLRule)
+	}
 
-	def dispatch ISemanticRegion endRegion(Section model) {
+	def dispatch ISemanticRegion endIndent(Section model) {
 		if (model.narrative !== null) {
-			return model.narrative.endRegion()
+			return model.narrative.endIndent()
 		}
 
 		return model.regionFor.ruleCallTo(NLRule)
 	}
 
-	def dispatch ISemanticRegion endRegion(Narrative model) {
-		return model.sections.last.endRegion()
+	def dispatch ISemanticRegion endIndent(Narrative model) {
+		return model.sections.last.endIndent()
 	}
 
-	def dispatch ISemanticRegion endRegion(Paragraph model) {
+	def dispatch ISemanticRegion endIndent(Paragraph model) {
 		return model.regionFor.ruleCallTo(NLRule)
 	}
 
-	def dispatch ISemanticRegion endRegion(DocString model) {
+	def dispatch ISemanticRegion endIndent(DocString model) {
 		return model.regionFor.ruleCallTo(NLRule)
 	}
 
-	def dispatch ISemanticRegion endRegion(Table model) {
+	def dispatch ISemanticRegion endIndent(Table model) {
 		return model.rows.last.regionFor.ruleCallTo(NLRule)
+	}
+
+	def dispatch boolean isLast(Section model) {
+		val document = model.eContainer as Document
+		model == document.sections.last
 	}
 
 	def dispatch boolean isLast(Tag model) {

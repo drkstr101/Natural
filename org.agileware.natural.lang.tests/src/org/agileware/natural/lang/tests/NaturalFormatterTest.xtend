@@ -20,7 +20,9 @@ class NaturalFormatterTest extends AbstractFormatterTest<NaturalModel> {
 				
 				Section:	A	
 				
-				Section:
+				Section:	
+				The quick brown fox
+				Jumps over the lazy dog
 		'''
 		val expectation = '''
 			# language: en
@@ -29,6 +31,8 @@ class NaturalFormatterTest extends AbstractFormatterTest<NaturalModel> {
 				Section: A
 				
 				Section:
+					The quick brown fox
+					Jumps over the lazy dog
 		'''
 		assertFormatted(toBeFormatted, expectation)
 	}
@@ -234,17 +238,85 @@ class NaturalFormatterTest extends AbstractFormatterTest<NaturalModel> {
 			# language: en
 			Document:
 			
+			@foo
+			Section: A
+			
+			@foo
+			@bar
+			Section: B
+			The quick brown fox
+			Jumps over the lazy dog
+		'''
+		val expectation = '''
+			# language: en
+			Document:
+				
+				@foo
+				Section: A
+				
+				@foo
+				@bar
+				Section: B
+					The quick brown fox
+					Jumps over the lazy dog
+				'''
+		assertFormatted(toBeFormatted, expectation)
+	}
+	
+	
+	@Test
+	def void adjustBlockSpacing_01() {
+		val toBeFormatted = '''
+			# language: en
+			Document:
+				The quick brown fox
+				Jumps over the lazy dog
+				Section:
+					The quick brown fox
+			
+				Section:
+					Jumps over the lazy dog
+		'''
+		val expectation = '''
+			# language: en
+			Document:
+			
+				The quick brown fox
+				Jumps over the lazy dog
+			
+				Section:
+					The quick brown fox
+			
+				Section:
+					Jumps over the lazy dog
+		'''
+		assertFormatted(toBeFormatted, expectation)
+	}
+	
+	
+	@Test
+	def void adjustBlockSpacing_02() {
+		val toBeFormatted = '''
+			# language: en
+			Document:
+			
+			
+			
 			The quick brown fox
 			Jumps over the lazy dog
 			
-			@foo
-			@bar
+			
+			
+			
 			Section:
+			
+			
 			The quick brown fox
 			
-			@foo
-			@bar
 			Section:
+			
+			
+			
 			Jumps over the lazy dog
 		'''
 		val expectation = '''
@@ -254,14 +326,12 @@ class NaturalFormatterTest extends AbstractFormatterTest<NaturalModel> {
 				The quick brown fox
 				Jumps over the lazy dog
 			
-				@foo
-				@bar
 				Section:
+					
 					The quick brown fox
 			
-				@foo
-				@bar
 				Section:
+					
 					Jumps over the lazy dog
 		'''
 		assertFormatted(toBeFormatted, expectation)
@@ -296,7 +366,6 @@ class NaturalFormatterTest extends AbstractFormatterTest<NaturalModel> {
 					
 					@title: Hello, World!
 			@foobar
-				
 				Section:
 					The quick brown fox
 		'''

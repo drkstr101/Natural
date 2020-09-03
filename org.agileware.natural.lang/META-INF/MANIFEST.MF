@@ -22,6 +22,8 @@ Export-Package: org.agileware.natural.lang;uses:="com.google.inject,org.eclipse.
    org.agileware.natural.lang.model,
    org.eclipse.xtext.formatting2.regionaccess,
    org.eclipse.xtext.formatting2.regionaccess.internal,
+   org.agileware.natural.lang.services,
+   org.eclipse.xtext.xbase.lib,
    org.eclipse.xtext.formatting2,
    org.eclipse.xtext",
  org.agileware.natural.lang.generator;uses:="org.eclipse.xtext.generator,org.eclipse.emf.ecore.resource",

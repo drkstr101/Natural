@@ -56,7 +56,7 @@ terminal TAG_LITERAL: '@' !('@' | ':'  | ' ' | '\t' | '\n' | '\r')+;
  */
 Narrative: {Narrative}
 	sections+=NarrativeSection
-      (BLANK_SPACE sections+=NarrativeSection)*
+      (NL BLANK_SPACE? sections+=NarrativeSection)*
 ;
 
 /**
@@ -193,7 +193,7 @@ terminal WORD:
 //	| ('\u0061'..'\u007A')
 //;
 
-BLANK_SPACE: NL+ WS*;
+BLANK_SPACE: NL+;
 terminal NL: ('\r'? '\n') | EOF;
 
 terminal WS: (' ' | '\t');

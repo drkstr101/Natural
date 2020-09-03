@@ -2,6 +2,7 @@ package org.agileware.natural.lang.formatting2
 
 import com.google.inject.Inject
 import java.util.List
+import org.agileware.natural.lang.services.NaturalGrammarAccess
 import org.agileware.natural.lang.text.TextLine
 import org.agileware.natural.lang.text.TextModel
 import org.apache.commons.lang.StringUtils
@@ -10,6 +11,8 @@ import org.eclipse.xtend.lib.annotations.FinalFieldsConstructor
 import org.eclipse.xtext.Assignment
 import org.eclipse.xtext.RuleCall
 import org.eclipse.xtext.formatting.IIndentationInformation
+import org.eclipse.xtext.formatting2.FormatterPreferenceKeys
+import org.eclipse.xtext.formatting2.FormatterRequest
 import org.eclipse.xtext.formatting2.IFormattableDocument
 import org.eclipse.xtext.formatting2.ITextReplacer
 import org.eclipse.xtext.formatting2.ITextReplacerContext
@@ -19,15 +22,16 @@ import org.eclipse.xtext.formatting2.regionaccess.ITextRegionExtensions
 import org.eclipse.xtext.formatting2.regionaccess.ITextSegment
 import org.eclipse.xtext.formatting2.regionaccess.internal.NodeSemanticRegion
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
+import org.eclipse.xtext.preferences.MapBasedPreferenceValues
 
 @FinalFieldsConstructor
-class MultilineTextFormatter {
+class NaturalFormatHelper {
 
 	static class Factory {
 		@Inject IIndentationInformation indentationInformation
 
-		def MultilineTextFormatter create(ITextRegionAccess regionAccess) {
-			new MultilineTextFormatter(this, regionAccess.extensions)
+		def NaturalFormatHelper create(ITextRegionAccess regionAccess, NaturalGrammarAccess grammerAccess) {
+			new NaturalFormatHelper(this, regionAccess.extensions, grammerAccess)
 		}
 	}
 
@@ -35,7 +39,16 @@ class MultilineTextFormatter {
 
 	val extension ITextRegionExtensions
 
-	def formatTextBlock(EObject owner, Assignment assignment, int indentationLevel,
+	val extension NaturalGrammarAccess
+
+	def void initialize(FormatterRequest request) {
+		val preferences = request.preferences
+		if (preferences instanceof MapBasedPreferenceValues) {
+			preferences.put(FormatterPreferenceKeys.indentation, factory.indentationInformation.indentString)
+		}
+	}
+
+	def formatMultilineText(EObject owner, Assignment assignment, int indentationLevel,
 		extension IFormattableDocument doc) {
 		val region = owner.regionFor.assignment(assignment)
 		if (region instanceof NodeSemanticRegion) {
@@ -52,6 +65,18 @@ class MultilineTextFormatter {
 		if (region instanceof NodeSemanticRegion) {
 			addReplacer(new BlankSpaceReplacer(region, newLines))
 		}
+	}
+	
+	def indentBlock(ISemanticRegion start, ISemanticRegion end, extension IFormattableDocument doc) {
+		interior(start, end)[indent]
+	}
+
+	def dispatch boolean hasLeadingBlankSpace(EObject model) {
+		immediatelyPreceding(model).ruleCallTo(BLANK_SPACERule) !== null
+	}
+
+	def dispatch boolean hasTrailingBlankSpace(EObject model) {
+		immediatelyFollowing(model).ruleCallTo(BLANK_SPACERule) !== null
 	}
 
 	def trimBlankSpace(ISemanticRegion region, int newLines, extension IFormattableDocument doc) {
@@ -72,9 +97,8 @@ public class BlankSpaceReplacer implements ITextReplacer {
 	}
 
 	override createReplacements(ITextReplacerContext context) {
-		val newText = (newLines === 0)? 
-				"" : StringUtils.repeat(System.lineSeparator, newLines)
-		
+		val newText = (newLines === 0) ? "" : StringUtils.repeat(System.lineSeparator, newLines)
+
 		context.addReplacement(region.replaceWith(newText))
 
 		return context
