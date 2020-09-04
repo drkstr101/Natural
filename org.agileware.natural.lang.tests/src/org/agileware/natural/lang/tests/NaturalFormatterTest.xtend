@@ -179,8 +179,7 @@ class NaturalFormatterTest extends AbstractFormatterTest<NaturalModel> {
 		'''
 		assertFormatted(toBeFormatted, expectation)
 	}
-	
-	
+
 	@Test
 	def void indentSections_01() {
 		val toBeFormatted = '''
@@ -198,7 +197,7 @@ class NaturalFormatterTest extends AbstractFormatterTest<NaturalModel> {
 		'''
 		assertFormatted(toBeFormatted)
 	}
-	
+
 	@Test
 	def void indentSections_02() {
 		val toBeFormatted = '''
@@ -229,7 +228,7 @@ class NaturalFormatterTest extends AbstractFormatterTest<NaturalModel> {
 		'''
 		assertFormatted(toBeFormatted, expectation)
 	}
-	
+
 	@Test
 	def void indentSections_03() {
 		val toBeFormatted = '''
@@ -257,11 +256,10 @@ class NaturalFormatterTest extends AbstractFormatterTest<NaturalModel> {
 				Section: B
 					The quick brown fox
 					Jumps over the lazy dog
-				'''
+		'''
 		assertFormatted(toBeFormatted, expectation)
 	}
-	
-	
+
 	@Test
 	def void adjustBlockSpacing_01() {
 		val toBeFormatted = '''
@@ -290,8 +288,7 @@ class NaturalFormatterTest extends AbstractFormatterTest<NaturalModel> {
 		'''
 		assertFormatted(toBeFormatted, expectation)
 	}
-	
-	
+
 	@Test
 	def void adjustBlockSpacing_02() {
 		val toBeFormatted = '''
@@ -334,7 +331,7 @@ class NaturalFormatterTest extends AbstractFormatterTest<NaturalModel> {
 		'''
 		assertFormatted(toBeFormatted, expectation)
 	}
-	
+
 	@Test
 	def void cleanupMetaTags_01() {
 		val toBeFormatted = '''
@@ -353,7 +350,7 @@ class NaturalFormatterTest extends AbstractFormatterTest<NaturalModel> {
 		'''
 		assertFormatted(toBeFormatted, expectation)
 	}
-	
+
 	@Test
 	def void cleanupMetaTags_02() {
 		val toBeFormatted = '''

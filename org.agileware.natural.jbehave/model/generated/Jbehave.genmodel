@@ -40,18 +40,14 @@
     <genClasses ecoreClass="Jbehave.ecore#//StoryNarrativeB">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Jbehave.ecore#//StoryNarrativeB/soThat"/>
     </genClasses>
-    <genClasses ecoreClass="Jbehave.ecore#//InOrderTo">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Jbehave.ecore#//InOrderTo/value"/>
+    <genClasses ecoreClass="Jbehave.ecore#//StoryNarrativeElement">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Jbehave.ecore#//StoryNarrativeElement/keyword"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Jbehave.ecore#//StoryNarrativeElement/value"/>
     </genClasses>
-    <genClasses ecoreClass="Jbehave.ecore#//AsA">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Jbehave.ecore#//AsA/value"/>
-    </genClasses>
-    <genClasses ecoreClass="Jbehave.ecore#//IWantTo">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Jbehave.ecore#//IWantTo/value"/>
-    </genClasses>
-    <genClasses ecoreClass="Jbehave.ecore#//SoThat">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Jbehave.ecore#//SoThat/value"/>
-    </genClasses>
+    <genClasses ecoreClass="Jbehave.ecore#//InOrderTo"/>
+    <genClasses ecoreClass="Jbehave.ecore#//AsA"/>
+    <genClasses ecoreClass="Jbehave.ecore#//IWantTo"/>
+    <genClasses ecoreClass="Jbehave.ecore#//SoThat"/>
     <genClasses ecoreClass="Jbehave.ecore#//Lifecycle">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Jbehave.ecore#//Lifecycle/before"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Jbehave.ecore#//Lifecycle/after"/>

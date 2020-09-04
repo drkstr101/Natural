@@ -6,9 +6,9 @@ import java.util.stream.Collectors;
 
 /**
  *
- * TODO This was originally designed for individual replacers per Literal,
- *      And is probably a bit overkill for the simple whole-region-replacer
- *      that is currently implemented in MultilineTextFormatter
+ * TODO This was originally designed for individual replacers per Literal, And
+ * is probably a bit overkill for the simple whole-region-replacer that is
+ * currently implemented in MultilineTextFormatter
  *
  */
 public class TextModel {
@@ -67,11 +67,8 @@ public class TextModel {
 		this.lines = lines;
 	}
 
-
 	@Override
 	public String toString() {
-		return lines.stream()
-				.collect(Collectors.joining(System.lineSeparator()))
-				.toString();
+		return lines.stream().collect(Collectors.joining(System.lineSeparator())).toString();
 	}
 }

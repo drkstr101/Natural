@@ -25,7 +25,12 @@ Require-Bundle: org.agileware.natural.cucumber,
 Import-Package: org.apache.log4j,
  org.eclipse.xtext.ui.codemining;resolution:=optional
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: org.agileware.natural.cucumber.ui.contentassist;
+Export-Package: org.agileware.natural.cucumber.ui.codemining;
+  uses:="org.eclipse.xtext.ui.codemining,
+   org.eclipse.jface.text,
+   org.eclipse.xtext.resource,
+   org.eclipse.xtext.util",
+ org.agileware.natural.cucumber.ui.contentassist;
   uses:="org.eclipse.emf.ecore,
    org.agileware.natural.lang.ui.contentassist,
    org.eclipse.xtext.ui.editor.contentassist,

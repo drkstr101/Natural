@@ -68,20 +68,26 @@ StoryNarrativeB: {StoryNarrativeB}
 	(BLANK_SPACE? wantTo=IWantTo)
 	(BLANK_SPACE? soThat=SoThat);
 
+StoryNarrativeElement: InOrderTo
+	| AsA
+	| IWantTo
+	| SoThat
+;
+
 InOrderTo: {InOrderTo}
-	IN_ORDER_TO value=RawText NL
+	keyword=IN_ORDER_TO value=RawText NL
 ;
 
 AsA: {AsA}
-	AS_A value=RawText NL
+	keyword=AS_A value=RawText NL
 ;
 
 IWantTo: {IWantTo}
-	I_WANT_TO value=RawText NL
+	keyword=I_WANT_TO value=RawText NL
 ;
 
 SoThat: {SoThat}
-	SO_THAT value=RawText NL
+	keyword=SO_THAT value=RawText NL
 ;
 
 terminal IN_ORDER_TO: 'In order to';

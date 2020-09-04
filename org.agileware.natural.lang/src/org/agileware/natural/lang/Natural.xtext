@@ -1,7 +1,6 @@
 grammar org.agileware.natural.lang.Natural hidden(WS, SL_COMMENT)
 
 import "http://www.eclipse.org/emf/2002/Ecore" as ecore
-
 generate model "http://www.agileware.org/natural/lang"
 
 /**
@@ -25,7 +24,7 @@ Document: {Document}
 
 /**
  * 
- */	
+ */
 Section: {Section}
 	(meta=Meta BLANK_SPACE?)?
 	'Section:' title=RawText? NL
@@ -37,7 +36,7 @@ Section: {Section}
  */
 Meta: {Meta}
 	tags+=Tag
-	  (BLANK_SPACE? tags+=Tag)*
+	(BLANK_SPACE? tags+=Tag)*
 	NL
 ;
 
@@ -49,20 +48,23 @@ Tag: {Tag}
 	(':' value=RawText)?
 ;
 
-terminal TAG_LITERAL: '@' !('@' | ':'  | ' ' | '\t' | '\n' | '\r')+;
+terminal TAG_LITERAL:
+	'@' !('@' | ':' | ' ' | '\t' | '\n' | '\r')+
+;
 
 /**
  * 
  */
 Narrative: {Narrative}
 	sections+=NarrativeSection
-      (NL BLANK_SPACE? sections+=NarrativeSection)*
+	(NL BLANK_SPACE? sections+=NarrativeSection)*
 ;
 
 /**
  * 
  */
-NarrativeSection: Paragraph
+NarrativeSection:
+	Paragraph
 	| DocString
 	| Table
 ;
@@ -83,9 +85,9 @@ DocString: {DocString}
 	NL
 ;
 
-terminal DOC_STRING_LITERAL: 
-	('"""' -> '"""')
-	  | ("'''" -> "'''")
+terminal DOC_STRING_LITERAL:
+	('"""'->'"""')
+	| ("'''"->"'''")
 ;
 
 /**
@@ -109,8 +111,9 @@ TableCol: {TableCol}
 	value=TABLE_CELL
 ;
 
-terminal TABLE_CELL: '|' !('|' | '\n' | '\r')*;
-
+terminal TABLE_CELL:
+	'|' !('|' | '\n' | '\r')*
+;
 
 // --------------------------------------
 // Text Literals
@@ -128,17 +131,18 @@ RawTextBlock returns ecore::EString:
 	(NL START_TEXT_LITERAL TEXT_LITERAL*)*
 ;
 
-START_TEXT_LITERAL: WORD 
-	| NUMBER 
-	| STRING 
+START_TEXT_LITERAL: WORD
+	| NUMBER
+	| STRING
+	| PATH
 	| ANY_OTHER
 ;
 
 TEXT_LITERAL: WORD
-	| NUMBER 
+	| NUMBER
 	| STRING
 	| PATH
-	| TABLE_CELL 
+	| TABLE_CELL
 	| ANY_OTHER
 ;
 
@@ -164,9 +168,13 @@ terminal fragment DECIMAL_NUMBER:
 	NON_ZERO_DIGIT DIGIT*
 ;
 
-terminal fragment DIGIT: '0' | NON_ZERO_DIGIT;
+terminal fragment DIGIT:
+	'0' | NON_ZERO_DIGIT
+;
 
-terminal fragment NON_ZERO_DIGIT: '1'..'9';
+terminal fragment NON_ZERO_DIGIT:
+	'1'..'9'
+;
 
 terminal fragment HEX_NUMBER:
 	'0' ('x' | 'X') ('0'..'9' | 'a'..'f' | 'A'..'F')+
@@ -180,24 +188,31 @@ terminal fragment EXPONENT_PART:
 	('e' | 'E') ('+' | '-')? DIGIT+
 ;
 
-terminal SL_COMMENT: '#' !('\n' | '\r')* NL;
+terminal SL_COMMENT:
+	'#' !('\n' | '\r')* NL
+;
 
-terminal WORD: 
+terminal WORD:
 	!('@' | '|' | ' ' | '\t' | '\n' | '\r')
 	!(' ' | '\t' | '\n' | '\r')*
 ;
 
-terminal fragment SIMPLE_WORD: 
+terminal fragment SIMPLE_WORD:
 	(LETTER | DIGIT)
-	(LETTER | DIGIT | '_' | '-' )*
+	(LETTER | DIGIT | '_' | '-')*
 ;
 
-terminal fragment LETTER: LATIN_ALPHABET;
-terminal fragment LATIN_ALPHABET: ('\u0041'..'\u005A')
+terminal fragment LETTER:
+	LATIN_ALPHABET
+;
+
+terminal fragment LATIN_ALPHABET:
+	('\u0041'..'\u005A')
 	| ('\u0061'..'\u007A')
 ;
 
 BLANK_SPACE: NL+;
+
 terminal NL: ('\r'? '\n') | EOF;
 
 terminal WS: (' ' | '\t');

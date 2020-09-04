@@ -57,10 +57,11 @@ Scenario: {Scenario}
 ;
 
 /**
- * note: Do not fix keyword warning (or replace with terminal ok)
+ * 
  */
 ScenarioOutline: {ScenarioOutline}
 	(meta=Meta BLANK_SPACE?)?
+	// note: Do not fix keyword warning (replace with terminal ok)
 	'Scenario Outline:' title=RawText? NL
 	(BLANK_SPACE? narrative=Narrative)?
 	(BLANK_SPACE? steps+=Step)*
@@ -75,9 +76,14 @@ Step: {Step}
 	((BLANK_SPACE? table=Table) | (BLANK_SPACE? text=DocString))?
 ;
 
-terminal STEP_KEYWORD: ('Given' | 'When' | 'Then' | 'And' | 'But' | '*');
+terminal STEP_KEYWORD:
+	('Given' | 'When' | 'Then' | 'And' | 'But' | '*')
+;
 
-terminal PLACEHOLDER: '<' !('>' | ' ' | '\t' | '\n' | '\r')+ '>';
+terminal PLACEHOLDER:
+	('<' !('>' | ' ' | '\t' | '\n' | '\r')+ '>')
+	  | ('[' !(']' | ' ' | '\t' | '\n' | '\r')+ ']')
+;
 
 /**
  * 
@@ -88,7 +94,6 @@ Example: {Example}
 	(BLANK_SPACE? narrative=RawTextBlock)?
 	(BLANK_SPACE? table=Table)
 ;
-
 
 @Override
 TEXT_LITERAL: WORD

@@ -51,7 +51,10 @@ Workflow {
 				generateXtendStub = true
 			}
 			parserGenerator = {
-				debugGrammar = false
+				debugGrammar = true
+				options = auto-inject {
+					classSplitting = true
+				}
 			}
 		}
 

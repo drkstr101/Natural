@@ -121,7 +121,7 @@ class NaturalExamplesTest extends AbstractExamplesTest<NaturalModel> {
 			Section: B
 		''')
 	}
-	
+
 	@Test
 	def void example_10() {
 		assertExampleParses('''

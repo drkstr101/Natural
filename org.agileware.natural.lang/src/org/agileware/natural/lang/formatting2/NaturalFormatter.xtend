@@ -26,8 +26,6 @@ class NaturalFormatter extends AbstractFormatter2 {
 	@Inject NaturalFormatHelper.Factory formatHelperFactory
 
 	// TODO there must be a better way to get the current indentation level!
-	var int indentationLevel = -1
-	
 	var extension NaturalFormatHelper _formatHelper = null
 
 	override protected initialize(FormatterRequest request) {
@@ -40,13 +38,13 @@ class NaturalFormatter extends AbstractFormatter2 {
 	def dispatch void format(NaturalModel model, extension IFormattableDocument doc) {
 		// println(textRegionAccess)
 		model.document.format()
-		println(doc)
+		// println(doc)
 	}
 
 	def dispatch void format(Document model, extension IFormattableDocument doc) {
 
 		indentationLevel = 0
-		
+
 		// Condense all BLANK_SPACE regions into single line break
 		model.allRegionsFor.ruleCallsTo(BLANK_SPACERule).forEach [ region |
 			// println('''Trimming BLANK_SPACE: «region.offset» «region.length»''')
@@ -73,13 +71,13 @@ class NaturalFormatter extends AbstractFormatter2 {
 		// Format narrative
 		if (model.narrative !== null) {
 			model.narrative.format().prepend[indent]
-			if(!model.narrative.hasLeadingBlankSpace) {
+			if (!model.narrative.hasLeadingBlankSpace) {
 				model.narrative.prepend[setNewLines(2)]
 			}
 		}
 
 		// Format sections
-		model.sections.forEach[ format().prepend[indent] ]
+		model.sections.forEach[format().prepend[indent]]
 
 		// Decrease indent
 		indentationLevel--
@@ -97,14 +95,18 @@ class NaturalFormatter extends AbstractFormatter2 {
 			model.meta.format()
 
 			// Work-around for strange keyword placement when tags are present
-			model.regionFor.keyword(sectionAccess.sectionKeyword_2).prepend[indent]
+			model.regionFor.keyword(sectionAccess.sectionKeyword_2)
+					.prepend[indent]
 		}
 
 		// Cleanup whitespace around keyword/title
 		if (model.title === null) {
-			model.regionFor.keyword(sectionAccess.sectionKeyword_2).append[noSpace]
+			model.regionFor.keyword(sectionAccess.sectionKeyword_2)
+					.append[noSpace]
 		} else {
-			model.regionFor.assignment(sectionAccess.titleAssignment_3).prepend[oneSpace].append[noSpace]
+			model.regionFor.assignment(sectionAccess.titleAssignment_3)
+					.prepend[oneSpace]
+					.append[noSpace]
 		}
 
 		// Increase indent
@@ -114,58 +116,15 @@ class NaturalFormatter extends AbstractFormatter2 {
 		// Format narrative
 		if (model.narrative !== null) {
 			model.narrative.format().prepend[indent]
-			// TODO (opinionated) should we increase spacing here? 
-			// if(!model.narrative.hasLeadingBlankSpace) {
-			// 	model.narrative.prepend[setNewLines(2)]
-			// }
 		}
 
 		indentationLevel--
 	}
 
-	def dispatch void format(Meta model, extension IFormattableDocument doc) {
-		model.tags.forEach[format]
-	}
-
-	def dispatch void format(Tag model, extension IFormattableDocument doc) {
-		
-		// Trim leading/trailing whitespace
-		model.surround[noSpace]
-		
-		if (model.value !== null) {
-			// Cleanup whitespace around value assignment
-			model.regionFor.keyword(':').prepend[noSpace].append[oneSpace]
-			model.regionFor.assignment(tagAccess.valueAssignment_2_1).prepend[oneSpace].append[noSpace]
-		}
-		
-		// Insert newline if not present from BLANK_SPACE
-		if(model.isLast()) {
-			model.append[setNewLines(0)]
-		} else if(!model.hasTrailingBlankSpace) {
-			model.append[newLine]
-		}
-	}
-
-	def dispatch void format(Narrative model, extension IFormattableDocument doc) {
-		model.sections.forEach[format().prepend[indent]]
-	}
-
-	def dispatch void format(Paragraph model, extension IFormattableDocument doc) {
-		formatMultilineText(model, paragraphAccess.valueAssignment_1, indentationLevel, doc)
-	}
-
-	def dispatch void format(Table model, extension IFormattableDocument doc) {
-		model.rows.forEach[prepend[indent]]
-	}
-
-	def dispatch void format(DocString model, extension IFormattableDocument doc) {
-		formatMultilineText(model, docStringAccess.valueAssignment_1, indentationLevel, doc)
-	}
-
 	def dispatch ISemanticRegion startIndent(Document model) {
 		return model.regionFor.ruleCallTo(NLRule)
 	}
-	
+
 	def dispatch ISemanticRegion endIndent(Document model) {
 		if (!model.sections.isEmpty()) {
 			return model.sections.last.endIndent()
@@ -174,10 +133,6 @@ class NaturalFormatter extends AbstractFormatter2 {
 		}
 
 		return model.regionFor.ruleCall(documentAccess.BLANK_SPACEParserRuleCall_8)
-	}
-	
-	def dispatch ISemanticRegion startIndent(Section model) {
-		return model.regionFor.ruleCallTo(NLRule)
 	}
 
 	def dispatch ISemanticRegion endIndent(Section model) {
@@ -188,29 +143,8 @@ class NaturalFormatter extends AbstractFormatter2 {
 		return model.regionFor.ruleCallTo(NLRule)
 	}
 
-	def dispatch ISemanticRegion endIndent(Narrative model) {
-		return model.sections.last.endIndent()
-	}
-
-	def dispatch ISemanticRegion endIndent(Paragraph model) {
-		return model.regionFor.ruleCallTo(NLRule)
-	}
-
-	def dispatch ISemanticRegion endIndent(DocString model) {
-		return model.regionFor.ruleCallTo(NLRule)
-	}
-
-	def dispatch ISemanticRegion endIndent(Table model) {
-		return model.rows.last.regionFor.ruleCallTo(NLRule)
-	}
-
 	def dispatch boolean isLast(Section model) {
 		val document = model.eContainer as Document
 		model == document.sections.last
-	}
-
-	def dispatch boolean isLast(Tag model) {
-		val meta = model.eContainer as Meta
-		model == meta.tags.last
 	}
 }

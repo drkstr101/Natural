@@ -1,8 +1,9 @@
 package org.agileware.natural.lang.text;
 
 /**
- * Implementation {@link CharSequence} that is tailored to line-per-line processing of text
- * and supports special handling of whitespace.
+ * Implementation {@link CharSequence} that is tailored to line-per-line
+ * processing of text and supports special handling of whitespace.
+ * 
  * @author Sebastian Zarnekow - Initial contribution and API
  */
 public class TextLine implements CharSequence {
@@ -53,7 +54,7 @@ public class TextLine implements CharSequence {
 	}
 
 	public boolean containsOnlyWhitespace() {
-		for(int i=0; i < length(); i++) {
+		for (int i = 0; i < length(); i++) {
 			if (!Character.isWhitespace(charAt(i))) {
 				return false;
 			}
@@ -62,7 +63,7 @@ public class TextLine implements CharSequence {
 	}
 
 	public CharSequence getLeadingWhiteSpace() {
-		for(int i=0; i < length(); i++) {
+		for (int i = 0; i < length(); i++) {
 			if (!Character.isWhitespace(charAt(i))) {
 				if (i == 0)
 					return "";
@@ -131,10 +132,10 @@ public class TextLine implements CharSequence {
 	}
 
 	/**
-	 * @throws  IndexOutOfBoundsException
-	 *          if <tt>start</tt> or <tt>end</tt> are negative,
-	 *          if <tt>end</tt> is greater than <tt>length()</tt>,
-	 *          or if <tt>start</tt> is greater than <tt>end</tt>
+	 * @throws IndexOutOfBoundsException if <tt>start</tt> or <tt>end</tt> are
+	 *                                   negative, if <tt>end</tt> is greater than
+	 *                                   <tt>length()</tt>, or if <tt>start</tt> is
+	 *                                   greater than <tt>end</tt>
 	 */
 	@Override
 	public CharSequence subSequence(final int start, final int end) {

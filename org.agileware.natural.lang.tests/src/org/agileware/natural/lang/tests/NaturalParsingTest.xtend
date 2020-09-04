@@ -23,7 +23,7 @@ import static org.hamcrest.Matchers.*
 class NaturalParsingTest extends AbstractExamplesTest<NaturalModel> {
 
 	@Inject extension NaturalSerializer
-	
+
 	@Test
 	def void documentWithTitle() {
 
@@ -58,17 +58,16 @@ class NaturalParsingTest extends AbstractExamplesTest<NaturalModel> {
 		assertThat(doc, notNullValue())
 		assertThat(doc.narrative, notNullValue())
 		assertThat(doc.narrative.sections, hasSize(1))
-		
+
 		val p1 = doc.narrative.sections.get(0) as Paragraph
 		assertThat(serialize(p1), equalToIgnoringWhiteSpace('''
 			The quick brown fox
 			Jumps over the lazy dog
 		'''))
 	}
-	
+
 	@Test
 	def void complexDocumentNarrative() {
-
 		val model = parse('''
 			# language: en
 			Document:
@@ -93,36 +92,40 @@ class NaturalParsingTest extends AbstractExamplesTest<NaturalModel> {
 
 		val doc = model.document
 		assertThat(doc, notNullValue())
-		
+
 		assertThat(doc.narrative, notNullValue())
 		assertThat(doc.narrative.sections, hasSize(4))
-		
+
 		val p1 = doc.narrative.sections.get(0) as Paragraph
 		assertThat(serialize(p1), equalToIgnoringWhiteSpace('''
 			,./;'[]\\-=
 			<>?:"{}|_+
 			!@#$%^&*()`~
 		'''))
-		
+
 		val ds = doc.narrative.sections.get(1) as DocString
 		assertThat(ds.value, equalToIgnoringWhiteSpace('''
 			"""
 			At -9.8 m/s^2
 			"""
 		'''))
-		
+
 		val tbl = doc.narrative.sections.get(2) as Table
 		assertThat(serialize(tbl), equalToIgnoringWhiteSpace('''
 			| x | y |
 			| a | 0 |
 			| b | 1 |
 		'''))
-		
+
 		val p2 = doc.narrative.sections.get(3) as Paragraph
 		assertThat(serialize(p2), equalToIgnoringWhiteSpace('''
 			田中さんにあげて下さい
 			パーティーへ行かないか
 		'''))
+	}
+
+	@Test
+	def void parseMetaData() {
 	}
 
 	@Test
@@ -153,10 +156,9 @@ class NaturalParsingTest extends AbstractExamplesTest<NaturalModel> {
 		// TODO
 		// assertThat(doc.meta.tags, hasSize(1))
 		// assertThat(doc.meta.tags.get(0).value, equalTo("@title: Hello, Meta Tags!"))
-		
 		assertThat(doc.narrative, notNullValue())
 		assertThat(doc.narrative.sections, hasSize(1))
-		
+
 		val p1 = doc.narrative.sections.get(0) as Paragraph
 		assertThat(serialize(p1), equalToIgnoringWhiteSpace('''
 			The quick brown fox
