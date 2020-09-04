@@ -31,8 +31,6 @@ class NaturalFormatterTest extends AbstractFormatterTest<NaturalModel> {
 				Section: A
 				
 				Section:
-					The quick brown fox
-					Jumps over the lazy dog
 		'''
 		assertFormatted(toBeFormatted, expectation)
 	}

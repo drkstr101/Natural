@@ -40,7 +40,7 @@ class NaturalFormatter extends AbstractFormatter2 {
 	def dispatch void format(NaturalModel model, extension IFormattableDocument doc) {
 		// println(textRegionAccess)
 		model.document.format()
-		// println(doc)
+		println(doc)
 	}
 
 	def dispatch void format(Document model, extension IFormattableDocument doc) {
