@@ -57,11 +57,11 @@ Scenario: {Scenario}
 ;
 
 /**
- * 
+ * note: Do not fix keyword warning (or replace with terminal ok)
  */
 ScenarioOutline: {ScenarioOutline}
 	(meta=Meta BLANK_SPACE?)?
-	'Scenario' 'Outline:' title=RawText? NL
+	'Scenario Outline:' title=RawText? NL
 	(BLANK_SPACE? narrative=Narrative)?
 	(BLANK_SPACE? steps+=Step)*
 	(BLANK_SPACE? examples+=Example)*
