@@ -132,8 +132,7 @@ class CucumberFormatter extends AbstractFormatter2 {
 			model.regionFor.keyword(exampleAccess.examplesKeyword_2).prepend[indent]
 		}
 
-	// indent Table
-//		model.table.rows.forEach[prepend[indent]]
+		// indent Table
 		model.table.format().prepend[indent]
 	}
 

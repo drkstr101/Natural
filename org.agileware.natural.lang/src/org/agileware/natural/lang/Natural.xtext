@@ -137,10 +137,14 @@ START_TEXT_LITERAL: WORD
 TEXT_LITERAL: WORD
 	| NUMBER 
 	| STRING
+	| PATH
 	| TABLE_CELL 
 	| ANY_OTHER
 ;
 
+terminal PATH returns ecore::EString:
+	(SIMPLE_WORD | './' | '../' | '/') SIMPLE_WORD ('/' SIMPLE_WORD)*
+;
 
 terminal STRING returns ecore::EString:
 	'"' ('\\' ('b' | 't' | 'n' | 'f' | 'r' | 'u' | '"' | '\\') | !('\\' | '"' | '\r' | '\n'))* '"' |
@@ -183,15 +187,15 @@ terminal WORD:
 	!(' ' | '\t' | '\n' | '\r')*
 ;
 
-//terminal SIMPLE_WORD: 
-//	(LETTER | DIGIT)
-//	(LETTER | DIGIT | '_' | '-' | '.' )*
-//;
+terminal fragment SIMPLE_WORD: 
+	(LETTER | DIGIT)
+	(LETTER | DIGIT | '_' | '-' )*
+;
 
-//terminal fragment LETTER: LATIN_ALPHABET;
-//terminal fragment LATIN_ALPHABET: ('\u0041'..'\u005A')
-//	| ('\u0061'..'\u007A')
-//;
+terminal fragment LETTER: LATIN_ALPHABET;
+terminal fragment LATIN_ALPHABET: ('\u0041'..'\u005A')
+	| ('\u0061'..'\u007A')
+;
 
 BLANK_SPACE: NL+;
 terminal NL: ('\r'? '\n') | EOF;
