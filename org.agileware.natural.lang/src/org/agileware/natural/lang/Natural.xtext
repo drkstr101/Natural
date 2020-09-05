@@ -128,15 +128,17 @@ terminal TABLE_CELL:
 
 /**
  * Consumes all text literals. This SHOULD be assigned after a start literal or keyword
- * In the production rules 
+ * In the production rules.
  */
 RawText returns ecore::EString:
 	Literal+
 ;
 
 /**
- * Consumes all text literals. This SHOULD be assigned after a start literal or keyword
- * In the production rules 
+ * Consumes all text literals, including a single newline prior to another line
+ * of text. Each line MUST not start with any special keywords. All text literals
+ * are consumed until multiple newlines, or a keyword starting a new Block is
+ * encoutered in the model rules.
  */
 RawTextBlock returns ecore::EString:
 	StartLiteral Literal*

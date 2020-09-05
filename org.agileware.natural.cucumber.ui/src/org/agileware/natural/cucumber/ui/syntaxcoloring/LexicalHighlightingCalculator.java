@@ -10,8 +10,8 @@ public class LexicalHighlightingCalculator extends AbstractAntlrTokenToAttribute
 	private static final Pattern QUOTED = Pattern.compile("(?:^'([^']*)'$)|(?:^\"([^\"]*)\")$", Pattern.MULTILINE);
 
 	@Override
-	protected String calculateId(String tokenName, int tokenType) {
-		if("'|'".equals(tokenName)) {
+	protected String calculateId(final String tokenName, final int tokenType) {
+		if ("'|'".equals(tokenName)) {
 			return HighlightingConfiguration.TABLE_ID;
 		}
 		if (QUOTED.matcher(tokenName).matches()) {
@@ -26,7 +26,7 @@ public class LexicalHighlightingCalculator extends AbstractAntlrTokenToAttribute
 		if ("RULE_SL_COMMENT".equals(tokenName)) {
 			return HighlightingStyles.COMMENT_ID;
 		}
-		if ("RULE_TAGNAME".equals(tokenName)) {
+		if ("RULE_TAG".equals(tokenName)) {
 			return HighlightingConfiguration.TAG_ID;
 		}
 		if ("RULE_DOC_STRING".equals(tokenName)) {
