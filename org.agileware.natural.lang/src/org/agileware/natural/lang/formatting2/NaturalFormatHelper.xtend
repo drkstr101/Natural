@@ -2,6 +2,8 @@ package org.agileware.natural.lang.formatting2
 
 import com.google.inject.Inject
 import java.util.List
+import org.agileware.natural.lang.model.Meta
+import org.agileware.natural.lang.model.Tag
 import org.agileware.natural.lang.services.NaturalGrammarAccess
 import org.agileware.natural.lang.text.TextLine
 import org.agileware.natural.lang.text.TextModel
@@ -23,12 +25,6 @@ import org.eclipse.xtext.formatting2.regionaccess.ITextSegment
 import org.eclipse.xtext.formatting2.regionaccess.internal.NodeSemanticRegion
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.eclipse.xtext.preferences.MapBasedPreferenceValues
-import org.agileware.natural.lang.model.Meta
-import org.agileware.natural.lang.model.Tag
-import org.agileware.natural.lang.model.Narrative
-import org.agileware.natural.lang.model.Paragraph
-import org.agileware.natural.lang.model.DocString
-import org.agileware.natural.lang.model.Table
 
 @FinalFieldsConstructor
 class NaturalFormatHelper {
@@ -43,56 +39,31 @@ class NaturalFormatHelper {
 
 	val Factory factory
 
-	val extension ITextRegionExtensions
+	private val extension ITextRegionExtensions
 
-	val extension NaturalGrammarAccess
-	
-	protected var int indentationLevel = -1
+	private val extension NaturalGrammarAccess
+
+	private var int _indentationLevel = -1
+
+	def int getIndentationLevel() {
+		return _indentationLevel
+	}
+
+	def void increaseIndent() {
+		_indentationLevel += 1
+	}
+
+	def void decreaseIndent() {
+		_indentationLevel -= 1
+	}
 
 	def void initialize(FormatterRequest request) {
 		val preferences = request.preferences
 		if (preferences instanceof MapBasedPreferenceValues) {
 			preferences.put(FormatterPreferenceKeys.indentation, factory.indentationInformation.indentString)
 		}
-	}
 
-	def dispatch void format(Meta model, extension IFormattableDocument doc) {
-		model.tags.forEach[format]
-	}
-
-	def dispatch void format(Tag model, extension IFormattableDocument doc) {
-
-		// Trim leading/trailing whitespace
-		model.surround[noSpace]
-
-		if (model.value !== null) {
-			// Cleanup whitespace around value assignment
-			model.regionFor.keyword(':').prepend[noSpace].append[oneSpace]
-			model.regionFor.assignment(tagAccess.valueAssignment_2_1).prepend[oneSpace].append[noSpace]
-		}
-
-		// Insert newline if not present from BLANK_SPACE
-		if (model.isLast()) {
-			model.append[setNewLines(0)]
-		} else if (!model.hasTrailingBlankSpace) {
-			model.append[newLine]
-		}
-	}
-
-	def dispatch void format(Narrative model, extension IFormattableDocument doc) {
-		model.sections.forEach[format().prepend[indent]]
-	}
-
-	def dispatch void format(Paragraph model, extension IFormattableDocument doc) {
-		formatMultilineText(model, paragraphAccess.valueAssignment_1, indentationLevel, doc)
-	}
-
-	def dispatch void format(Table model, extension IFormattableDocument doc) {
-		model.rows.forEach[prepend[indent]]
-	}
-
-	def dispatch void format(DocString model, extension IFormattableDocument doc) {
-		formatMultilineText(model, docStringAccess.valueAssignment_1, indentationLevel, doc)
+		_indentationLevel = 0
 	}
 
 	def formatMultilineText(EObject owner, Assignment assignment, int indentationLevel,
@@ -130,30 +101,6 @@ class NaturalFormatHelper {
 		if (region instanceof NodeSemanticRegion) {
 			addReplacer(new BlankSpaceReplacer(region, newLines))
 		}
-	}
-
-	def dispatch ISemanticRegion startIndent(EObject model) {
-		return model.regionFor.ruleCallTo(NLRule)
-	}
-
-	def dispatch ISemanticRegion endIndent(EObject model) {
-		return model.regionFor.ruleCallTo(NLRule)
-	}
-
-	def dispatch ISemanticRegion endIndent(Narrative model) {
-		return model.sections.last.endIndent()
-	}
-
-	def dispatch ISemanticRegion endIndent(Paragraph model) {
-		return model.regionFor.ruleCallTo(NLRule)
-	}
-
-	def dispatch ISemanticRegion endIndent(DocString model) {
-		return model.regionFor.ruleCallTo(NLRule)
-	}
-
-	def dispatch ISemanticRegion endIndent(Table model) {
-		return model.rows.last.regionFor.ruleCallTo(NLRule)
 	}
 
 	def dispatch boolean isLast(Tag model) {
