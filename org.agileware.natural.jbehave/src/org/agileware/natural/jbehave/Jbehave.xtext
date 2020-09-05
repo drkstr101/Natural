@@ -226,12 +226,13 @@ Examples: {Examples}
 ;
 
 @Override
-TEXT_LITERAL: WORD
+TEXT_LITERAL: SIMPLE_WORD
 	| STRING
 	| NUMBER
 	| PATH
 	| PLACEHOLDER
 	| STEP_KEYWORD
+	| WORD
 	| ANY_OTHER
 ;
 

@@ -87,40 +87,28 @@ class CucumberFormatter extends AbstractFormatter2 {
 	}
 
 	def dispatch void format(Background model, extension IFormattableDocument doc) {
-
-		increaseIndent()
-
 		// Apply default scenario formatting
 		val keyword = backgroundAccess.backgroundKeyword_2
 		val titleAssignment = backgroundAccess.titleAssignment_3
 		formatScenarioBlock(model, keyword, titleAssignment, doc)
-
-		decreaseIndent()
 	}
 
 	def dispatch void format(Scenario model, extension IFormattableDocument doc) {
-
-		increaseIndent()
-
 		// Apply default scenario formatting
 		val keyword = scenarioAccess.scenarioKeyword_2
 		val titleAssignment = scenarioAccess.titleAssignment_3
 		formatScenarioBlock(model, keyword, titleAssignment, doc)
-
-		decreaseIndent()
 	}
 
 	def dispatch void format(ScenarioOutline model, extension IFormattableDocument doc) {
-
-		increaseIndent()
 
 		// Apply default scenario formatting
 		val keyword = scenarioOutlineAccess.scenarioOutlineKeyword_2
 		val titleAssignment = scenarioOutlineAccess.titleAssignment_3
 		formatScenarioBlock(model, keyword, titleAssignment, doc)
 
+		increaseIndent()
 		model.examples.forEach[format().prepend[indent]]
-
 		decreaseIndent()
 	}
 
@@ -191,6 +179,7 @@ class CucumberFormatter extends AbstractFormatter2 {
 	// Helper Methods
 	//
 	// ----------------------------------------------------------
+	
 	def void formatScenarioBlock(AbstractScenario model, Keyword keyword, Assignment titleAssignment,
 		extension IFormattableDocument doc) {
 
@@ -214,6 +203,7 @@ class CucumberFormatter extends AbstractFormatter2 {
 			model.regionFor.assignment(titleAssignment).prepend[oneSpace].append[noSpace]
 		}
 
+		increaseIndent()
 		indentBlock(model.startIndent, model.endIndent, doc)
 
 		// Format narrative
@@ -223,6 +213,8 @@ class CucumberFormatter extends AbstractFormatter2 {
 
 		// Format steps
 		model.steps.forEach[format().prepend[indent]]
+		
+		decreaseIndent()
 	}
 
 	def dispatch ISemanticRegion startIndent(Feature model) {
