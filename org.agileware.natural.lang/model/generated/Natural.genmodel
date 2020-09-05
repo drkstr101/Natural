@@ -30,7 +30,7 @@
     <genClasses ecoreClass="Natural.ecore#//Narrative">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Natural.ecore#//Narrative/sections"/>
     </genClasses>
-    <genClasses ecoreClass="Natural.ecore#//NarrativeSection"/>
+    <genClasses ecoreClass="Natural.ecore#//Block"/>
     <genClasses ecoreClass="Natural.ecore#//Paragraph">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Natural.ecore#//Paragraph/value"/>
     </genClasses>

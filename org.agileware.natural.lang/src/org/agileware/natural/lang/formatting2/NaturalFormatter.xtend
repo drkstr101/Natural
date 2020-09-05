@@ -4,12 +4,12 @@
 package org.agileware.natural.lang.formatting2
 
 import com.google.inject.Inject
+import org.agileware.natural.lang.model.Block
 import org.agileware.natural.lang.model.DocString
 import org.agileware.natural.lang.model.Document
 import org.agileware.natural.lang.model.Meta
 import org.agileware.natural.lang.model.MetaElement
 import org.agileware.natural.lang.model.Narrative
-import org.agileware.natural.lang.model.NarrativeSection
 import org.agileware.natural.lang.model.NaturalModel
 import org.agileware.natural.lang.model.Paragraph
 import org.agileware.natural.lang.model.Section
@@ -183,20 +183,12 @@ class NaturalFormatter extends AbstractFormatter2 {
 		return model.sections.last.endIndent()
 	}
 
-	def ISemanticRegion endIndent(NarrativeSection model) {
+	def ISemanticRegion endIndent(Block model) {
+		if(model instanceof Table) {
+			return model.rows.last.regionFor.ruleCallTo(NLRule)
+		}
+		
 		return model.regionFor.ruleCallTo(NLRule)
-	}
-
-	def ISemanticRegion endIndent(Paragraph model) {
-		return model.regionFor.ruleCallTo(NLRule)
-	}
-
-	def ISemanticRegion endIndent(DocString model) {
-		return model.regionFor.ruleCallTo(NLRule)
-	}
-
-	def ISemanticRegion endIndent(Table model) {
-		return model.rows.last.regionFor.ruleCallTo(NLRule)
 	}
 
 	def boolean isLast(Section model) {

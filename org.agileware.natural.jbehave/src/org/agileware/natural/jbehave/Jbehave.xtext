@@ -177,7 +177,7 @@ enum OutcomeType: ANY
 Scenario: {Scenario}
 	'Scenario:' title=RawText? NL
 	(meta=Meta BLANK_SPACE?)?
-	(given=GivenStories BLANK_SPACE?)?
+//	(given=GivenStories BLANK_SPACE?)?
 	steps+=Step
 	(BLANK_SPACE? steps+=Step)*
 	(BLANK_SPACE? examples=Examples)?
@@ -187,16 +187,16 @@ Scenario: {Scenario}
  * The comma-separated list of story resources that specify the stories to be run before a story or a scenario
  *  GivenStories:= "GivenStories:" (StoryPath ','?)+ ;
  */
-GivenStories: {GivenStories}
-	'GivenStories:'
-	resources+=StoryPath
-	(-> ',' BLANK_SPACE? resources+=StoryPath)*
-	NL
-;
+//GivenStories: {GivenStories}
+//	'GivenStories:'
+//	resources+=StoryPath
+//	(-> ',' BLANK_SPACE? resources+=StoryPath)*
+//	NL
+//;
 
-StoryPath: {StoryPath}
-	value=PATH
-;
+//StoryPath: {StoryPath}
+//	value=PATH
+//;
 
 /**
  * The scenario step is a step starting work followed by any number of characters
@@ -225,26 +225,29 @@ Examples: {Examples}
 	(BLANK_SPACE? table=Table)
 ;
 
+
 @Override
-StartLiteral: STRING
+StartLiteral: ID
 	| NUMBER
+	| STRING
 	| PLACEHOLDER
-	| WORD
 	| PUNCTUATION
+//	| GLOB
 	| ANY_OTHER
 ;
 
 @Override
-Literal: STRING
+Literal: ID
 	| NUMBER
-	| PATH
+	| STRING
 	| PLACEHOLDER
 	| STEP_KEYWORD
-	| WORD
+	| PUNCTUATION
+//	| GLOB
 	| ANY_OTHER
 ;
 
-PATH returns ecore::EString:
-	('./' | '../' | '/') 
-	(WORD ('/' WORD)* ('.' WORD)?)?
-;
+//PATH returns ecore::EString:
+//	('./' | '../' | '/') 
+//	(GLOB ('/' GLOB)* ('.' GLOB)?)?
+//;

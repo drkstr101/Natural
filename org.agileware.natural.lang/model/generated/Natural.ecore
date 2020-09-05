@@ -29,16 +29,16 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Narrative">
     <eStructuralFeatures xsi:type="ecore:EReference" name="sections" upperBound="-1"
-        eType="#//NarrativeSection" containment="true"/>
+        eType="#//Block" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="NarrativeSection"/>
-  <eClassifiers xsi:type="ecore:EClass" name="Paragraph" eSuperTypes="#//NarrativeSection">
+  <eClassifiers xsi:type="ecore:EClass" name="Block"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Paragraph" eSuperTypes="#//Block">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="DocString" eSuperTypes="#//NarrativeSection">
+  <eClassifiers xsi:type="ecore:EClass" name="DocString" eSuperTypes="#//Block">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Table" eSuperTypes="#//NarrativeSection">
+  <eClassifiers xsi:type="ecore:EClass" name="Table" eSuperTypes="#//Block">
     <eStructuralFeatures xsi:type="ecore:EReference" name="rows" upperBound="-1" eType="#//TableRow"
         containment="true"/>
   </eClassifiers>

@@ -71,10 +71,6 @@ class NaturalParsingTest extends AbstractExamplesTest<NaturalModel> {
 		val model = parse('''
 			# language: en
 			Document:
-				,./;'[]\\-=
-				<>?:"{}|_+
-				#!@$%^&*()`~
-				
 				"""
 				At -9.8 m/s^2
 				"""
@@ -94,30 +90,24 @@ class NaturalParsingTest extends AbstractExamplesTest<NaturalModel> {
 		assertThat(doc, notNullValue())
 
 		assertThat(doc.narrative, notNullValue())
-		assertThat(doc.narrative.sections, hasSize(4))
+		assertThat(doc.narrative.sections, hasSize(3))
 
-		val p1 = doc.narrative.sections.get(0) as Paragraph
-		assertThat(serialize(p1), equalToIgnoringWhiteSpace('''
-			,./;'[]\\-=
-			<>?:"{}|_+
-		'''))
-
-		val ds = doc.narrative.sections.get(1) as DocString
-		assertThat(ds.value, equalToIgnoringWhiteSpace('''
+		val b1 = doc.narrative.sections.get(0) as DocString
+		assertThat(b1.value, equalToIgnoringWhiteSpace('''
 			"""
 			At -9.8 m/s^2
 			"""
 		'''))
 
-		val tbl = doc.narrative.sections.get(2) as Table
-		assertThat(serialize(tbl), equalToIgnoringWhiteSpace('''
+		val b2 = doc.narrative.sections.get(1) as Table
+		assertThat(serialize(b2), equalToIgnoringWhiteSpace('''
 			| x | y |
 			| a | 0 |
 			| b | 1 |
 		'''))
 
-		val p2 = doc.narrative.sections.get(3) as Paragraph
-		assertThat(serialize(p2), equalToIgnoringWhiteSpace('''
+		val b3 = doc.narrative.sections.get(2) as Paragraph
+		assertThat(serialize(b3), equalToIgnoringWhiteSpace('''
 			田中さんにあげて下さい
 			パーティーへ行かないか
 		'''))

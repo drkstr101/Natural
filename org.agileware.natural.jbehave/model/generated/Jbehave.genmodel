@@ -76,15 +76,8 @@
     <genClasses ecoreClass="Jbehave.ecore#//Scenario">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Jbehave.ecore#//Scenario/title"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Jbehave.ecore#//Scenario/meta"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Jbehave.ecore#//Scenario/given"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Jbehave.ecore#//Scenario/steps"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Jbehave.ecore#//Scenario/examples"/>
-    </genClasses>
-    <genClasses ecoreClass="Jbehave.ecore#//GivenStories">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Jbehave.ecore#//GivenStories/resources"/>
-    </genClasses>
-    <genClasses ecoreClass="Jbehave.ecore#//StoryPath">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Jbehave.ecore#//StoryPath/value"/>
     </genClasses>
     <genClasses ecoreClass="Jbehave.ecore#//Step">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Jbehave.ecore#//Step/keyword"/>

@@ -1,10 +1,10 @@
 package org.agileware.natural.lang.serializer
 
+import org.agileware.natural.lang.model.Block
 import org.agileware.natural.lang.model.DocString
 import org.agileware.natural.lang.model.Document
 import org.agileware.natural.lang.model.Meta
 import org.agileware.natural.lang.model.Narrative
-import org.agileware.natural.lang.model.NarrativeSection
 import org.agileware.natural.lang.model.NaturalModel
 import org.agileware.natural.lang.model.Paragraph
 import org.agileware.natural.lang.model.Section
@@ -52,7 +52,7 @@ class NaturalSerializer {
 		'''
 	}
 	
-	def String serialize(NarrativeSection model) {
+	def String serialize(Block model) {
 		if(model instanceof Paragraph) {
 			return serialize(model as Paragraph)
 		} else if(model instanceof Table) {

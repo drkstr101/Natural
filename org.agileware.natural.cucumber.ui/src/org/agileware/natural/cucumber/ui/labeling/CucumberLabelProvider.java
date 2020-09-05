@@ -10,8 +10,8 @@ import org.agileware.natural.cucumber.cucumber.Scenario;
 import org.agileware.natural.cucumber.cucumber.ScenarioOutline;
 import org.agileware.natural.cucumber.cucumber.Step;
 import org.agileware.natural.lang.model.DocString;
+import org.agileware.natural.lang.model.MetaElement;
 import org.agileware.natural.lang.model.Table;
-import org.agileware.natural.lang.model.Tag;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.xtext.ui.label.DefaultEObjectLabelProvider;
 
@@ -94,11 +94,11 @@ public class CucumberLabelProvider extends DefaultEObjectLabelProvider {
 		return "example.gif";
 	}
 
-	String text(final Tag ele) {
-		return ele.getValue();
+	String text(final MetaElement ele) {
+		return ele.getId();
 	}
 
-	String image(final Tag ele) {
+	String image(final MetaElement ele) {
 		return "annotation.gif";
 	}
 

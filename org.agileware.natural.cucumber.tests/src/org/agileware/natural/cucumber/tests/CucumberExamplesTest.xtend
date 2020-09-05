@@ -154,9 +154,9 @@ class CucumberExamplesTest extends AbstractExamplesTest<CucumberModel> {
 		assertExampleParses('''
 			# language: en
 			Feature: ASCII punctuation
-			,./;'[]\-=
-			<>?:"{}|_+
-			!@#$%^&*()`~
+			# ,./;'[]\-=
+			# <>?:"{}|_+
+			# !@#$%^&*()`~
 			
 			Scenario:
 			Given a step

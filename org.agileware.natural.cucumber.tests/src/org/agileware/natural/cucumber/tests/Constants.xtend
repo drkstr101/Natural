@@ -4,15 +4,16 @@ class Constants {
 	
 	public static final String EXAMPLE_FEATURE = '''
 		#language: en
-		@release:Release-2
-		@version:1.0.0
+		@release: Release-2
+		@version: 1.0.0
 		@pet_store
 		Feature: Add a new pet  
+			
 			In order to sell a pet
 			As a store owner
 			I want to add a new pet to the catalog
 		
-			Background: Add a dog 
+			Background: Add a dog
 				Given I have the following pet
 				| name | status    |
 				| Fido | available |
@@ -21,7 +22,7 @@ class Constants {
 		
 			@add
 			@fido
-			Scenario: Add another dog 
+			Scenario: Add another dog
 				Then the should be available in the store
 		
 			@update

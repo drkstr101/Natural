@@ -31,6 +31,10 @@ Section: {Section}
 	(BLANK_SPACE? narrative=Narrative)?
 ;
 
+// --------------------------------------
+// Meta Tags
+// --------------------------------------
+
 /**
  * 
  */
@@ -44,23 +48,30 @@ Meta: {Meta}
  * 
  */
 MetaElement: {MetaElement}
-	id=TAG
-	(':' value=RawText)?
+	id=TAG (':' value=RawText)?
+;
+
+
+terminal TAG:
+	AT (LETTER | DIGIT) (LETTER | DIGIT | '_' | '-')*
 ;
 
 /**
  * 
  */
 Narrative: {Narrative}
-	sections+=NarrativeSection
-	(NL BLANK_SPACE? sections+=NarrativeSection)*
+	sections+=Block
+	(NL BLANK_SPACE? sections+=Block)*
 ;
+
+// --------------------------------------
+// Text Blocks
+// --------------------------------------
 
 /**
  * 
  */
-NarrativeSection:
-	Paragraph
+Block: Paragraph
 	| DocString
 	| Table
 ;
@@ -116,34 +127,40 @@ terminal TABLE_CELL:
 // --------------------------------------
 
 /**
- * 
+ * Consumes all text literals. This SHOULD be assigned after a start literal or keyword
+ * In the production rules 
  */
 RawText returns ecore::EString:
 	Literal+
 ;
 
+/**
+ * Consumes all text literals. This SHOULD be assigned after a start literal or keyword
+ * In the production rules 
+ */
 RawTextBlock returns ecore::EString:
 	StartLiteral Literal*
 	(NL StartLiteral Literal*)*
 ;
 
-StartLiteral: NUMBER
+StartLiteral: ID
+	| NUMBER
 	| STRING
-	| WORD
 	| PUNCTUATION
+//	| GLOB
 	| ANY_OTHER
 ;
 
-Literal: NUMBER
+Literal: ID
+	| NUMBER
 	| STRING
-//	| TAG
-	| WORD
 	| PUNCTUATION
+//	| GLOB
 	| ANY_OTHER
 ;
 
-terminal TAG:
-	AT (LETTER | DIGIT) (LETTER | DIGIT | '_' | '-')*
+PUNCTUATION: AT 
+	| '...'
 ;
 
 terminal STRING returns ecore::EString:
@@ -184,7 +201,7 @@ terminal fragment EXPONENT_PART:
 	('e' | 'E') ('+' | '-')? DIGIT+
 ;
 
-terminal WORD:
+terminal ID:
 	(LETTER | DIGIT)
 	(LETTER | DIGIT | '_' | '-')*
 ;
@@ -202,10 +219,6 @@ terminal SL_COMMENT:
 	'#' !('\n' | '\r')* NL
 ;
 
-terminal PUNCTUATION: AT 
-	| '...'
-;
-
 terminal AT: '@';
 
 // all ascii chars other than letters, digits, space, or control codes
@@ -215,15 +228,13 @@ terminal fragment ASCII_SYMBOLS: ('\u0021'..'\u002F')
 	| ('\u007B'..'\u007E')
 ;
 
-//terminal WORD:
+//terminal GLOB:
 //	!('@' | '|' | ' ' | '\t' | '\n' | '\r')
 //	!(' ' | '\t' | '\n' | '\r')*
 //;
 
 BLANK_SPACE: NL+;
-
 terminal NL: ('\r'? '\n') | EOF;
-
 terminal WS: (' ' | '\t');
 
 terminal ANY_OTHER: .;

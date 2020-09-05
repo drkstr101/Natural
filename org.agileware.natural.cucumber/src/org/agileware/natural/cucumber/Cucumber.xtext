@@ -96,21 +96,23 @@ Example: {Example}
 ;
 
 @Override
-StartLiteral: STRING
+StartLiteral: ID
 	| NUMBER
+	| STRING
 	| PLACEHOLDER
-	| WORD
 	| PUNCTUATION
+//	| GLOB
 	| ANY_OTHER
 ;
 
 @Override
-Literal: STRING
+Literal: ID
 	| NUMBER
+	| STRING
 	| PLACEHOLDER
 	| STEP_KEYWORD
-	| WORD
 	| PUNCTUATION
+//	| GLOB
 	| ANY_OTHER
 ;
 

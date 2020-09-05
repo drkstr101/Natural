@@ -14,19 +14,19 @@ import org.agileware.natural.cucumber.cucumber.ScenarioOutline
 import org.agileware.natural.cucumber.cucumber.Step
 import org.agileware.natural.cucumber.services.CucumberGrammarAccess
 import org.agileware.natural.lang.formatting2.NaturalFormatHelper
+import org.agileware.natural.lang.model.Block
 import org.agileware.natural.lang.model.DocString
 import org.agileware.natural.lang.model.Meta
+import org.agileware.natural.lang.model.MetaElement
 import org.agileware.natural.lang.model.Narrative
 import org.agileware.natural.lang.model.Paragraph
 import org.agileware.natural.lang.model.Table
-import org.agileware.natural.lang.model.Tag
 import org.eclipse.xtext.Assignment
 import org.eclipse.xtext.Keyword
 import org.eclipse.xtext.formatting2.AbstractFormatter2
 import org.eclipse.xtext.formatting2.FormatterRequest
 import org.eclipse.xtext.formatting2.IFormattableDocument
 import org.eclipse.xtext.formatting2.regionaccess.ISemanticRegion
-import org.agileware.natural.lang.model.NarrativeSection
 
 class CucumberFormatter extends AbstractFormatter2 {
 
@@ -116,14 +116,14 @@ class CucumberFormatter extends AbstractFormatter2 {
 		model.tags.forEach[format]
 	}
 
-	def dispatch void format(Tag model, extension IFormattableDocument doc) {
+	def dispatch void format(MetaElement model, extension IFormattableDocument doc) {
 		// Trim leading/trailing whitespace
 		model.surround[noSpace]
 
 		if (model.value !== null) {
 			// Cleanup whitespace around value assignment
 			model.regionFor.keyword(':').prepend[noSpace].append[oneSpace]
-			model.regionFor.assignment(tagAccess.valueAssignment_2_1).prepend[oneSpace].append[noSpace]
+			model.regionFor.assignment(metaElementAccess.valueAssignment_2_1).prepend[oneSpace].append[noSpace]
 		}
 
 		// Insert newline if not present from BLANK_SPACE
@@ -237,7 +237,7 @@ class CucumberFormatter extends AbstractFormatter2 {
 		return model.sections.last.endIndent()
 	}
 
-	def ISemanticRegion endIndent(NarrativeSection model) {
+	def ISemanticRegion endIndent(Block model) {
 		if(model instanceof Table) {
 			return model.rows.last.regionFor.ruleCallTo(NLRule)
 		}
