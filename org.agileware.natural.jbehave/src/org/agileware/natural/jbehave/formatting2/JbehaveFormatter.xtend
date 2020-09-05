@@ -4,30 +4,30 @@
 package org.agileware.natural.jbehave.formatting2
 
 import com.google.inject.Inject
-import org.agileware.natural.jbehave.jbehave.Story
-import org.agileware.natural.jbehave.services.JbehaveGrammarAccess
-import org.eclipse.xtext.formatting2.AbstractFormatter2
-import org.eclipse.xtext.formatting2.IFormattableDocument
-import org.agileware.natural.lang.formatting2.NaturalFormatHelper
-import org.eclipse.xtext.formatting2.FormatterRequest
+import org.agileware.natural.jbehave.jbehave.Examples
+import org.agileware.natural.jbehave.jbehave.GivenStories
 import org.agileware.natural.jbehave.jbehave.JbehaveModel
+import org.agileware.natural.jbehave.jbehave.Lifecycle
+import org.agileware.natural.jbehave.jbehave.LifecycleAfter
+import org.agileware.natural.jbehave.jbehave.LifecycleAfterElement
+import org.agileware.natural.jbehave.jbehave.LifecycleBefore
+import org.agileware.natural.jbehave.jbehave.LifecycleBeforeElement
+import org.agileware.natural.jbehave.jbehave.Meta
+import org.agileware.natural.jbehave.jbehave.Scenario
+import org.agileware.natural.jbehave.jbehave.Step
+import org.agileware.natural.jbehave.jbehave.Story
 import org.agileware.natural.jbehave.jbehave.StoryNarrativeA
 import org.agileware.natural.jbehave.jbehave.StoryNarrativeB
 import org.agileware.natural.jbehave.jbehave.StoryNarrativeElement
-import org.agileware.natural.jbehave.jbehave.Lifecycle
-import org.agileware.natural.jbehave.jbehave.LifecycleAfter
-import org.agileware.natural.jbehave.jbehave.LifecycleBefore
-import org.agileware.natural.jbehave.jbehave.LifecycleBeforeElement
-import org.agileware.natural.jbehave.jbehave.LifecycleAfterElement
-import org.agileware.natural.jbehave.jbehave.Scenario
-import org.agileware.natural.jbehave.jbehave.GivenStories
-import org.agileware.natural.jbehave.jbehave.Step
-import org.agileware.natural.lang.model.Table
-import org.agileware.natural.jbehave.jbehave.Examples
-import org.agileware.natural.jbehave.jbehave.PathLiteral
-import org.agileware.natural.lang.model.Tag
+import org.agileware.natural.jbehave.jbehave.StoryPath
+import org.agileware.natural.jbehave.services.JbehaveGrammarAccess
+import org.agileware.natural.lang.formatting2.NaturalFormatHelper
 import org.agileware.natural.lang.model.DocString
-import org.agileware.natural.jbehave.jbehave.Meta
+import org.agileware.natural.lang.model.Table
+import org.agileware.natural.lang.model.Tag
+import org.eclipse.xtext.formatting2.AbstractFormatter2
+import org.eclipse.xtext.formatting2.FormatterRequest
+import org.eclipse.xtext.formatting2.IFormattableDocument
 
 class JbehaveFormatter extends AbstractFormatter2 {
 
@@ -117,7 +117,7 @@ class JbehaveFormatter extends AbstractFormatter2 {
 		model.table.format()
 	}
 
-	def dispatch void format(PathLiteral model, extension IFormattableDocument doc) {
+	def dispatch void format(StoryPath model, extension IFormattableDocument doc) {
 		// TODO...
 	}
 

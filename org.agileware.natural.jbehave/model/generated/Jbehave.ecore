@@ -97,7 +97,10 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="GivenStories">
     <eStructuralFeatures xsi:type="ecore:EReference" name="resources" upperBound="-1"
-        eType="#//PathLiteral" containment="true"/>
+        eType="#//StoryPath" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="StoryPath">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Step">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="keyword" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -106,8 +109,5 @@
   <eClassifiers xsi:type="ecore:EClass" name="Examples">
     <eStructuralFeatures xsi:type="ecore:EReference" name="table" eType="ecore:EClass platform:/resource/org.agileware.natural.lang/model/generated/Natural.ecore#//Table"
         containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="PathLiteral">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
 </ecore:EPackage>

@@ -83,15 +83,15 @@
     <genClasses ecoreClass="Jbehave.ecore#//GivenStories">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Jbehave.ecore#//GivenStories/resources"/>
     </genClasses>
+    <genClasses ecoreClass="Jbehave.ecore#//StoryPath">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Jbehave.ecore#//StoryPath/value"/>
+    </genClasses>
     <genClasses ecoreClass="Jbehave.ecore#//Step">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Jbehave.ecore#//Step/keyword"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Jbehave.ecore#//Step/description"/>
     </genClasses>
     <genClasses ecoreClass="Jbehave.ecore#//Examples">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Jbehave.ecore#//Examples/table"/>
-    </genClasses>
-    <genClasses ecoreClass="Jbehave.ecore#//PathLiteral">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Jbehave.ecore#//PathLiteral/value"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>
