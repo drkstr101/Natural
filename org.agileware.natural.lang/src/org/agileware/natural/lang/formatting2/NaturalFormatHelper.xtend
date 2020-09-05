@@ -3,7 +3,7 @@ package org.agileware.natural.lang.formatting2
 import com.google.inject.Inject
 import java.util.List
 import org.agileware.natural.lang.model.Meta
-import org.agileware.natural.lang.model.Tag
+import org.agileware.natural.lang.model.MetaElement
 import org.agileware.natural.lang.services.NaturalGrammarAccess
 import org.agileware.natural.lang.text.TextLine
 import org.agileware.natural.lang.text.TextModel
@@ -112,7 +112,7 @@ class NaturalFormatHelper {
 		}
 	}
 
-	def dispatch boolean isLast(Tag model) {
+	def dispatch boolean isLast(MetaElement model) {
 		val meta = model.eContainer as Meta
 		model == meta.tags.last
 	}

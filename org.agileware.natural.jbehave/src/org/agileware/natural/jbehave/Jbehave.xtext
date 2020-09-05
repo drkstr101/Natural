@@ -43,7 +43,7 @@ Description:
 @Override
 Meta: {Meta}
 	'Meta:' NL
-	(BLANK_SPACE? tags+=Tag)+
+	(BLANK_SPACE? tags+=MetaElement)+
 	NL
 ;
 
@@ -226,8 +226,16 @@ Examples: {Examples}
 ;
 
 @Override
-TEXT_LITERAL: SIMPLE_WORD
-	| STRING
+StartLiteral: STRING
+	| NUMBER
+	| PLACEHOLDER
+	| WORD
+	| PUNCTUATION
+	| ANY_OTHER
+;
+
+@Override
+Literal: STRING
 	| NUMBER
 	| PATH
 	| PLACEHOLDER
@@ -238,5 +246,5 @@ TEXT_LITERAL: SIMPLE_WORD
 
 PATH returns ecore::EString:
 	('./' | '../' | '/') 
-	(SIMPLE_WORD ('/' SIMPLE_WORD)* ('.' SIMPLE_WORD)?)?
+	(WORD ('/' WORD)* ('.' WORD)?)?
 ;

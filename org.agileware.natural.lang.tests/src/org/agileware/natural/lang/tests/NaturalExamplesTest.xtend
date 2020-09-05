@@ -128,7 +128,7 @@ class NaturalExamplesTest extends AbstractExamplesTest<NaturalModel> {
 			Document: Hello, ASCII Punctuation! 
 				,./;'[]\-=
 				<>?:"{}|_+
-				!@#$%^&*()`~
+				#!@$%^&*()`~
 		''')
 	}
 }

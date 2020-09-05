@@ -23,9 +23,9 @@
     <genClasses ecoreClass="Natural.ecore#//Meta">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Natural.ecore#//Meta/tags"/>
     </genClasses>
-    <genClasses ecoreClass="Natural.ecore#//Tag">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Natural.ecore#//Tag/id"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Natural.ecore#//Tag/value"/>
+    <genClasses ecoreClass="Natural.ecore#//MetaElement">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Natural.ecore#//MetaElement/id"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Natural.ecore#//MetaElement/value"/>
     </genClasses>
     <genClasses ecoreClass="Natural.ecore#//Narrative">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Natural.ecore#//Narrative/sections"/>

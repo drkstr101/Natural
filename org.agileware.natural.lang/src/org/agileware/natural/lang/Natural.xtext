@@ -35,21 +35,17 @@ Section: {Section}
  * 
  */
 Meta: {Meta}
-	tags+=Tag
-	(BLANK_SPACE? tags+=Tag)*
+	tags+=MetaElement
+	(BLANK_SPACE? tags+=MetaElement)*
 	NL
 ;
 
 /**
  * 
  */
-Tag: {Tag}
-	id=TAG_LITERAL
+MetaElement: {MetaElement}
+	id=TAG
 	(':' value=RawText)?
-;
-
-terminal TAG_LITERAL:
-	'@' !('@' | ':' | ' ' | '\t' | '\n' | '\r')+
 ;
 
 /**
@@ -123,41 +119,31 @@ terminal TABLE_CELL:
  * 
  */
 RawText returns ecore::EString:
-	TEXT_LITERAL+
+	Literal+
 ;
 
 RawTextBlock returns ecore::EString:
-	(START_TEXT_LITERAL TEXT_LITERAL*)
-	(NL START_TEXT_LITERAL TEXT_LITERAL*)*
+	StartLiteral Literal*
+	(NL StartLiteral Literal*)*
 ;
 
-START_TEXT_LITERAL: SIMPLE_WORD
-	| NUMBER
+StartLiteral: NUMBER
 	| STRING
 	| WORD
+	| PUNCTUATION
 	| ANY_OTHER
 ;
 
-TEXT_LITERAL: SIMPLE_WORD
-	| NUMBER
+Literal: NUMBER
 	| STRING
+//	| TAG
 	| WORD
-	| TABLE_CELL
+	| PUNCTUATION
 	| ANY_OTHER
 ;
 
-terminal SIMPLE_WORD:
-	(LETTER | DIGIT)
-	(LETTER | DIGIT | '_' | '-')*
-;
-
-terminal fragment LETTER:
-	LATIN_ALPHABET
-;
-
-terminal fragment LATIN_ALPHABET:
-	('\u0041'..'\u005A')
-	| ('\u0061'..'\u007A')
+terminal TAG:
+	AT (LETTER | DIGIT) (LETTER | DIGIT | '_' | '-')*
 ;
 
 terminal STRING returns ecore::EString:
@@ -198,14 +184,41 @@ terminal fragment EXPONENT_PART:
 	('e' | 'E') ('+' | '-')? DIGIT+
 ;
 
+terminal WORD:
+	(LETTER | DIGIT)
+	(LETTER | DIGIT | '_' | '-')*
+;
+
+terminal fragment LETTER:
+	LATIN_ALPHABET
+;
+
+terminal fragment LATIN_ALPHABET:
+	('\u0041'..'\u005A')
+	| ('\u0061'..'\u007A')
+;
+
 terminal SL_COMMENT:
 	'#' !('\n' | '\r')* NL
 ;
 
-terminal WORD:
-	!('@' | '|' | ' ' | '\t' | '\n' | '\r')
-	!(' ' | '\t' | '\n' | '\r')*
+terminal PUNCTUATION: AT 
+	| '...'
 ;
+
+terminal AT: '@';
+
+// all ascii chars other than letters, digits, space, or control codes
+terminal fragment ASCII_SYMBOLS: ('\u0021'..'\u002F')
+	| ('\u003A'..'\u0040')
+	| ('\u005B'..'\u0060')
+	| ('\u007B'..'\u007E')
+;
+
+//terminal WORD:
+//	!('@' | '|' | ' ' | '\t' | '\n' | '\r')
+//	!(' ' | '\t' | '\n' | '\r')*
+//;
 
 BLANK_SPACE: NL+;
 

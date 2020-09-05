@@ -73,7 +73,7 @@ class NaturalParsingTest extends AbstractExamplesTest<NaturalModel> {
 			Document:
 				,./;'[]\\-=
 				<>?:"{}|_+
-				!@#$%^&*()`~
+				#!@$%^&*()`~
 				
 				"""
 				At -9.8 m/s^2
@@ -100,7 +100,6 @@ class NaturalParsingTest extends AbstractExamplesTest<NaturalModel> {
 		assertThat(serialize(p1), equalToIgnoringWhiteSpace('''
 			,./;'[]\\-=
 			<>?:"{}|_+
-			!@#$%^&*()`~
 		'''))
 
 		val ds = doc.narrative.sections.get(1) as DocString
@@ -126,6 +125,22 @@ class NaturalParsingTest extends AbstractExamplesTest<NaturalModel> {
 
 	@Test
 	def void parseMetaData() {
+		val model = parse('''
+			# language: en
+			@foo	@bar
+			@title: Hello, World!
+			@version:v1
+			@release: 2
+			Document:
+		''')
+
+		assertThat(model, notNullValue())
+		assertThat(validate(model), empty())
+
+		val doc = model.document
+		assertThat(doc, notNullValue())
+		assertThat(doc.meta, notNullValue())
+		assertThat(doc.meta.tags, hasSize(5))
 	}
 
 	@Test

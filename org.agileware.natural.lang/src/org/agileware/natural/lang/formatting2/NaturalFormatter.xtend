@@ -7,13 +7,13 @@ import com.google.inject.Inject
 import org.agileware.natural.lang.model.DocString
 import org.agileware.natural.lang.model.Document
 import org.agileware.natural.lang.model.Meta
+import org.agileware.natural.lang.model.MetaElement
 import org.agileware.natural.lang.model.Narrative
 import org.agileware.natural.lang.model.NarrativeSection
 import org.agileware.natural.lang.model.NaturalModel
 import org.agileware.natural.lang.model.Paragraph
 import org.agileware.natural.lang.model.Section
 import org.agileware.natural.lang.model.Table
-import org.agileware.natural.lang.model.Tag
 import org.agileware.natural.lang.services.NaturalGrammarAccess
 import org.eclipse.xtext.formatting2.AbstractFormatter2
 import org.eclipse.xtext.formatting2.FormatterRequest
@@ -118,7 +118,7 @@ class NaturalFormatter extends AbstractFormatter2 {
 		model.tags.forEach[format]
 	}
 
-	def dispatch void format(Tag model, extension IFormattableDocument doc) {
+	def dispatch void format(MetaElement model, extension IFormattableDocument doc) {
 
 		// Trim leading/trailing whitespace
 		model.surround[noSpace]
@@ -126,7 +126,7 @@ class NaturalFormatter extends AbstractFormatter2 {
 		if (model.value !== null) {
 			// Cleanup whitespace around value assignment
 			model.regionFor.keyword(':').prepend[noSpace].append[oneSpace]
-			model.regionFor.assignment(tagAccess.valueAssignment_2_1).prepend[oneSpace].append[noSpace]
+			model.regionFor.assignment(metaElementAccess.valueAssignment_2_1).prepend[oneSpace].append[noSpace]
 		}
 
 		// Insert newline if not present from BLANK_SPACE

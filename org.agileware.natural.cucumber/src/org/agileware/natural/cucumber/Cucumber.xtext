@@ -96,12 +96,21 @@ Example: {Example}
 ;
 
 @Override
-TEXT_LITERAL: SIMPLE_WORD
-	| STRING
+StartLiteral: STRING
 	| NUMBER
+	| PLACEHOLDER
 	| WORD
+	| PUNCTUATION
+	| ANY_OTHER
+;
+
+@Override
+Literal: STRING
+	| NUMBER
 	| PLACEHOLDER
 	| STEP_KEYWORD
+	| WORD
+	| PUNCTUATION
 	| ANY_OTHER
 ;
 
