@@ -26,15 +26,13 @@ import org.eclipse.xtext.formatting2.AbstractFormatter2
 import org.eclipse.xtext.formatting2.FormatterRequest
 import org.eclipse.xtext.formatting2.IFormattableDocument
 import org.eclipse.xtext.formatting2.regionaccess.ISemanticRegion
+import org.agileware.natural.lang.model.NarrativeSection
 
 class CucumberFormatter extends AbstractFormatter2 {
 
 	@Inject extension CucumberGrammarAccess cucumberGrammarAccess
 
 	@Inject NaturalFormatHelper.Factory formatHelperFactory
-
-	// TODO there must be a better way to get the current indentation level!
-	var int indentationLevel = -1
 
 	var extension NaturalFormatHelper _formatHelper = null
 
@@ -52,7 +50,9 @@ class CucumberFormatter extends AbstractFormatter2 {
 	}
 
 	def dispatch void format(Feature model, extension IFormattableDocument doc) {
-
+		
+		resetIndentation()
+		
 		// Condense all BLANK_SPACE regions into single line break
 		model.allRegionsFor.ruleCallsTo(BLANK_SPACERule).forEach [ region |
 			// println('''Trimming BLANK_SPACE: «region.offset» «region.length»''')
@@ -112,30 +112,6 @@ class CucumberFormatter extends AbstractFormatter2 {
 		decreaseIndent()
 	}
 
-	def dispatch void format(Example model, extension IFormattableDocument doc) {
-
-		if (model.meta !== null) {
-			model.meta.format()
-
-			// Work-around for strange keyword placement when tags are present
-			model.regionFor.keyword(exampleAccess.examplesKeyword_2).prepend[indent]
-		}
-
-		// indent Table
-		model.table.format().prepend[indent]
-	}
-
-	def dispatch void format(Step model, extension IFormattableDocument doc) {
-		// TODO cleanup whitespace
-		if (model.text !== null) {
-			model.text.format().prepend[indent]
-		}
-
-		if (model.table !== null) {
-			model.table.format().prepend[indent]
-		}
-	}
-
 	def dispatch void format(Meta model, extension IFormattableDocument doc) {
 		model.tags.forEach[format]
 	}
@@ -156,6 +132,30 @@ class CucumberFormatter extends AbstractFormatter2 {
 		} else if (!model.hasTrailingBlankSpace) {
 			model.append[newLine]
 		}
+	}
+	
+	def dispatch void format(Step model, extension IFormattableDocument doc) {
+		// TODO cleanup whitespace
+		if (model.text !== null) {
+			model.text.format().prepend[indent]
+		}
+
+		if (model.table !== null) {
+			model.table.format().prepend[indent]
+		}
+	}
+	
+	def dispatch void format(Example model, extension IFormattableDocument doc) {
+
+		if (model.meta !== null) {
+			model.meta.format()
+
+			// Work-around for strange keyword placement when tags are present
+			model.regionFor.keyword(exampleAccess.examplesKeyword_2).prepend[indent]
+		}
+
+		// indent Table
+		model.table.format().prepend[indent]
 	}
 
 	def dispatch void format(Narrative model, extension IFormattableDocument doc) {
@@ -217,11 +217,11 @@ class CucumberFormatter extends AbstractFormatter2 {
 		decreaseIndent()
 	}
 
-	def dispatch ISemanticRegion startIndent(Feature model) {
+	def ISemanticRegion startIndent(Feature model) {
 		return model.regionFor.ruleCallTo(NLRule)
 	}
 
-	def dispatch ISemanticRegion endIndent(Feature model) {
+	def ISemanticRegion endIndent(Feature model) {
 		if (!model.scenarios.isEmpty()) {
 			return model.scenarios.last.endIndent()
 		}
@@ -229,21 +229,28 @@ class CucumberFormatter extends AbstractFormatter2 {
 		return model.regionFor.ruleCallTo(NLRule)
 	}
 
-	def dispatch ISemanticRegion startIndent(AbstractScenario model) {
+	def ISemanticRegion startIndent(AbstractScenario model) {
 		return model.regionFor.ruleCallTo(NLRule)
 	}
+	
+	def ISemanticRegion endIndent(Narrative model) {
+		return model.sections.last.endIndent()
+	}
 
-	def dispatch ISemanticRegion endIndent(AbstractScenario model) {
-		if (!model.steps.isEmpty()) {
-			return model.steps.last.endIndent()
+	def ISemanticRegion endIndent(NarrativeSection model) {
+		if(model instanceof Table) {
+			return model.rows.last.regionFor.ruleCallTo(NLRule)
 		}
-
+		
 		return model.regionFor.ruleCallTo(NLRule)
 	}
 
-	def dispatch ISemanticRegion endIndent(ScenarioOutline model) {
-		if (!model.examples.isEmpty()) {
-			return model.examples.last.endIndent()
+	def ISemanticRegion endIndent(AbstractScenario model) {
+
+		if (model instanceof ScenarioOutline) {
+			if (!model.examples.isEmpty()) {
+				return model.examples.last.endIndent()
+			}
 		} else if (!model.steps.isEmpty()) {
 			return model.steps.last.endIndent()
 		}
@@ -251,7 +258,7 @@ class CucumberFormatter extends AbstractFormatter2 {
 		return model.regionFor.ruleCallTo(NLRule)
 	}
 
-	def dispatch ISemanticRegion endIndent(Example model) {
+	def ISemanticRegion endIndent(Example model) {
 		if (model.table !== null) {
 			return model.table.endIndent()
 		}
@@ -259,7 +266,7 @@ class CucumberFormatter extends AbstractFormatter2 {
 		return model.regionFor.ruleCallTo(NLRule)
 	}
 
-	def dispatch ISemanticRegion endIndent(Step model) {
+	def ISemanticRegion endIndent(Step model) {
 		if (model.text !== null) {
 			return model.text.endIndent()
 		} else if (model.table !== null) {
@@ -269,16 +276,11 @@ class CucumberFormatter extends AbstractFormatter2 {
 		return model.regionFor.ruleCallTo(NLRule)
 	}
 
-	def dispatch ISemanticRegion endIndent(DocString model) {
+	def ISemanticRegion endIndent(DocString model) {
 		return model.regionFor.ruleCall(docStringAccess.NLTerminalRuleCall_2)
 	}
 
-	def dispatch ISemanticRegion endIndent(Table model) {
+	def ISemanticRegion endIndent(Table model) {
 		return model.rows.last.regionFor.ruleCallTo(NLRule)
-	}
-
-	def dispatch boolean isLast(Tag model) {
-		val meta = model.eContainer as Meta
-		model == meta.tags.last
 	}
 }

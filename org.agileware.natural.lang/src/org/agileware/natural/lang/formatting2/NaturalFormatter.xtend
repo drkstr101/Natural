@@ -42,7 +42,8 @@ class NaturalFormatter extends AbstractFormatter2 {
 	}
 
 	def dispatch void format(Document model, extension IFormattableDocument doc) {
-
+		resetIndentation()
+		
 		// Condense all BLANK_SPACE regions into single line break
 		model.allRegionsFor.ruleCallsTo(BLANK_SPACERule).forEach [ region |
 			// println('''Trimming BLANK_SPACE: «region.offset» «region.length»''')
@@ -152,11 +153,11 @@ class NaturalFormatter extends AbstractFormatter2 {
 		formatMultilineText(model, docStringAccess.valueAssignment_1, indentationLevel, doc)
 	}
 
-	def dispatch ISemanticRegion startIndent(Document model) {
+	def ISemanticRegion startIndent(Document model) {
 		return model.regionFor.ruleCallTo(NLRule)
 	}
 
-	def dispatch ISemanticRegion endIndent(Document model) {
+	def ISemanticRegion endIndent(Document model) {
 		if (!model.sections.isEmpty()) {
 			return model.sections.last.endIndent()
 		} else if (model.narrative !== null) {
@@ -166,11 +167,11 @@ class NaturalFormatter extends AbstractFormatter2 {
 		return model.regionFor.ruleCall(documentAccess.BLANK_SPACEParserRuleCall_8)
 	}
 
-	def dispatch ISemanticRegion startIndent(Section model) {
+	def ISemanticRegion startIndent(Section model) {
 		return model.regionFor.ruleCallTo(NLRule)
 	}
 
-	def dispatch ISemanticRegion endIndent(Section model) {
+	def ISemanticRegion endIndent(Section model) {
 		if (model.narrative !== null) {
 			return model.narrative.endIndent()
 		}
@@ -178,33 +179,28 @@ class NaturalFormatter extends AbstractFormatter2 {
 		return model.regionFor.ruleCallTo(NLRule)
 	}
 
-	def dispatch ISemanticRegion endIndent(Narrative model) {
+	def ISemanticRegion endIndent(Narrative model) {
 		return model.sections.last.endIndent()
 	}
 
-	def dispatch ISemanticRegion endIndent(NarrativeSection model) {
+	def ISemanticRegion endIndent(NarrativeSection model) {
 		return model.regionFor.ruleCallTo(NLRule)
 	}
 
-	def dispatch ISemanticRegion endIndent(Paragraph model) {
+	def ISemanticRegion endIndent(Paragraph model) {
 		return model.regionFor.ruleCallTo(NLRule)
 	}
 
-	def dispatch ISemanticRegion endIndent(DocString model) {
+	def ISemanticRegion endIndent(DocString model) {
 		return model.regionFor.ruleCallTo(NLRule)
 	}
 
-	def dispatch ISemanticRegion endIndent(Table model) {
+	def ISemanticRegion endIndent(Table model) {
 		return model.rows.last.regionFor.ruleCallTo(NLRule)
 	}
 
-	def dispatch boolean isLast(Section model) {
+	def boolean isLast(Section model) {
 		val document = model.eContainer as Document
 		model == document.sections.last
-	}
-
-	def dispatch boolean isLast(Tag model) {
-		val meta = model.eContainer as Meta
-		model == meta.tags.last
 	}
 }

@@ -39,14 +39,18 @@ class NaturalFormatHelper {
 
 	val Factory factory
 
-	private val extension ITextRegionExtensions
+	val extension ITextRegionExtensions
 
-	private val extension NaturalGrammarAccess
+	val extension NaturalGrammarAccess
 
-	private var int _indentationLevel = -1
+	var int _indentationLevel = 0
 
 	def int getIndentationLevel() {
 		return _indentationLevel
+	}
+
+	def void resetIndentation() {
+		_indentationLevel = 0
 	}
 
 	def void increaseIndent() {
@@ -66,7 +70,7 @@ class NaturalFormatHelper {
 		_indentationLevel = 0
 	}
 
-	def formatMultilineText(EObject owner, Assignment assignment, int indentationLevel,
+	def void formatMultilineText(EObject owner, Assignment assignment, int indentationLevel,
 		extension IFormattableDocument doc) {
 		val region = owner.regionFor.assignment(assignment)
 		if (region instanceof NodeSemanticRegion) {
@@ -74,26 +78,31 @@ class NaturalFormatHelper {
 		}
 	}
 
-	def trimBlankSpace(EObject owner, RuleCall rule, extension IFormattableDocument doc) {
+	def void trimBlankSpace(EObject owner, RuleCall rule, extension IFormattableDocument doc) {
 		trimBlankSpace(owner, rule, 0, doc)
 	}
 
-	def trimBlankSpace(EObject owner, RuleCall rule, int newLines, extension IFormattableDocument doc) {
+	def void trimBlankSpace(EObject owner, RuleCall rule, int newLines, extension IFormattableDocument doc) {
 		val region = owner.regionFor.ruleCall(rule)
 		if (region instanceof NodeSemanticRegion) {
 			addReplacer(new BlankSpaceReplacer(region, newLines))
 		}
 	}
 
-	def indentBlock(ISemanticRegion start, ISemanticRegion end, extension IFormattableDocument doc) {
+	def void indentBlock(ISemanticRegion start, ISemanticRegion end, extension IFormattableDocument doc) {
+		//	println('''
+		//		========= Indent Block («indentationLevel») ========= 
+		//		start=[«start.offset», «start.length»] «start.grammarElement»
+		//		end=[«end.offset», «end.length»] «end.grammarElement»
+		//	''')
 		interior(start, end)[indent]
 	}
 
-	def dispatch boolean hasLeadingBlankSpace(EObject model) {
+	def boolean hasLeadingBlankSpace(EObject model) {
 		immediatelyPreceding(model).ruleCallTo(BLANK_SPACERule) !== null
 	}
 
-	def dispatch boolean hasTrailingBlankSpace(EObject model) {
+	def boolean hasTrailingBlankSpace(EObject model) {
 		immediatelyFollowing(model).ruleCallTo(BLANK_SPACERule) !== null
 	}
 
