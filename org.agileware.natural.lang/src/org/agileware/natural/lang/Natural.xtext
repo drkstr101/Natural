@@ -131,23 +131,33 @@ RawTextBlock returns ecore::EString:
 	(NL START_TEXT_LITERAL TEXT_LITERAL*)*
 ;
 
-START_TEXT_LITERAL: WORD
+START_TEXT_LITERAL: SIMPLE_WORD
 	| NUMBER
 	| STRING
-	| PATH
+	| WORD
 	| ANY_OTHER
 ;
 
-TEXT_LITERAL: WORD
+TEXT_LITERAL: SIMPLE_WORD
 	| NUMBER
 	| STRING
-	| PATH
+	| WORD
 	| TABLE_CELL
 	| ANY_OTHER
 ;
 
-terminal PATH returns ecore::EString:
-	(SIMPLE_WORD | './' | '../' | '/') SIMPLE_WORD ('/' SIMPLE_WORD)*
+terminal SIMPLE_WORD:
+	(LETTER | DIGIT)
+	(LETTER | DIGIT | '_' | '-')*
+;
+
+terminal fragment LETTER:
+	LATIN_ALPHABET
+;
+
+terminal fragment LATIN_ALPHABET:
+	('\u0041'..'\u005A')
+	| ('\u0061'..'\u007A')
 ;
 
 terminal STRING returns ecore::EString:
@@ -195,20 +205,6 @@ terminal SL_COMMENT:
 terminal WORD:
 	!('@' | '|' | ' ' | '\t' | '\n' | '\r')
 	!(' ' | '\t' | '\n' | '\r')*
-;
-
-terminal fragment SIMPLE_WORD:
-	(LETTER | DIGIT)
-	(LETTER | DIGIT | '_' | '-')*
-;
-
-terminal fragment LETTER:
-	LATIN_ALPHABET
-;
-
-terminal fragment LATIN_ALPHABET:
-	('\u0041'..'\u005A')
-	| ('\u0061'..'\u007A')
 ;
 
 BLANK_SPACE: NL+;
