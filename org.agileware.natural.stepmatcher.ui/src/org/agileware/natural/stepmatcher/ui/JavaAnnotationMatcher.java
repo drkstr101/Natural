@@ -1,5 +1,7 @@
 package org.agileware.natural.stepmatcher.ui;
 
+import static org.agileware.natural.stepmatcher.CucumberExpressionValidator.isMatchingAnnotationValue;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -7,8 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 import org.agileware.natural.stepmatcher.AnnotationMacthEntry;
 import org.agileware.natural.stepmatcher.IStepMatcher;
@@ -31,16 +31,6 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class JavaAnnotationMatcher implements IStepMatcher {
-
-	private static boolean isMatchingAnnotationValue(final String annotationValue, final String description) {
-		try {
-			return description.matches(Pattern.quote(annotationValue));
-		} catch (final PatternSyntaxException e) {
-			e.printStackTrace();
-		}
-
-		return false;
-	}
 
 	@Inject
 	private AbstractAnnotationDescriptor descriptor;
